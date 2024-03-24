@@ -54,3 +54,6 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# if you know you know
+chantilly.txt
