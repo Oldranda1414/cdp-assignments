@@ -25,6 +25,9 @@
 *.bbl
 *.blg
 
+# Visual Studio Code
+.vscode
+
 # Log created by Adobe Reader
 C:\\nppdf32Log\\debuglog.txt
 

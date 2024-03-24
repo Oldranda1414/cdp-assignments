@@ -1,6 +1,6 @@
 package pcd.ass01.simtrafficexamples;
 
-import java.util.Random;
+// import java.util.Random;
 
 import pcd.ass01.simengineseq.AbstractSimulation;
 import pcd.ass01.simtrafficbase.CarAgent;
@@ -9,7 +9,6 @@ import pcd.ass01.simtrafficbase.P2d;
 import pcd.ass01.simtrafficbase.Road;
 import pcd.ass01.simtrafficbase.RoadsEnv;
 import pcd.ass01.simtrafficbase.TrafficLight;
-import pcd.ass01.simtrafficbase.TrafficLight.TrafficLightState;
 
 public class TrafficSimulationWithCrossRoads extends AbstractSimulation {
 
@@ -19,7 +18,7 @@ public class TrafficSimulationWithCrossRoads extends AbstractSimulation {
 	
 	public void setup() {
 
-		Random  gen = new Random(1);
+		// Random  gen = new Random(1);
 
 		this.setupTimings(0, 1);
 		
