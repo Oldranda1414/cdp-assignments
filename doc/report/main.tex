@@ -72,15 +72,13 @@ This means that for a given step there will be 2 tasks:
 
 The sense-decide task uses data from the environment and decides
  the next action a certain agent should execute. This task can
- be executed in a parallel manner as no data is modified, exept
- from the state of the agent itself, which would be modified only
- one time every step and only by its personal sense-decide task.
+ be executed in a parallel manner as no data is modified.
 
 The act task must be serialized as a given simulation must register
  the same result as a sequential simulation would give.
 
 \section{Data Decomposition}
-The environment can be subdevided in agents states, based
+The environment can be subdevided in agent's states, based
  on the fact that a given agents's state will be modified
  by only one sense-decide task for a given step
 
