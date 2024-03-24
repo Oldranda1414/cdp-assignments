@@ -52,17 +52,37 @@ An agent-based simulation or model is a computational modeling
  The goal of the simulation is to observe the evolution of the states of the
  environment and the agents in each discrete step.
 
-Agents beheviour for a single step can be described in 3 fases:
+Agents beheviour for a single step can be described in 3 phases:
 \begin{itemize}
-   \item sense fase: the agent acquires data from the environment
-   \item decide fase: the agent determines the next action
-   \item act fase: the action determined is executed on the environment
+   \item sense phase: the agent acquires data from the environment
+   \item decide phase: the agent determines the next action
+   \item act phase: the action determined is executed on the environment
 \end{itemize}
 
 \section{Task Decomposition}
-Each agent's step can compose a single task, which can be devided into 3 subtasks,
- one for each fase of the step. This means that for a given step there will be 3 times
- the number of agents Tasks to be executed
+Each agent's step can compose a single task, which can be divided into 3 subtasks,
+ one for each phase of the step. Since the sense and decide phase are closely
+ linked they can be considered as a single task.
+
+This means that for a given step there will be 2 tasks:
+\begin{itemize}
+    \item sense-decide
+    \item act
+\end{itemize}
+
+The sense-decide task uses data from the environment and decides
+ the next action a certain agent should executed. This task can
+ be executed in a parallel manner as no data is modified, exept
+ from the state of the agent itself, which would be modified only
+ one time every step and only by its personal sense-decide task.
+
+The act task must be serialized as a given simulation must register
+ the same result as a sequential simulation would give.
+
+\section{Data Decomposition}
+The environment can be subdevided in agents states, based
+ on the fact that a given agents's state will be modified
+ by only one sense-decide task for a given step
 
 \chapter{Design}
 
