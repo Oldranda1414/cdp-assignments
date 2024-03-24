@@ -60,3 +60,7 @@ gradle-app.setting
 
 # if you know you know
 chantilly.txt
+
+# Binary files
+*.class
+/bin
