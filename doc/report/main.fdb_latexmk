@@ -1,14 +1,14 @@
 # Fdb version 3
-["bibtex main"] 1711272730 "main.aux" "main.bbl" "main" 1711272731
+["bibtex main"] 1711272936 "main.aux" "main.bbl" "main" 1711272936
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
   "References.bib" 0 -1 0 ""
-  "main.aux" 1711272731 343 2c380bd3f03e9f9bb4c4831a2c78f327 "pdflatex"
+  "main.aux" 1711272936 513 5dc8b5b87d363c371a1643ee941dbd00 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1711272730 "/home/leonardo/Uni/pcd/assignment/ass01/doc/report/main.tex" "main.pdf" "main" 1711272731
+["pdflatex"] 1711272936 "/home/leonardo/Uni/pcd/assignment/ass01/doc/report/main.tex" "main.pdf" "main" 1711272936
   "/etc/texmf/web2c/texmf.cnf" 1692531073 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/leonardo/Uni/pcd/assignment/ass01/doc/report/main.tex" 1711272730 1291 698468896977ac3a8fe046a1588c7d70 ""
+  "/home/leonardo/Uni/pcd/assignment/ass01/doc/report/main.tex" 1711272936 1309 07ddab7bb1d7ee085f9869d0d222c7eb ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1136768653 1288 655e228510b4c2a1abe905c368440826 ""
@@ -38,12 +38,12 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1710235364 4036811 4cb80868003c86b962b6b5ae1e1e2902 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1710426607 1456861 cf55891ee7d05335f582bc2a6ffe3448 ""
-  "main.aux" 1711272731 343 2c380bd3f03e9f9bb4c4831a2c78f327 "pdflatex"
+  "main.aux" 1711272936 513 5dc8b5b87d363c371a1643ee941dbd00 "pdflatex"
   "main.bbl" 0 -1 0 "bibtex main"
-  "main.lof" 1711272731 80 64a769ee1bce8a6fae1235e470a6c57d "pdflatex"
-  "main.lot" 1711272731 80 64a769ee1bce8a6fae1235e470a6c57d "pdflatex"
-  "main.tex" 1711272730 1291 698468896977ac3a8fe046a1588c7d70 ""
-  "main.toc" 1711272731 114 d7a73d368278a3e9160a68bd74697bfb "pdflatex"
+  "main.lof" 1711272936 100 58c0a34556a32115d110f6eb26eb16ff "pdflatex"
+  "main.lot" 1711272936 100 58c0a34556a32115d110f6eb26eb16ff "pdflatex"
+  "main.tex" 1711272936 1309 07ddab7bb1d7ee085f9869d0d222c7eb ""
+  "main.toc" 1711272936 167 b30af76b4e56e36604af9c5481c25ea1 "pdflatex"
   (generated)
   "main.aux"
   "main.lof"
