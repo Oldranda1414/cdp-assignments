@@ -2,6 +2,9 @@
 *.aux
 *.log
 *.toc
+*.fls
+*.lof
+*.lot
 
 # PDF output - usually a bad idea to keep this in Git
 *.pdf
