@@ -1,27 +1,55 @@
 package pcd.ass01.simengineconcurrent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.locks.*;
 
-import com.google.common.base.Optional;
+public class BagOfTasks implements BoundedBuffer<Runnable> {
 
-public class BagOfTasks {
-    
-    private final List<Runnable> tasks;
+	private List<Runnable> buffer;
+	private int maxSize;
+	private Lock mutex;
+	private Condition notEmpty, notFull;
 
-    public BagOfTasks() {
-        tasks = new ArrayList<>();
-    }
+	public BagOfTasks(int size) {
+		buffer = new LinkedList<Runnable>();
+		maxSize = size;
+		mutex = new ReentrantLock();
+		notEmpty = mutex.newCondition();
+		notFull = mutex.newCondition();
+	}
 
-    synchronized public void addTask(Runnable task) {
-        tasks.add(task);
-    }
+	public void put(Runnable item) throws InterruptedException {
+		try {
+			mutex.lock();
+			if (isFull()) {
+				notFull.await();
+			}
+			buffer.addLast(item);
+			notEmpty.signal();
+		} finally {
+			mutex.unlock();
+		}
+	}
 
-    @SuppressWarnings("null")
-    synchronized public Optional<Runnable> getTask() {
-        if (tasks.isEmpty()) {
-            return Optional.absent();
-        }
-        return Optional.of(tasks.remove(0));
-    }
+	public Runnable get() throws InterruptedException {
+		try {
+			mutex.lock();
+			if (isEmpty()) {
+				notEmpty.await();
+			}
+			Runnable item = buffer.removeFirst();
+			notFull.signal();
+			return item;
+		} finally {
+			mutex.unlock();
+		}
+	}
+
+	private boolean isFull() {
+		return buffer.size() == maxSize;
+	}
+
+	private boolean isEmpty() {
+		return buffer.size() == 0;
+	}
 }
