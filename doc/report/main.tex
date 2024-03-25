@@ -61,30 +61,39 @@ Agents beheviour for a single step can be described in 3 phases:
 
 \section{Task Decomposition}
 Each agent's step can compose a single task, which can be divided into 3 subtasks,
- one for each phase of the step. Since the sense and decide phase are closely
- linked they can be considered as a single task.
+ one for each phase of the step. 
 
-This means that for a given step there will be 2 tasks:
+This means that for a given step there will be 3 tasks:
 \begin{itemize}
-    \item sense-decide
+    \item sense
+    \item decide
     \item act
 \end{itemize}
 
-The sense-decide task uses data from the environment and decides
- the next action a certain agent should execute. This task can
- be executed in a parallel manner as no data is modified.
-
-The act task must be serialized as a given simulation must register
- the same result as a sequential simulation would give.
+The total number of tasks for a given step is 3 * nAgents
+ where nAgents is the number of agents
 
 \section{Data Decomposition}
-The environment can be subdevided in agent's states, based
- on the fact that a given agents's state will be modified
- by only one sense-decide task for a given step
+The environment can be subdevided in agent's states which
+ means the data can be divided in nAgents indipendent states
+
+\section{Dependency Analysis}
+The sense and decide tasks can be joined in a single
+ sense-decide task as the sense task only quearies the
+ environment and the decide task updates the next action
+ to be performed for a given agent. Since the decide act
+ only sets the next action for a given agent and for a
+ given step every agent's next action will be set only
+ by one decide task, the sense-decide tasks can be executed
+ in a concurrent manner.
+
+The act task must be serialized as the definition imposes that
+ a simulation must give the same results indipendently from it
+ being implementes sequentialy or concurrently. This means that
+ act tasks must be executed in an orderly manner.
 
 \chapter{Design}
 
-% \input{./prob-definition.tex} %objective changed to problem definition
 \bibliographystyle{plain}
 \bibliography{References}
 
