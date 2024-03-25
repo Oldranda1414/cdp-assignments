@@ -81,18 +81,29 @@ The environment can be subdevided in agent's states which
 The sense and decide tasks can be joined in a single
  sense-decide task as the sense task only quearies the
  environment and the decide task updates the next action
- to be performed for a given agent. Since the decide act
+ to be performed for a given agent. Since the decide phase
  only sets the next action for a given agent and for a
  given step every agent's next action will be set only
  by one decide task, the sense-decide tasks can be executed
  in a concurrent manner.
 
-The act task must be serialized as the definition imposes that
- a simulation must give the same results indipendently from it
- being implementes sequentialy or concurrently. This means that
- act tasks must be executed in an orderly manner.
+%The act task must be serialized as the definition imposes that
+% a simulation must give the same results indipendently from it
+% being implementes sequentialy or concurrently. This means that
+% act tasks must be executed in an orderly manner.
+The act tasks in a given step can by parallelised between each other, but
+ must be executed after the sense-decide task.
+
+The steps of the simulation must be serialized.
 
 \chapter{Design}
+Using agenda parallelism we design the system around an agenda
+ composed by the various tasks, which were defined earlier. Every
+ step in the simulation imposes a mandatory syncronization.
+
+\section{Architecture}
+The master-slave architecture is a natural implementation of
+ agenda parallelism, using a bag of works.
 
 \bibliographystyle{plain}
 \bibliography{References}
