@@ -103,7 +103,16 @@ Using agenda parallelism we design the system around an agenda
 
 \section{Architecture}
 The master-slave architecture is a natural implementation of
- agenda parallelism, using a bag of works.
+ agenda parallelism, using a bag of works. The bag of words is
+ implemented as a bounded buffer.
+
+%TODO AGGIUNGERE UML DEL MASTER-SLAVE
+
+The environment is implemented as a readers-writers monitor, which
+ lets threads read from the environment in a parallel manner, but imposes
+ that no writing can be executed concurrently with other writing or reading
+
+%TODO AGGIUNGERE UML DEL MASTER-SLAVE
 
 \bibliographystyle{plain}
 \bibliography{References}
