@@ -111,7 +111,7 @@ The environment is implemented as a readers-writers monitor, which
  lets threads read from the environment in a parallel manner, but imposes
  that no writing can be executed concurrently with other writing or reading
 
-3 Latches are used for syncronization between master and workers.
+2 Latches are used for syncronization between master and workers.
 
 \begin{figure}
     \caption{UML diagram showing relationships between monitors, active components and syncronization components}
