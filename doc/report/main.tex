@@ -119,6 +119,12 @@ The environment is implemented as a readers-writers monitor, which
     \includegraphics{UML1.png}
 \end{figure}
 
+\chapter{Implementation}
+\section{Thread Organization}
+The master is implemented as a single thread. The Gui will have a dedicated thread
+ managing its events. Depending on the machine architecture, the remaining number
+ of instantiable threads are created and used as workers.
+
 \bibliographystyle{plain}
 \bibliography{References}
 
