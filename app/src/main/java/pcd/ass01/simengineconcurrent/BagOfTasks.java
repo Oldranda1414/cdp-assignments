@@ -45,11 +45,11 @@ public class BagOfTasks implements BoundedBuffer<Runnable> {
 		}
 	}
 
-	private boolean isFull() {
+	public boolean isFull() {
 		return buffer.size() == maxSize;
 	}
 
-	private boolean isEmpty() {
+	public boolean isEmpty() {
 		return buffer.size() == 0;
 	}
 }

@@ -54,7 +54,4 @@ public abstract class Master extends Thread{
         }
     }
 
-    protected abstract void senseDecide();
-
-    protected abstract void act();
 }
