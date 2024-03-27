@@ -32,6 +32,7 @@ public class ResettableLatchImpl implements ResettableLatch{
         this.latch.countDown();
     }
 
+    @SuppressWarnings("unused")
     private void log(String message){
         synchronized(System.out){
             System.out.println("[resettableLatch]: " + message);
