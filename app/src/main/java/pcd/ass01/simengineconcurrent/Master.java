@@ -3,6 +3,7 @@ package pcd.ass01.simengineconcurrent;
 import java.util.List;
 
 import pcd.ass01.simengineconcurrent.latch.ResettableLatch;
+import pcd.ass01.simengineconcurrent.latch.ResettableLatchImpl;
 
 public abstract class Master extends Thread{
 

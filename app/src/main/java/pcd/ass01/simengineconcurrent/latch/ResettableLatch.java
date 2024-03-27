@@ -4,7 +4,7 @@ public interface ResettableLatch {
     
     public void reset();
 
-    public void await();
+    public void await() throws InterruptedException;
 
     public void countDown();
 
