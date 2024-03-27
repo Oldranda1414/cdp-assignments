@@ -5,8 +5,6 @@ import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.xml.crypto.Data;
-
 public abstract class RWBoundedBuffer<I> implements BoundedBuffer<I> {
 
    private final Map<String, I> m = new TreeMap<String, I>();
@@ -21,7 +19,7 @@ public abstract class RWBoundedBuffer<I> implements BoundedBuffer<I> {
    }
    public String[] allKeys() {
      r.lock();
-     try { return m.keySet().toArray(); }
+     try { return m.keySet().toArray(new String[0]); }
      finally { r.unlock(); }
    }
    public I put(String key, I value) {

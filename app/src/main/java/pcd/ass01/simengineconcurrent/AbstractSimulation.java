@@ -11,6 +11,7 @@ public abstract class AbstractSimulation {
 
 	/* environment of the simulation */
 	private AbstractEnvironment env;
+	private List<AbstractAgent> agents;
 	
 	/* simulation listeners */
 	private List<SimulationListener> listeners;
@@ -18,6 +19,8 @@ public abstract class AbstractSimulation {
 	protected AbstractSimulation() {
         //TODO GESTIRE I LISTENER DELLA GUI
 		//listeners = new ArrayList<SimulationListener>();
+		agents = new ArrayList<AbstractAgent>();
+
 	}
 	
 	/**
@@ -34,7 +37,15 @@ public abstract class AbstractSimulation {
 	 * @param numSteps
 	 */
 	public void run(int numSteps) {		
-
+		// setup(); //TODO: setup should be called from the outside or from this method?
+		env.init();
+		notifyReset(0, agents, env);
+		var master = new Master(3, ); //TODO: find a way to choose num of workers
+		try {
+			master.run(numSteps);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	protected void setupEnvironment(AbstractEnvironment env) {
