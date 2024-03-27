@@ -6,11 +6,12 @@ import pcd.ass01.simengineconcurrent.latch.ResettableLatch;
 
 public abstract class Master extends Thread{
 
-    private ResettableLatch workersDone;
-    private ResettableLatch workReady;
+    private List<Runnable> works;
     private int nWorkers;
     private int nAgents;
-    private List<Runnable> works;
+    private BoundedBuffer<Runnable> bagOfTasks;
+    private ResettableLatch workersDone;
+    private ResettableLatch workReady;
 
     public Master(final int nWorkers,
             final int nAgents,
@@ -21,6 +22,7 @@ public abstract class Master extends Thread{
         this.works = works;
         this.workersDone = new ResettableLatchImpl(nWorkers);
         this.workReady = new ResettableLatchImpl(1);
+        this.bagOfTasks = new BagOfTasks(nAgents);
 
     }
     
