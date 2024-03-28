@@ -29,6 +29,6 @@ public abstract class AbstractEnvironment {
 	 * 
 	 * @param dt
 	 */
-	public abstract void step();
+	public abstract void step(int dt);
     
 }

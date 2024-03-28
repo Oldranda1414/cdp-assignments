@@ -4,7 +4,7 @@ package pcd.ass01.simengineconcurrent;
 
 import pcd.ass01.simengineconcurrent.latch.ResettableLatch;
 /**
- * !the worker do NOT need the reference to the environment. Although it's him that will execute the duty it do not need the reference due to the fact that the impl 
+ * !the worker do NOT need the reference to the environment. Although it's him that will execute the duty, it do not need the reference due to the fact that the impl 
  * !of the duty is in the task itself. The task will have the reference to the environment and will execute the duty.
  */
 public class Worker extends Thread{

@@ -17,7 +17,7 @@ public class Master extends Thread{
     public Master(final int nWorkers,
             // final int nAgents,
             final List<Runnable> works,
-            final AbstractEnvironment env){
+            final AbstractEnvironment env, int t0, int dt){
         this.nWorkers = nWorkers;
         this.nAgents = works.size();
         this.works = works;
@@ -37,7 +37,7 @@ public class Master extends Thread{
         }
         for(int step = 1; step <= nSteps; step++){
             log("executing step " + step + " of the simulation");
-            this.env.step();
+            this.env.step(3); //TODO: understand how dt works and how to pass it through step method
             log("filling the bag with tasks sense-decide-act");
             for(var work : works){
                 this.bagOfTasks.put(work);
