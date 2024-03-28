@@ -13,15 +13,18 @@ public class Master extends Thread{
     private ResettableLatch workersDone;
     private ResettableLatch workReady;
     private AbstractEnvironment env;
+    private int dt;
 
     public Master(final int nWorkers,
             // final int nAgents,
             final List<Runnable> works,
-            final AbstractEnvironment env, int t0, int dt){
+            final AbstractEnvironment env,
+            int dt){
         this.nWorkers = nWorkers;
         this.nAgents = works.size();
         this.works = works;
         this.env = env;
+        this.dt = dt;
         this.workersDone = new ResettableLatchImpl(nWorkers);
         this.workReady = new ResettableLatchImpl(1);
         this.bagOfTasks = new BagOfTasks(this.nAgents);
@@ -37,7 +40,7 @@ public class Master extends Thread{
         }
         for(int step = 1; step <= nSteps; step++){
             log("executing step " + step + " of the simulation");
-            this.env.step(3); //TODO: understand how dt works and how to pass it through step method
+            this.env.step(dt);
             log("filling the bag with tasks sense-decide-act");
             for(var work : works){
                 this.bagOfTasks.put(work);

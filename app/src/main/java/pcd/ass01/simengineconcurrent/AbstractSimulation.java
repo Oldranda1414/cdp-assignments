@@ -15,6 +15,9 @@ public abstract class AbstractSimulation {
 	private List<Runnable> works;
 	private int t0;
 	private int dt;
+	private long startWallTime;
+	private long endWallTime;
+	private long averageTimePerStep;
 	
 	/* simulation listeners */
 	// private List<SimulationListener> listeners;
@@ -39,16 +42,40 @@ public abstract class AbstractSimulation {
 	 * 
 	 * @param numSteps
 	 */
-	public void run(int numSteps) {		
-		setup(); //TODO: setup should be called from the outside or from this method?
+	public void run(int numSteps) {
+		startWallTime = System.currentTimeMillis();
+
+		/* initialize the env and the agents inside */
+		int t = t0;
+
 		env.init();
-		// notifyReset(0, agents, env);
-		var master = new Master(ComputeBestNumOfWorkers(), this.works, this.env, this.t0, this.dt);
+		for (var agent: agents) {
+			agent.init(env);
+		}
+
+		this.notifyReset(t, agents, env);
+		
+		long timePerStep = 0;
+		
+		var master = new Master(ComputeBestNumOfWorkers(), this.works, this.env, this.dt);
 		try {
 			master.run(numSteps);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		endWallTime = System.currentTimeMillis();
+		this.averageTimePerStep = timePerStep / numSteps;
+	}
+
+	public long getSimulationDuration() {
+		//TODO: it do not work. It should await master end to retrieve correct infos
+		return endWallTime - startWallTime;
+	}
+	
+	public long getAverageTimePerCycle() {
+		//TODO: it do not work. It should await master end to retrieve correct infos
+		return averageTimePerStep;
 	}
 
 	protected void setupTimings(int t0, int dt) {
@@ -74,11 +101,11 @@ public abstract class AbstractSimulation {
 	// 	this.listeners.add(l);
 	// }
 	
-	// private void notifyReset(int t0, List<AbstractAgent> agents, AbstractEnvironment env) {
-	// 	for (var l: listeners) {
-	// 		l.notifyInit(t0, agents, env);
-	// 	}
-	// }
+	private void notifyReset(int t0, List<AbstractAgent> agents, AbstractEnvironment env) {
+		// for (var l: listeners) {
+		// 	l.notifyInit(t0, agents, env);
+		// }
+	}
 
 	// private void notifyNewStep(int t, List<AbstractAgent> agents, AbstractEnvironment env) {
 	// 	for (var l: listeners) {
