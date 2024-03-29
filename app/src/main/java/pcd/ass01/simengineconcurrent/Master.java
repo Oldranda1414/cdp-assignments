@@ -4,7 +4,7 @@ import java.util.List;
 
 import pcd.ass01.simengineconcurrent.latch.*;
 
-public class Master extends Thread{
+public class Master extends Thread {
 
     private List<Runnable> works;
     private int nWorkers;
@@ -14,12 +14,16 @@ public class Master extends Thread{
     private ResettableLatch workReady;
     private AbstractEnvironment env;
     private int dt;
+    private int nSteps;
 
-    public Master(final int nWorkers,
-            // final int nAgents,
-            final List<Runnable> works,
-            final AbstractEnvironment env,
-            int dt){
+    public Master(
+        final int nWorkers,
+        // final int nAgents,
+        final List<Runnable> works,
+        final AbstractEnvironment env,
+        int dt,
+        int nSteps
+    ) {
         this.nWorkers = nWorkers;
         this.nAgents = works.size();
         this.works = works;
@@ -28,28 +32,33 @@ public class Master extends Thread{
         this.workersDone = new ResettableLatchImpl(nWorkers);
         this.workReady = new ResettableLatchImpl(1);
         this.bagOfTasks = new BagOfTasks(this.nAgents);
-
+        this.nSteps = nSteps;
     }
-    
-    public void run(int nSteps) throws InterruptedException{
-        log("Starting Simulation");
-        Worker[] workers = new Worker[this.nWorkers];
-        for(int i = 0; i < this.nWorkers; i++){
-            workers[i] = new Worker(this.bagOfTasks, this.workersDone, this.workReady/*, this.env, this.agentWills*/);
-            workers[i].start();
-        }
-        for(int step = 1; step <= nSteps; step++){
-            log("executing step " + step + " of the simulation");
-            this.env.step(dt);
-            log("filling the bag with tasks sense-decide-act");
-            for(var work : works){
-                this.bagOfTasks.put(work);
+
+    @Override
+    public void run() {
+        try {
+            log("Starting Simulation");
+            Worker[] workers = new Worker[this.nWorkers];
+            for(int i = 0; i < this.nWorkers; i++) {
+                workers[i] = new Worker(this.bagOfTasks, this.workersDone, this.workReady/*, this.env, this.agentWills*/);
+                workers[i].start();
             }
-            this.workReady.countDown(); //notifing workers that bag is full of tasks
-            log("going to sleep until workers finish current tasks");
-            this.workersDone.await(); //wait for all workers to finish the tasks
-            log("finished executing step " + step + " of the simulation");
-            this.workReady.reset(); //reset the latch for the next step
+            for(int step = 1; step <= nSteps; step++) {
+                log("executing step " + step + " of the simulation");
+                this.env.step(dt);
+                log("filling the bag with tasks sense-decide-act");
+                for(var work : works){
+                        this.bagOfTasks.put(work);
+                }
+                this.workReady.countDown(); //notifing workers that bag is full of tasks
+                log("going to sleep until workers finish current tasks");
+                this.workersDone.await(); //wait for all workers to finish the tasks
+                log("finished executing step " + step + " of the simulation");
+                this.workReady.reset(); //reset the latch for the next step
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
     

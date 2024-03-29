@@ -18,6 +18,7 @@ public abstract class AbstractSimulation {
 	private long startWallTime;
 	private long endWallTime;
 	private long averageTimePerStep;
+	private Master master;
 	
 	/* simulation listeners */
 	// private List<SimulationListener> listeners;
@@ -57,9 +58,10 @@ public abstract class AbstractSimulation {
 		
 		long timePerStep = 0;
 		
-		var master = new Master(ComputeBestNumOfWorkers(), this.works, this.env, this.dt);
+		this.master = new Master(ComputeBestNumOfWorkers(), this.works, this.env, this.dt, numSteps);
 		try {
-			master.run(numSteps);
+			master.start();
+			master.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -69,12 +71,16 @@ public abstract class AbstractSimulation {
 	}
 
 	public long getSimulationDuration() {
-		//TODO: it do not work. It should await master end to retrieve correct infos
+		if (this.master.isAlive()) {
+			return 0;
+		}
 		return endWallTime - startWallTime;
 	}
 	
 	public long getAverageTimePerCycle() {
-		//TODO: it do not work. It should await master end to retrieve correct infos
+		if (this.master.isAlive()) {
+			return 0;
+		}
 		return averageTimePerStep;
 	}
 
