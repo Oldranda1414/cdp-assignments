@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import pcd.ass01.simengineseq.AbstractEnvironment;
+import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineseq.Action;
 import pcd.ass01.simengineseq.Percept;
 
