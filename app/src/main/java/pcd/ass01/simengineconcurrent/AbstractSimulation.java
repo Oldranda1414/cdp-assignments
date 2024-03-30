@@ -12,7 +12,8 @@ public abstract class AbstractSimulation {
 	/* environment of the simulation */
 	private AbstractEnvironment env;
 	private List<AbstractAgent> agents;
-	private List<Runnable> works;
+	private List<Runnable> senseDecideWorks;
+	private List<Runnable> actWorks;
 	private int t0;
 	private int dt;
 	private long startWallTime;
@@ -26,8 +27,9 @@ public abstract class AbstractSimulation {
 	protected AbstractSimulation() {
         //TODO GESTIRE I LISTENER DELLA GUI
 		//listeners = new ArrayList<SimulationListener>();
-		agents = new ArrayList<AbstractAgent>();
-		works = new ArrayList<>();
+		//agents = new ArrayList<AbstractAgent>(); I don't think this is necessary
+		senseDecideWorks = new ArrayList<Runnable>();
+		actWorks = new ArrayList<Runnable>();
 	}
 	
 	/**
@@ -50,15 +52,18 @@ public abstract class AbstractSimulation {
 		int t = t0;
 
 		env.init();
+		// I don't think this is necessary
+		/*
 		for (var agent: agents) {
 			agent.init(env);
 		}
+		*/
 
-		this.notifyReset(t, agents, env);
+		this.notifyReset(t, agents, env); //TODO This needs some rework
 		
 		long timePerStep = 0;
 		
-		this.master = new Master(ComputeBestNumOfWorkers(), this.works, this.env, this.dt, numSteps);
+		this.master = new Master(ComputeBestNumOfWorkers(), this.senseDecideWorks, this.actWorks, this.env, this.dt, numSteps);
 		try {
 			master.start();
 			master.join();
@@ -119,7 +124,13 @@ public abstract class AbstractSimulation {
 	// 	}
 	// }
 
+	/*
+	 * If it would return less than 1, it returns 1 instead
+	 */
 	private int ComputeBestNumOfWorkers() { //TODO: should this method be protected abstract?
-		return 3;
+		int cores = Runtime.getRuntime().availableProcessors();
+		int standardThreads = 2; //number of threads to be used for other processes (in this case I calculate 1 thread for Master and 1 for the gui)
+		int availableThreads = cores - standardThreads;
+		return (availableThreads > 0) ? availableThreads : 1;
 	}
 }
