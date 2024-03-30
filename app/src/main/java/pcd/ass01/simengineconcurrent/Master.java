@@ -6,7 +6,8 @@ import pcd.ass01.simengineconcurrent.latch.*;
 
 public class Master extends Thread {
 
-    private List<Runnable> works;
+    private List<Runnable> senseDecideWorks;
+    private List<Runnable> actWorks;
     private int nWorkers;
     private int nAgents;
     private BoundedBuffer<Runnable> bagOfTasks;
@@ -18,15 +19,16 @@ public class Master extends Thread {
 
     public Master(
         final int nWorkers,
-        // final int nAgents,
-        final List<Runnable> works,
+        final List<Runnable> senseDecideWorks,
+        final List<Runnable> actWorks,
         final AbstractEnvironment env,
         int dt,
         int nSteps
     ) {
         this.nWorkers = nWorkers;
-        this.nAgents = works.size();
-        this.works = works;
+        this.nAgents = senseDecideWorks.size();
+        this.senseDecideWorks = senseDecideWorks;
+        this.actWorks = actWorks;
         this.env = env;
         this.dt = dt;
         this.workersDone = new ResettableLatchImpl(nWorkers);
@@ -47,8 +49,17 @@ public class Master extends Thread {
             for(int step = 1; step <= nSteps; step++) {
                 log("executing step " + step + " of the simulation");
                 this.env.step(dt);
-                log("filling the bag with tasks sense-decide-act");
-                for(var work : works){
+
+                log("filling the bag with tasks sense-decide");
+                for(var work : senseDecideWorks){
+                        this.bagOfTasks.put(work);
+                }
+                this.workReady.countDown(); //notifing workers that bag is full of tasks
+                log("going to sleep until workers finish current tasks");
+                this.workersDone.await(); //wait for all workers to finish the tasks
+
+                log("filling the bag with tasks act");
+                for(var work : actWorks){
                         this.bagOfTasks.put(work);
                 }
                 this.workReady.countDown(); //notifing workers that bag is full of tasks

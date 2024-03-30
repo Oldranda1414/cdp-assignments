@@ -30,14 +30,16 @@ public class Worker extends Thread{
     
     public void run(){
         try {
-            while(true){
-                this.workReady.await();
+            while(true){    //TODO i think that the run method is already executed in loop by the thread class, so no need for the while(true)
+                this.workReady.await(); //The worker waits for the bag to be filled
+
+                //as long as the bag is not empty the worker keeps executing the tasks
                 while(!this.bagOfTasks.isEmpty()){
                     Runnable task;
                     task = this.bagOfTasks.get();
                     task.run();
-                    this.workersDone.countDown();
                 }
+                this.workersDone.countDown(); //when the bag is empty the worker notifies he is going to sleep
             }
         } catch (InterruptedException e) {
             // TODO understand if there is a better way to handle this exception
