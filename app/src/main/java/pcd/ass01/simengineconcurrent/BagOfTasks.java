@@ -46,10 +46,22 @@ public class BagOfTasks implements BoundedBuffer<Runnable> {
 	}
 
 	public boolean isFull() {
-		return buffer.size() == maxSize;
+		try{
+			mutex.lock();
+			return buffer.size() == maxSize;
+		}
+		finally{
+			mutex.unlock();
+		}
 	}
 
 	public boolean isEmpty() {
-		return buffer.size() == 0;
+		try{
+			mutex.lock();
+			return buffer.size() == 0;
+		}
+		finally{
+			mutex.unlock();
+		}
 	}
 }
