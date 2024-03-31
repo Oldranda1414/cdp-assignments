@@ -1,16 +1,12 @@
 package pcd.ass01.simengineconcurrent;
 
-import java.util.Collection;
-import java.util.Map;
-
 /**
 *   
 * Base class to define the environment of the simulation
 *   
 */
-public abstract class AbstractEnvironment {
+public abstract class AbstractEnvironment<I extends AbstractAgent> extends RWBuffer<I> {
 
-	protected Map<String, AbstractAgent> agents;
 	protected int numberOfAgents;
 
 	protected AbstractEnvironment() {
@@ -30,10 +26,6 @@ public abstract class AbstractEnvironment {
 	 * @param dt
 	 */
 	public abstract void step(int dt);
-
-	public Collection<AbstractAgent> getAgents(){
-		return this.agents.values();
-	}
 
 	protected void setupNumberOfAgents(int numberOfAgents){
 		this.numberOfAgents = numberOfAgents;

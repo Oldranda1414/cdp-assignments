@@ -10,10 +10,10 @@ import pcd.ass01.simengineseq.AbstractAgent;
 import pcd.ass01.simengineseq.AbstractEnvironment;
 import pcd.ass01.simengineseq.SimulationListener;
 import pcd.ass01.simtrafficbase.CarAgentInfo;
-import pcd.ass01.simtrafficbase.Road;
-import pcd.ass01.simtrafficbase.RoadsEnv;
 import pcd.ass01.simtrafficbase.TrafficLight;
 import pcd.ass01.simtrafficbase.V2d;
+import pcd.ass01.simtrafficbase.environment.Road;
+import pcd.ass01.simtrafficbase.environment.RoadsEnv;
 
 import java.awt.*;
 import javax.swing.*;

@@ -3,7 +3,7 @@ package pcd.ass01.simengineconcurrent;
 import java.util.*;
 import java.util.concurrent.locks.*;
 
-public class BagOfTasks implements BoundedBuffer<Runnable> {
+public class BagOfTasks implements Buffer<Runnable> {
 
 	private List<Runnable> buffer;
 	private int maxSize;

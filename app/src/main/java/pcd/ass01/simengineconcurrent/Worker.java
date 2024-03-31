@@ -9,13 +9,13 @@ import pcd.ass01.simengineconcurrent.latch.ResettableLatch;
  */
 public class Worker extends Thread{
     
-    private BoundedBuffer<Runnable> bagOfTasks;
+    private Buffer<Runnable> bagOfTasks;
     private ResettableLatch workersDone;
     private ResettableLatch workReady;
     // private AbstractEnvironment env;
     // private List<Wills> agentWills;
 
-    public Worker(BoundedBuffer<Runnable> bagOfTasks,
+    public Worker(Buffer<Runnable> bagOfTasks,
             ResettableLatch workersDone,
             ResettableLatch workReady//,
             // AbstractEnvironment env,

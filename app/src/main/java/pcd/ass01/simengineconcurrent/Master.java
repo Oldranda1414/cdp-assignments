@@ -11,7 +11,7 @@ public class Master extends Thread {
     private List<SimulationListener> listeners;
     private int nWorkers;
     private int nAgents;
-    private BoundedBuffer<Runnable> bagOfTasks;
+    private Buffer<Runnable> bagOfTasks;
     private ResettableLatch workersDone;
     private ResettableLatch workReady;
     private AbstractEnvironment env;
