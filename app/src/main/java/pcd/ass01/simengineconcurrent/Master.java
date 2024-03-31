@@ -2,7 +2,7 @@ package pcd.ass01.simengineconcurrent;
 
 import java.util.List;
 import pcd.ass01.simengineconcurrent.latch.*;
-import pcd.ass01.simengineseq.SimulationListener;
+import pcd.ass01.simengineseq_improved.SimulationListener;
 
 public class Master extends Thread {
 
@@ -14,7 +14,7 @@ public class Master extends Thread {
     private Buffer<Runnable> bagOfTasks;
     private ResettableLatch workersDone;
     private ResettableLatch workReady;
-    private AbstractEnvironment env;
+    private AbstractEnvironment<? extends AbstractAgent> env;
     private int dt;
     private int t0;
     private int nSteps;
@@ -23,7 +23,7 @@ public class Master extends Thread {
         final int nWorkers,
         final List<Runnable> senseDecideWorks,
         final List<Runnable> actWorks,
-        final AbstractEnvironment env,
+        final AbstractEnvironment<? extends AbstractAgent> env,
         final int t0,
         final int dt,
         final int nSteps,
@@ -92,13 +92,13 @@ public class Master extends Thread {
         }
     }
 	
-	private void notifyReset(int t0, AbstractEnvironment env) {
+	private void notifyReset(int t0, AbstractEnvironment<? extends AbstractAgent> env) {
 		for (var l: listeners) {
 			// l.notifyInit(t0, /*env.getAgents()*/, env);
 		}
 	}
 
-	private void notifyNewStep(int t, AbstractEnvironment env) {
+	private void notifyNewStep(int t, AbstractEnvironment<? extends AbstractAgent> env) {
 		for (var l: listeners) {
 			// l.notifyStepDone(t, /*env.getAgents()*/, env);
 		}

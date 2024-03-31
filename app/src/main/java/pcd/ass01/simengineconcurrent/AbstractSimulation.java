@@ -3,7 +3,7 @@ package pcd.ass01.simengineconcurrent;
 import java.util.ArrayList;
 import java.util.List;
 
-import pcd.ass01.simengineseq.SimulationListener;
+import pcd.ass01.simengineseq_improved.SimulationListener;
 
 /**
  * Base class for defining concrete simulations
@@ -11,7 +11,7 @@ import pcd.ass01.simengineseq.SimulationListener;
  */
 public abstract class AbstractSimulation {
 
-	private AbstractEnvironment env;
+	private AbstractEnvironment<? extends AbstractAgent> env;
 	private List<Runnable> senseDecideWorks;
 	private List<Runnable> actWorks;
 	private List<SimulationListener> listeners;
@@ -34,7 +34,7 @@ public abstract class AbstractSimulation {
 	 * Method used to configure the simulation, specifying env and agents
 	 * 
 	 */
-	protected abstract void setup(int numberOfSteps);
+	protected abstract void setup();
 	
 	/**
 	 * Method running the simulation for a number of steps,
@@ -85,7 +85,7 @@ public abstract class AbstractSimulation {
 		this.dt = dt;
 	}
 	
-	protected void setupEnvironment(AbstractEnvironment env) {
+	protected void setupEnvironment(AbstractEnvironment<? extends AbstractAgent> env) {
 		this.env = env;
 	}
 

@@ -5,7 +5,7 @@ import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class RWBuffer<I> implements Buffer<I> {
+public abstract class RWBuffer<I> implements MapBuffer<I> {
 
     protected final Map<String, I> map = new TreeMap<String, I>();
     private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();

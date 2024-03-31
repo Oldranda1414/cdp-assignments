@@ -5,7 +5,7 @@ package pcd.ass01.simengineconcurrent;
 * Base class to define the environment of the simulation
 *   
 */
-public abstract class AbstractEnvironment<I extends AbstractAgent> extends RWBuffer<I> {
+public abstract class AbstractEnvironment<I> extends RWBuffer<I> {
 
 	protected int numberOfAgents;
 
