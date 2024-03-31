@@ -1,6 +1,6 @@
 package pcd.ass01.simengineconcurrent;
 
-import java.util.List;
+import java.util.Map;
 
 /**
 *   
@@ -9,7 +9,7 @@ import java.util.List;
 */
 public abstract class AbstractEnvironment {
 
-	protected List<AbstractAgent> agents;
+	protected Map<String, AbstractAgent> agents;
 
 	protected AbstractEnvironment() {
 		
@@ -28,5 +28,9 @@ public abstract class AbstractEnvironment {
 	 * @param dt
 	 */
 	public abstract void step(int dt);
+
+	public void addAgent(AbstractAgent agent){
+		this.agents.put(agent.getId(), agent);
+	}
     
 }

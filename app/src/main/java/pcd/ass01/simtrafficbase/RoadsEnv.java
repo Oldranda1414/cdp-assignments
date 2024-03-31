@@ -12,8 +12,6 @@ import pcd.ass01.simengineseq.Percept;
 public class RoadsEnv extends AbstractEnvironment {
 		
 	private static final int MIN_DIST_ALLOWED = 5;
-	private static final int CAR_DETECTION_RANGE = 30;
-	private static final int SEM_DETECTION_RANGE = 30;
 	
 	/* list of roads */
 	private List<Road> roads;
@@ -26,17 +24,14 @@ public class RoadsEnv extends AbstractEnvironment {
 
 
 	public RoadsEnv() {
-		super("traffic-env");
 		registeredCars = new HashMap<>();	
-		trafficLights = new ArrayList<>();
+		trafficLights = new ArrayList<>(); //unused for now
 		roads = new ArrayList<>();
 	}
 	
 	@Override
-	public void init() {
-		for (var tl: trafficLights) {
-			tl.init();
-		}
+	public void setup() {
+		//TODO setup traffic lights
 	}
 	
 	@Override
