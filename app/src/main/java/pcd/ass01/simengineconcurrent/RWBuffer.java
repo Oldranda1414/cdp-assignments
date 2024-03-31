@@ -1,11 +1,13 @@
 package pcd.ass01.simengineconcurrent;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class RWBuffer<I> implements MapBuffer<I> {
+public class RWBuffer<I> implements MapBuffer<I> {
 
     protected final Map<String, I> map = new TreeMap<String, I>();
     private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -27,6 +29,15 @@ public abstract class RWBuffer<I> implements MapBuffer<I> {
         readLock.lock();
         try {
             return map.keySet().toArray(new String[0]);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public Set<Entry<String, I>> entrySet() {
+        readLock.lock();
+        try {
+            return map.entrySet();
         } finally {
             readLock.unlock();
         }

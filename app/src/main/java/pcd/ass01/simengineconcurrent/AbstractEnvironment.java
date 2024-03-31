@@ -5,9 +5,13 @@ package pcd.ass01.simengineconcurrent;
 * Base class to define the environment of the simulation
 *   
 */
-public abstract class AbstractEnvironment<I> extends RWBuffer<I> {
+public abstract class AbstractEnvironment<I extends AbstractAgent> {
 
 	protected int numberOfAgents;
+
+	protected RWBuffer<I> agents = new RWBuffer<>();
+
+	protected RWBuffer<AgentState> states = new RWBuffer<>();
 
 	protected AbstractEnvironment() {
 		

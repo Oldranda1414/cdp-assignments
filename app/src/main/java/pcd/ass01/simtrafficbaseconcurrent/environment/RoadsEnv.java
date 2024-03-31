@@ -11,7 +11,7 @@ import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
 public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		
 	private static final int ROAD_LENGHT = 100; 
-	//private static final int MIN_DIST_ALLOWED = 5;
+	private static final int MIN_DIST_ALLOWED = 5;
 	private static final double CAR_MAX_SPEED = 10;
 	private static final double CAR_ACCELLERATION = 2;
 	private static final double CAR_DECELLERATION = 2;
@@ -39,7 +39,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 				CAR_ACCELLERATION, 
 				CAR_DECELLERATION, 
 				CAR_MAX_SPEED);
-			this.put(car.getId(), car);
+			this.agents.put(car.getId(), car);
 		}
 	}
 	
@@ -66,10 +66,10 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
 
 	private void changeCarSpeed(String id, int decision){ //TODO decision should be an enum or something of the sorts
-		var speed = map.get(id).getCurrentSpeed();
-		var acceleration = map.get(id).getAcceleration();
+		var speed = this.agents.get(id).getCurrentSpeed();
+		var acceleration = this.agents.get(id).getAcceleration();
 		var newSpeed = speed + (acceleration * Math.signum(decision));
-		map.get(id).setCurrentSpeed(newSpeed);
+		this.agents.get(id).setCurrentSpeed(newSpeed);
 	}
 
 	/**
@@ -78,16 +78,19 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	 * @param position
 	 */
 	private void moveCar(String id){
-		var currentSpeed = map.get(id).getCurrentSpeed();
-		var currentPosition = map.get(id).getCurrentPosition();
+		var currentSpeed = this.agents.get(id).getCurrentSpeed();
+		var currentPosition = this.agents.get(id).getCurrentPosition();
 		var position = currentPosition + currentSpeed;
 		if(canMove(id, position)){
-			map.get(id).setCurrentPosition(position);
+			this.agents.get(id).setCurrentPosition(position);
 		}
 	}
 
 	public boolean canMove(String id, double position){
-		return true;
+		return !this.agents.entrySet().stream()
+			.filter(couple -> id != couple.getKey())
+			.map(couple -> couple.getValue())
+			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < ROAD_LENGHT;
 	}
 
 

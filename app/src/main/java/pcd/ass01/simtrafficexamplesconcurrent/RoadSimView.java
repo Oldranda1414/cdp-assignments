@@ -1,7 +1,7 @@
 package pcd.ass01.simtrafficexamplesconcurrent;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+// import java.awt.Graphics;
+// import java.awt.Graphics2D;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -9,10 +9,10 @@ import javax.swing.JPanel;
 import pcd.ass01.simengineseq_improved.AbstractAgent;
 import pcd.ass01.simengineseq_improved.AbstractEnvironment;
 import pcd.ass01.simengineseq_improved.SimulationListener;
-import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
-import pcd.ass01.simtrafficbaseconcurrent.V2d;
-import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
-import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
+// import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
+// import pcd.ass01.simtrafficbaseconcurrent.V2d;
+// import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
+// import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 
 import java.awt.*;
 import javax.swing.*;
@@ -20,7 +20,7 @@ import javax.swing.*;
 public class RoadSimView extends JFrame implements SimulationListener {
 
 	private RoadSimViewPanel panel;
-	private static final int CAR_DRAW_SIZE = 10;
+	// private static final int CAR_DRAW_SIZE = 10;
 	
 	public RoadSimView() {
 		super("RoadSim View");
