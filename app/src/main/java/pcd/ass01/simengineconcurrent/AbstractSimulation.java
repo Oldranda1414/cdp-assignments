@@ -3,31 +3,27 @@ package pcd.ass01.simengineconcurrent;
 import java.util.ArrayList;
 import java.util.List;
 
+import pcd.ass01.simengineseq.SimulationListener;
+
 /**
  * Base class for defining concrete simulations
  *  
  */
 public abstract class AbstractSimulation {
 
-	/* environment of the simulation */
 	private AbstractEnvironment env;
-	private List<AbstractAgent> agents;
 	private List<Runnable> senseDecideWorks;
 	private List<Runnable> actWorks;
+	private List<SimulationListener> listeners;
 	private int t0;
 	private int dt;
 	private long startWallTime;
 	private long endWallTime;
 	private long averageTimePerStep;
 	private Master master;
-	
-	/* simulation listeners */
-	// private List<SimulationListener> listeners;
 
 	protected AbstractSimulation() {
-        //TODO GESTIRE I LISTENER DELLA GUI
-		//listeners = new ArrayList<SimulationListener>();
-		//agents = new ArrayList<AbstractAgent>(); I don't think this is necessary
+		listeners = new ArrayList<SimulationListener>();
 		senseDecideWorks = new ArrayList<Runnable>();
 		actWorks = new ArrayList<Runnable>();
 	}
@@ -48,22 +44,11 @@ public abstract class AbstractSimulation {
 	public void run(int numSteps) {
 		startWallTime = System.currentTimeMillis();
 
-		/* initialize the env and the agents inside */
-		int t = t0;
-
-		env.init();
-		// I don't think this is necessary
-		/*
-		for (var agent: agents) {
-			agent.init(env);
-		}
-		*/
-
-		this.notifyReset(t, agents, env); //TODO This needs some rework
+		env.setup();
 		
 		long timePerStep = 0;
-		
-		this.master = new Master(ComputeBestNumOfWorkers(), this.senseDecideWorks, this.actWorks, this.env, this.dt, numSteps);
+
+		this.master = new Master(ComputeBestNumOfWorkers(), this.senseDecideWorks, this.actWorks, this.env, this.t0, this.dt, numSteps, this.listeners);
 		try {
 			master.start();
 			master.join();
@@ -89,6 +74,10 @@ public abstract class AbstractSimulation {
 		return averageTimePerStep;
 	}
 
+	public void addSimulationListener(SimulationListener l) {
+		this.listeners.add(l);
+	}
+
 	protected void setupTimings(int t0, int dt) {
 		this.t0 = t0;
 		this.dt = dt;
@@ -98,36 +87,18 @@ public abstract class AbstractSimulation {
 		this.env = env;
 	}
 
-	protected void addAgent(AbstractAgent agent) {
-		this.agents.add(agent);
+	protected void addAct(Runnable act) {
+		this.actWorks.add(act);
 	}
 
-	protected void addRunnable(Runnable runnable) {
-		this.works.add(runnable);
+	protected void addSenseDecide(Runnable senseDecide) {
+		this.senseDecideWorks.add(senseDecide);
 	}
-	
-	/* methods for listeners */
-	
-	// public void addSimulationListener(SimulationListener l) {
-	// 	this.listeners.add(l);
-	// }
-	
-	private void notifyReset(int t0, List<AbstractAgent> agents, AbstractEnvironment env) {
-		// for (var l: listeners) {
-		// 	l.notifyInit(t0, agents, env);
-		// }
-	}
-
-	// private void notifyNewStep(int t, List<AbstractAgent> agents, AbstractEnvironment env) {
-	// 	for (var l: listeners) {
-	// 		l.notifyStepDone(t, agents, env);
-	// 	}
-	// }
 
 	/*
 	 * If it would return less than 1, it returns 1 instead
 	 */
-	private int ComputeBestNumOfWorkers() { //TODO: should this method be protected abstract?
+	private int ComputeBestNumOfWorkers() {
 		int cores = Runtime.getRuntime().availableProcessors();
 		int standardThreads = 2; //number of threads to be used for other processes (in this case I calculate 1 thread for Master and 1 for the gui)
 		int availableThreads = cores - standardThreads;
