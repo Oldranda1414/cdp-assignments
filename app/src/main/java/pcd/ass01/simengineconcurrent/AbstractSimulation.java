@@ -17,6 +17,7 @@ public abstract class AbstractSimulation {
 	private List<SimulationListener> listeners;
 	private int t0;
 	private int dt;
+	private int numberOfAgents;
 	private long startWallTime;
 	private long endWallTime;
 	private long averageTimePerStep;
@@ -43,6 +44,7 @@ public abstract class AbstractSimulation {
 	 */
 	public void run(int numSteps) {
 		startWallTime = System.currentTimeMillis();
+		env.setupNumberOfAgents(this.numberOfAgents);
 
 		env.setup();
 		
@@ -93,6 +95,10 @@ public abstract class AbstractSimulation {
 
 	protected void addSenseDecide(Runnable senseDecide) {
 		this.senseDecideWorks.add(senseDecide);
+	}
+
+	protected void setupNumberOfAgents(int numberOfAgents){
+		this.numberOfAgents = numberOfAgents;
 	}
 
 	/*
