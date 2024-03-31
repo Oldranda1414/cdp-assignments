@@ -60,6 +60,37 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		return tl;
 	}
 
+	public void updateAgent(String id, int decision){
+		changeCarSpeed(id, decision);
+		moveCar(id);
+	}
+
+	private void changeCarSpeed(String id, int decision){ //TODO decision should be an enum or something of the sorts
+		var speed = map.get(id).getCurrentSpeed();
+		var acceleration = map.get(id).getAcceleration();
+		var newSpeed = speed + (acceleration * Math.signum(decision));
+		map.get(id).setCurrentSpeed(newSpeed);
+	}
+
+	/**
+	 * moves a car(agent) to position if possible
+	 * @param id
+	 * @param position
+	 */
+	private void moveCar(String id){
+		var currentSpeed = map.get(id).getCurrentSpeed();
+		var currentPosition = map.get(id).getCurrentPosition();
+		var position = currentPosition + currentSpeed;
+		if(canMove(id, position)){
+			map.get(id).setCurrentPosition(position);
+		}
+	}
+
+	public boolean canMove(String id, double position){
+		return true;
+	}
+
+
 	/* 
 	public List<CarAgent> getAgentInfo(){
 		return this.registeredCars.entrySet().stream().map(el -> el.getValue()).toList();
