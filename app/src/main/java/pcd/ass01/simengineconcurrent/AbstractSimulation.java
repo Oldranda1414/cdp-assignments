@@ -102,8 +102,12 @@ public abstract class AbstractSimulation {
 		this.agents.add(agent);
 	}
 
-	protected void addRunnable(Runnable runnable) {
-		this.works.add(runnable);
+	protected void addAct(Runnable act) {
+		this.actWorks.add(act);
+	}
+
+	protected void addSenseDecide(Runnable senseDecide) {
+		this.senseDecideWorks.add(senseDecide);
 	}
 	
 	/* methods for listeners */
