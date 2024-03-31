@@ -1,7 +1,5 @@
 package pcd.ass01.simtrafficbaseconcurrent.agent;
 
-import java.util.Optional;
-
 import pcd.ass01.simengineconcurrent.*;
 import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
 

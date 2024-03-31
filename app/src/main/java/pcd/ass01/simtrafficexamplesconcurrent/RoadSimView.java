@@ -53,20 +53,20 @@ public class RoadSimView extends JFrame implements SimulationListener {
 
 	@Override
 	public void notifyStepDone(int t, List<AbstractAgent> agents, AbstractEnvironment env) {
-		var e = ((RoadsEnv) env);
-		panel.update(e.getRoads(), e.getAgentInfo(), e.getTrafficLights());
+		// TODO Auto-generated method stub
 	}
 	
 	
 	class RoadSimViewPanel extends JPanel {
+		/* 
 		
 		List<CarAgentInfo> cars;
 		List<Road> roads;
 		List<TrafficLight> sems;
-		
+		*/	
 		public RoadSimViewPanel(int w, int h){
 		}
-
+		/* 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);   
 	        Graphics2D g2 = (Graphics2D)g;
@@ -104,7 +104,6 @@ public class RoadSimView extends JFrame implements SimulationListener {
 				}
 			}
   	   }
-	
 	   public void update(List<Road> roads, 
 			   			  List<CarAgentInfo> cars,
 			   			List<TrafficLight> sems) {
@@ -113,5 +112,6 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		   this.sems = sems;
 		   repaint();
 	   }
+	*/
 	}
 }

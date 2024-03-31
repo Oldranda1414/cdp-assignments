@@ -5,8 +5,8 @@ import java.util.List;
 import pcd.ass01.simengineseq_improved.AbstractAgent;
 import pcd.ass01.simengineseq_improved.AbstractEnvironment;
 import pcd.ass01.simengineseq_improved.SimulationListener;
-import pcd.ass01.simtrafficbaseconcurrent.*;
-import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
+//import pcd.ass01.simtrafficbaseconcurrent.*;
+//import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
 
 /**
  * Simple class keeping track of some statistics about a traffic simulation
@@ -33,25 +33,7 @@ public class RoadSimStatistics implements SimulationListener {
 
 	@Override
 	public void notifyStepDone(int t, List<AbstractAgent> agents, AbstractEnvironment env) {
-		double avSpeed = 0;
-		
-		maxSpeed = -1;
-		minSpeed = Double.MAX_VALUE;
-		for (var agent: agents) {
-			CarAgent car = (CarAgent) agent;
-			double currSpeed = car.getCurrentSpeed();
-			avSpeed += currSpeed;			
-			if (currSpeed > maxSpeed) {
-				maxSpeed = currSpeed;
-			} else if (currSpeed < minSpeed) {
-				minSpeed = currSpeed;
-			}
-		}
-		
-		if (agents.size() > 0) {
-			avSpeed /= agents.size();
-		}
-		log("average speed: " + avSpeed);
+		// TODO Auto-generated method stub
 	}
 	
 	public double getAverageSpeed() {
@@ -67,6 +49,7 @@ public class RoadSimStatistics implements SimulationListener {
 	}
 	
 	
+	@SuppressWarnings("unused")
 	private void log(String msg) {
 		System.out.println("[STAT] " + msg);
 	}
