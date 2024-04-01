@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import pcd.ass01.simengineseq_improved.*;
 
-public class RoadsEnv extends AbstractEnvironment<CarAgent> {
+public class RoadsEnv extends AbstractEnvironment {
 		
 	private static final int MIN_DIST_ALLOWED = 5;
 	private static final int CAR_DETECTION_RANGE = 30;
