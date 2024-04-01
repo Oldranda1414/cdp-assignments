@@ -55,7 +55,7 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 	
 	public Runnable getAct(String id){
 		return () -> {
-			//TODO put the sense decide here
+			this.getAgentStates().get(id).act(id, this.getEnvironment());
 		};
 	}
 }

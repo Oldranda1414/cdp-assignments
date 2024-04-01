@@ -90,8 +90,16 @@ public abstract class AbstractSimulation {
 		this.env = env;
 	}
 
+	protected AbstractEnvironment<? extends AbstractAgent> getEnvironment(){
+		return this.env;
+	}
+
 	protected void setupAgentStates(AbstractStates<? extends AbstractAgent> states){
 		this.agentStates = states;
+	}
+
+	protected AbstractStates<? extends AbstractAgent> getAgentStates(){
+		return this.agentStates;
 	}
 
 	protected void addAct(Runnable act) {
