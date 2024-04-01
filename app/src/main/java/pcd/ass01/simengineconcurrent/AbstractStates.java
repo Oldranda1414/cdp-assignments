@@ -1,4 +1,4 @@
 package pcd.ass01.simengineconcurrent;
 
-public class AbstractStates<I extends AbstractAgent> extends RWBuffer<AgentStates<AbstractEnvironment<I>>>{
+public class AbstractStates<I extends AbstractAgent> extends RWBuffer<AgentState<AbstractEnvironment<I>>>{
 }

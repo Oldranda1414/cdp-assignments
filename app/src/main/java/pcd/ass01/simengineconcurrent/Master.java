@@ -52,7 +52,7 @@ public class Master extends Thread {
             log("Starting Simulation");
             Worker[] workers = new Worker[this.nWorkers];
             for(int i = 0; i < this.nWorkers; i++) {
-                workers[i] = new Worker(this.bagOfTasks, this.workersDone, this.workReady/*, this.env, this.agentWills*/);
+                workers[i] = new Worker(this.bagOfTasks, this.workersDone, this.workReady, this.env);
                 workers[i].start();
             }
             for(int step = 1; step <= nSteps; step++) {
