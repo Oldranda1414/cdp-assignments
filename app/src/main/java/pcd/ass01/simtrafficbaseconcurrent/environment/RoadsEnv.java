@@ -39,7 +39,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 				CAR_ACCELLERATION, 
 				CAR_DECELLERATION, 
 				CAR_MAX_SPEED);
-			this.agents.put(car.getId(), car);
+			this.map.put(car.getId(), car);
 		}
 	}
 	
@@ -66,10 +66,10 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
 
 	private void changeCarSpeed(String id, int decision){ //TODO decision should be an enum or something of the sorts
-		var speed = this.agents.get(id).getCurrentSpeed();
-		var acceleration = this.agents.get(id).getAcceleration();
+		var speed = this.map.get(id).getCurrentSpeed();
+		var acceleration = this.map.get(id).getAcceleration();
 		var newSpeed = speed + (acceleration * Math.signum(decision));
-		this.agents.get(id).setCurrentSpeed(newSpeed);
+		this.map.get(id).setCurrentSpeed(newSpeed);
 	}
 
 	/**
@@ -78,16 +78,16 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	 * @param position
 	 */
 	private void moveCar(String id){
-		var currentSpeed = this.agents.get(id).getCurrentSpeed();
-		var currentPosition = this.agents.get(id).getCurrentPosition();
+		var currentSpeed = this.map.get(id).getCurrentSpeed();
+		var currentPosition = this.map.get(id).getCurrentPosition();
 		var position = currentPosition + currentSpeed;
 		if(canMove(id, position)){
-			this.agents.get(id).setCurrentPosition(position);
+			this.map.get(id).setCurrentPosition(position);
 		}
 	}
 
 	public boolean canMove(String id, double position){
-		return !this.agents.entrySet().stream()
+		return !this.map.entrySet().stream()
 			.filter(couple -> id != couple.getKey())
 			.map(couple -> couple.getValue())
 			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < ROAD_LENGHT;
