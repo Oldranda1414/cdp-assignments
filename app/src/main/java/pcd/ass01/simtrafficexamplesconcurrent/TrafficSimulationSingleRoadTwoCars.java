@@ -15,7 +15,7 @@ import pcd.ass01.simtrafficbaseconcurrent.states.state.DecelerateState;
  * Traffic Simulation about 2 cars moving on a single road, no traffic lights
  * 
  */
-public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
+public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation<RoadsEnv> {
 
 	private final double seeingDistance = 30;
 	private final double brakingDistance = 20;
@@ -35,7 +35,7 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 		
 		AbstractEnvironment<CarAgent> env = new RoadsEnv();
 		this.setupEnvironment(env);
-		AbstractStates states = new CarStates();	
+		AbstractStates<RoadsEnv> states = new CarStates();	
 		this.setupAgentStates(states);
 		for(int i = 1; i <= numberOfAgents; i++){
 			var id = Integer.toString(i);
@@ -69,7 +69,7 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 	
 	public Runnable getAct(String id){
 		return () -> {
-			this.getAgentStates().get(id).act(id, this.getEnvironment());	//TODO the double id necessary seems redundant, maybe there is some way to remove id from act() parameters
+			this.getAgentStates().get(id).act(id, (RoadsEnv)this.getEnvironment());	//TODO the double id necessary seems redundant, maybe there is some way to remove id from act() parameters
 		};
 	}
 
