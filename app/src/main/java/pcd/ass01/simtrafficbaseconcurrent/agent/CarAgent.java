@@ -16,6 +16,7 @@ public class CarAgent extends AbstractAgent {
 	protected double acceleration;
 	protected double deceleration;
 	protected double currentPosition;
+	protected Road road;
 
 	
 	public CarAgent(String id, Road road, 
@@ -24,6 +25,7 @@ public class CarAgent extends AbstractAgent {
 			double dec,
 			double vmax) {
 		super(id);
+		this.road = road;
 		this.acceleration = acc;
 		this.deceleration = dec;
 		this.maxSpeed = vmax;
@@ -62,6 +64,10 @@ public class CarAgent extends AbstractAgent {
 		this.currentPosition = currentPosition;
 	}
 	
+	public Road getRoad() {
+		return this.road;
+	}
+
 	protected void log(String msg) {
 		System.out.println("[CAR " + this.getId() + "] " + msg);
 	}

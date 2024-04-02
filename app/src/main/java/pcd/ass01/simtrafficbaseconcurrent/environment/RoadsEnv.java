@@ -3,6 +3,8 @@ package pcd.ass01.simtrafficbaseconcurrent.environment;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
+
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simtrafficbaseconcurrent.P2d;
 import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
@@ -93,6 +95,33 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < ROAD_LENGHT;
 	}
 
+	public Optional<Double> nearestCarInFront(String id){
+		var currentCar = this.map.get(id);
+		var currentPosition = currentCar.getCurrentPosition();
+		var currentRoad = currentCar.getRoad();
+		double minDist = Double.POSITIVE_INFINITY;
+		for(var car : this.map.values()){
+			//check if this car is not the current car
+			if(car != currentCar){
+				var carRoad = car.getRoad();
+
+				//check if this car and the current car are on the same road
+				if(carRoad == currentRoad){
+					var carPosition = car.getCurrentPosition();
+
+					//adjust because of pacman effect
+					if(carPosition < currentPosition) carPosition =+ currentRoad.getLen();
+	
+					var currentDistance = carPosition - currentPosition;
+	
+					//if the distance from this car to the current car is the min found until now, update the min
+					if(currentDistance < minDist) minDist = currentDistance;
+				}
+			}
+		}
+
+		return (minDist == Double.POSITIVE_INFINITY)? Optional.empty(): Optional.of(minDist);
+	}
 
 	/* 
 	public List<CarAgent> getAgentInfo(){

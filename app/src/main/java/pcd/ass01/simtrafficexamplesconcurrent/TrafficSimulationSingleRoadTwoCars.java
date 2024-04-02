@@ -59,4 +59,10 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 			this.getAgentStates().get(id).act(id, this.getEnvironment());	//TODO the double id necessary seems redundant, maybe there is some way to remove id from act() parameters
 		};
 	}
+
+	public boolean isCloseToCar(String id){
+		var env = ((RoadsEnv)this.getEnvironment());
+		env.nearestCarInFront(id);
+		return true;
+	}
 }
