@@ -1,3 +1,5 @@
+package pcd.ass01.simengineconcurrent;
+
 public class BagOfTasksTest {
     @Test
     public void testInstantiation() {

@@ -1,5 +1,6 @@
 package pcd.ass01.simengineconcurrent;
 
+import java.util.ArrayList;
 import java.util.List;
 import pcd.ass01.simengineconcurrent.latch.*;
 import pcd.ass01.simengineseq_improved.SimulationListener;
@@ -50,11 +51,14 @@ public class Master extends Thread {
         try {
             //this.notifyReset(t, env);
             log("Starting Simulation");
-            Worker[] workers = new Worker[this.nWorkers];
-            for(int i = 0; i < this.nWorkers; i++) {
-                workers[i] = new Worker(this.bagOfTasks, this.workersDone, this.workReady, this.env);
-                workers[i].start();
+            
+            var workers = new ArrayList<Worker>();
+            for (int i = 0; i < this.nWorkers; i++) {
+                var w = new Worker(this.bagOfTasks, this.workersDone, this.workReady);
+                workers.add(w);
+                w.start();
             }
+            
             for(int step = 1; step <= nSteps; step++) {
                 log("executing step " + step + " of the simulation");
                 this.env.step(dt);
@@ -66,6 +70,7 @@ public class Master extends Thread {
                 this.workReady.countDown(); //notifing workers that bag is full of tasks
                 log("going to sleep until workers finish current tasks");
                 this.workersDone.await(); //wait for all workers to finish the tasks
+                this.workReady.reset();
 
                 log("filling the bag with tasks act");
                 for(var work : actWorks){
@@ -76,6 +81,7 @@ public class Master extends Thread {
                 this.workersDone.await(); //wait for all workers to finish the tasks
                 log("finished executing step " + step + " of the simulation");
                 this.workReady.reset(); //reset the latch for the next step
+                this.workersDone.reset();
 
                 //t += dt;
 
