@@ -7,6 +7,9 @@ import pcd.ass01.simengineconcurrent.AbstractStates;
 import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.simtrafficbaseconcurrent.states.CarStates;
+import pcd.ass01.simtrafficbaseconcurrent.states.state.AccelerateState;
+import pcd.ass01.simtrafficbaseconcurrent.states.state.ConstantSpeedState;
+import pcd.ass01.simtrafficbaseconcurrent.states.state.DecelerateState;
 
 /**
  * 
@@ -14,6 +17,9 @@ import pcd.ass01.simtrafficbaseconcurrent.states.CarStates;
  * 
  */
 public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
+
+	private final double seeingDistance = 30;
+	private final double brakingDistance = 20;
 
 	public TrafficSimulationSingleRoadTwoCars() {
 		super();
@@ -50,7 +56,15 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 
 	public Runnable getSenseDecide(String id){
 		return () -> {
-			//TODO put the sense decide here
+			if(isSeeingACar(id)){
+				this.getAgentStates().put(id, new ConstantSpeedState());
+			}
+			else if(isTooCloseToCar(id)){
+				this.getAgentStates().put(id, new DecelerateState());
+			}
+			else{
+				this.getAgentStates().put(id, new AccelerateState());
+			}
 		};
 	}
 	
@@ -60,9 +74,22 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 		};
 	}
 
-	public boolean isCloseToCar(String id){
+	public boolean isTooCloseToCar(String id){
+		return this.isCloserThanFromCar(id, this.brakingDistance);
+	}
+
+	public boolean isSeeingACar(String id){
+		return this.isCloserThanFromCar(id, this.seeingDistance);
+	}
+
+	public boolean isCloserThanFromCar(String id, double distance){
 		var env = ((RoadsEnv)this.getEnvironment());
-		env.nearestCarInFront(id);
-		return true;
+		var distanceToClosestCar = env.nearestCarInFrontDistance(id);
+		if(distanceToClosestCar.isPresent()){
+			if(distanceToClosestCar.get() < distance){
+				return true;
+			}
+		}
+		return false;
 	}
 }

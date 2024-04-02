@@ -95,7 +95,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < ROAD_LENGHT;
 	}
 
-	public Optional<Double> nearestCarInFront(String id){
+	public Optional<Double> nearestCarInFrontDistance(String id){
 		var currentCar = this.map.get(id);
 		var currentPosition = currentCar.getCurrentPosition();
 		var currentRoad = currentCar.getRoad();
