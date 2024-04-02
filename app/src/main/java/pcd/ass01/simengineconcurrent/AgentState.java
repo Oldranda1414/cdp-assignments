@@ -5,5 +5,5 @@ package pcd.ass01.simengineconcurrent;
 */
 public interface AgentState<I extends AbstractAgent> {
     
-    public void act(String id, AbstractEnvironment<I> env);
+    public void act(String id, AbstractEnvironment<? extends AbstractAgent> abstractEnvironment);
 }

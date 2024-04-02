@@ -1,5 +1,6 @@
 package pcd.ass01.simtrafficexamplesconcurrent;
 
+import pcd.ass01.simengineconcurrent.AbstractAgent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineconcurrent.AbstractSimulation;
 import pcd.ass01.simengineconcurrent.AbstractStates;
@@ -55,7 +56,7 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 	
 	public Runnable getAct(String id){
 		return () -> {
-			this.getAgentStates().get(id).act(id, this.getEnvironment());
+			this.getAgentStates().get(id).act(id, this.getEnvironment());	//TODO the double id necessary seems redundant, maybe there is some way to remove id from act() parameters
 		};
 	}
 }
