@@ -1,6 +1,5 @@
 package pcd.ass01.simtrafficexamplesconcurrent;
 
-import pcd.ass01.simengineconcurrent.AbstractAgent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineconcurrent.AbstractSimulation;
 import pcd.ass01.simengineconcurrent.AbstractStates;
@@ -36,7 +35,7 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 		
 		AbstractEnvironment<CarAgent> env = new RoadsEnv();
 		this.setupEnvironment(env);
-		AbstractStates<CarAgent> states = new CarStates();	
+		AbstractStates states = new CarStates();	
 		this.setupAgentStates(states);
 		for(int i = 1; i <= numberOfAgents; i++){
 			var id = Integer.toString(i);

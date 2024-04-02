@@ -12,7 +12,7 @@ import pcd.ass01.simengineseq_improved.SimulationListener;
 public abstract class AbstractSimulation {
 
 	private AbstractEnvironment<? extends AbstractAgent> env;
-	private AbstractStates<? extends AbstractAgent> agentStates;
+	private AbstractStates agentStates;
 	private List<Runnable> senseDecideWorks;
 	private List<Runnable> actWorks;
 	private List<SimulationListener> listeners;
@@ -94,11 +94,11 @@ public abstract class AbstractSimulation {
 		return this.env;
 	}
 
-	protected void setupAgentStates(AbstractStates<? extends AbstractAgent> states){
+	protected void setupAgentStates(AbstractStates states){
 		this.agentStates = states;
 	}
 
-	protected AbstractStates<? extends AbstractAgent> getAgentStates(){
+	protected AbstractStates getAgentStates(){
 		return this.agentStates;
 	}
 
