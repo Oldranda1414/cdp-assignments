@@ -64,7 +64,7 @@ public class Master extends Thread {
 
                 log("filling the bag with tasks sense-decide");
                 for(var work : senseDecideWorks){
-                        this.bagOfTasks.put(work);
+                    this.bagOfTasks.put(work);
                 }
                 this.workReady.countDown(); //notifing workers that bag is full of tasks
                 log("going to sleep until workers finish current tasks");
@@ -72,7 +72,7 @@ public class Master extends Thread {
                 this.workersReady.await(); //wait for all workers to finish the tasks
                 log("filling the bag with tasks act");
                 for(var work : actWorks){
-                        this.bagOfTasks.put(work);
+                    this.bagOfTasks.put(work);
                 }
                 this.workReady.countDown(); //notifing workers that bag is full of tasks
                 log("going to sleep until workers finish current tasks");
