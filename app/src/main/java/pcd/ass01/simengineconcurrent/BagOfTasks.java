@@ -3,6 +3,8 @@ package pcd.ass01.simengineconcurrent;
 import java.util.*;
 import java.util.concurrent.locks.*;
 
+import pcd.ass01.utils.Buffer;
+
 public class BagOfTasks implements Buffer<Runnable> {
 
 	private List<Runnable> buffer;

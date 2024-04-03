@@ -1,5 +1,7 @@
 package pcd.ass01.simengineconcurrent;
 
+import pcd.ass01.utils.RWBuffer;
+
 /**
 *   
 * Base class to define the environment of the simulation

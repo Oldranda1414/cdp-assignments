@@ -1,4 +1,4 @@
-package pcd.ass01.simengineconcurrent;
+package pcd.ass01.utils;
 
 public interface Buffer<I> {
 

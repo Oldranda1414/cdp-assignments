@@ -17,7 +17,6 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	private static final double CAR_MAX_SPEED = 10;
 	private static final double CAR_ACCELLERATION = 2;
 	private static final double CAR_DECELLERATION = 2;
-	private static final double NUMBER_OF_CARS = 2;
 	
 	/* list of roads */
 	private List<Road> roads;
@@ -37,7 +36,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		var road = this.createRoad(ROAD_LENGHT);
 		//TODO setup traffic lights
 		for(int i = 1; i <= this.numberOfAgents; i++){
-			double position = i * (ROAD_LENGHT/NUMBER_OF_CARS);
+			double position = i * (ROAD_LENGHT/this.numberOfAgents);
 			var car = new CarAgent(Integer.toString(i), road, position, 
 				CAR_ACCELLERATION, 
 				CAR_DECELLERATION, 
@@ -72,7 +71,12 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		var speed = this.map.get(id).getCurrentSpeed();
 		var acceleration = this.map.get(id).getAcceleration();
 		var newSpeed = speed + (acceleration * Math.signum(decision));
-		this.map.get(id).setCurrentSpeed(newSpeed);
+		if(newSpeed > CAR_MAX_SPEED){
+			this.map.get(id).setCurrentSpeed(CAR_MAX_SPEED);
+		}
+		else{
+			this.map.get(id).setCurrentSpeed(newSpeed);
+		}
 	}
 
 	/**
@@ -96,6 +100,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < ROAD_LENGHT;
 	}
 
+	//TODO maybe this should be redone with steams as with canMove()
 	public Optional<Double> nearestCarInFrontDistance(String id){
 		var currentCar = this.map.get(id);
 		var currentPosition = currentCar.getCurrentPosition();

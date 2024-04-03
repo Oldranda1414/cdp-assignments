@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pcd.ass01.simengineconcurrent.latch.*;
 import pcd.ass01.simengineseq_improved.SimulationListener;
+import pcd.ass01.utils.Buffer;
 
 public class Master extends Thread {
 

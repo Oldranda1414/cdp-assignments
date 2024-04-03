@@ -1,6 +1,7 @@
 package pcd.ass01.simengineconcurrent;
 
 import pcd.ass01.simengineconcurrent.latch.ResettableLatch;
+import pcd.ass01.utils.Buffer;
 
 public class Worker extends Thread {
     private Buffer<Runnable> bagOfTasks;
