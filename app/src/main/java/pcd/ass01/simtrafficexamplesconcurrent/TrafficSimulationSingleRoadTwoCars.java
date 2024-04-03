@@ -69,7 +69,8 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation<Roads
 	
 	public Runnable getAct(String id){
 		return () -> {
-			this.getAgentStates().get(id).act(id, (RoadsEnv)this.getEnvironment());	//TODO the double id necessary seems redundant, maybe there is some way to remove id from act() parameters
+			//TODO the double id necessary seems redundant, maybe there is some way to remove id from act() parameters
+			this.getAgentStates().get(id).act(id, (RoadsEnv)this.getEnvironment());	
 		};
 	}
 
