@@ -22,9 +22,7 @@ public class Worker extends Thread {
     public void run() {
         try {
             while (true) {
-                log("awaiting on workReady");
-                this.workReady.await();
-                log("working...");
+                log("woke up");
                 while(!this.bagOfTasks.isEmpty()){
                     log("fetching and running one work");
                     var task = this.bagOfTasks.get();
@@ -32,6 +30,8 @@ public class Worker extends Thread {
                 }
                 log("bag of tasks is empty, stopping work");
                 this.workersDone.countDown();
+                log("awaiting on workReady");
+                this.workReady.await();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

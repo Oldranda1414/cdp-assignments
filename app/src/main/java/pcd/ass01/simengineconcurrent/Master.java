@@ -59,7 +59,8 @@ public class Master extends Thread {
             log("Starting Simulation");
             
             this.initWorkers();
-            
+            this.workersDone.await();   //wait for all workers to be ready
+
             for(int step = 1; step <= nSteps; step++) {
                 log("executing step " + step + " of the simulation");
                 this.env.step(dt);
