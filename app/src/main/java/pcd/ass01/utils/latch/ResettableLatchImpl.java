@@ -1,4 +1,4 @@
-package pcd.ass01.simengineconcurrent.latch;
+package pcd.ass01.utils.latch;
 
 import java.util.concurrent.CountDownLatch;
 
