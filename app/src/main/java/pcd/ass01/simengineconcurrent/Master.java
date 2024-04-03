@@ -19,7 +19,6 @@ public class Master extends Thread {
     private ResettableLatch workersDone;
     private ResettableLatch workReady;
     private AbstractEnvironment<? extends AbstractAgent> env;
-    private AbstractStates<AbstractEnvironment<? extends AbstractAgent>> states;
     private int dt;
     //private int t0;
     private int nSteps;
@@ -29,7 +28,6 @@ public class Master extends Thread {
         final List<Runnable> senseDecideWorks,
         final List<Runnable> actWorks,
         final AbstractEnvironment<? extends AbstractAgent> env,
-        final AbstractStates<AbstractEnvironment<? extends AbstractAgent>> states,
         final int t0,
         final int dt,
         final int nSteps,
@@ -40,7 +38,6 @@ public class Master extends Thread {
         this.senseDecideWorks = senseDecideWorks;
         this.actWorks = actWorks;
         this.env = env;
-        this.states = states;
         this.dt = dt;
         //this.t0 = t0;
         this.workersDone = new ResettableLatchImpl(nWorkers);
@@ -64,7 +61,6 @@ public class Master extends Thread {
             for(int step = 1; step <= nSteps; step++) {
                 log("executing step " + step + " of the simulation");
                 this.env.step(dt);
-                this.states.clear();
 
                 log("filling the bag with tasks sense-decide");
                 for(var work : senseDecideWorks){
