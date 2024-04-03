@@ -125,6 +125,30 @@ The master is implemented as a single thread. The Gui will have a dedicated thre
  managing its events. Depending on the machine architecture, the remaining number
  of instantiable threads are created and used as workers.
 
+\chapter{Deadlock Problems Encountered}
+During implementation some deadlock problems arised.
+
+\section{Worker Initialization}
+A certain state of the system caused some workers to be left behind.
+ After being initialized a worker could start waiting on the workReady latch after
+ the master started a step. This caused a deadlock as the worker waited indefenetly
+ for the master to signal that the bag was full and the master waited indefenelty for
+ all the workers to signal they where ready to recieve other work.
+
+This was solved by having the master wait on the workersReady latch after initializing
+ the workers. This way when the first step of the simulation started all workers where
+ ready to start, making sure no worker was left behind.
+
+\section{Check and Act}
+A certain state of the system caused two workers to access the bag of tasks even though
+ only one work remained in it. This meant that one of the workers would complete the task
+ while the other one would await on the notEmpty condition of the bag of tasks. Since the
+ master waits for all the workers to notify that they are ready for the next tasks, it would
+ never fill the bag with new tasks, waiting indefenetly for the awaiting worker to notify
+ it was ready to continue. This is a classic check and act problem.
+ 
+This was solved ...
+
 \bibliographystyle{plain}
 \bibliography{References}
 
