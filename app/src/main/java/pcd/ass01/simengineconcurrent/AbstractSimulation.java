@@ -45,13 +45,16 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	 */
 	public void run(int numSteps) {
 		startWallTime = System.currentTimeMillis();
+		//TODO check if this is correct.
+		//I did this in the setup of the concrete implementation
+		/* 
 		env.setupNumberOfAgents(this.numberOfAgents);
 
 		env.setup();
-		
+		*/
 		long timePerStep = 0;
 
-		this.master = new Master(ComputeBestNumOfWorkers(), this.senseDecideWorks, this.actWorks, this.env, (AbstractStates<AbstractEnvironment<? extends AbstractAgent>>) this.agentStates, this.t0, this.dt, numSteps, this.listeners);
+		this.master = new Master(ComputeBestNumOfWorkers(this.numberOfAgents), this.senseDecideWorks, this.actWorks, this.env, (AbstractStates<AbstractEnvironment<? extends AbstractAgent>>) this.agentStates, this.t0, this.dt, numSteps, this.listeners);
 		try {
 			master.start();
 			master.join();
@@ -117,10 +120,10 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	/*
 	 * If it would return less than 1, it returns 1 instead
 	 */
-	private int ComputeBestNumOfWorkers() {
+	private int ComputeBestNumOfWorkers(int numberOfAgents) {
 		int cores = Runtime.getRuntime().availableProcessors();
 		int standardThreads = 2; //number of threads to be used for other processes (in this case I calculate 1 thread for Master and 1 for the gui)
 		int availableThreads = cores - standardThreads;
-		return (availableThreads > 0) ? availableThreads : 1;
+		return Math.min((availableThreads > 0) ? availableThreads : 1, numberOfAgents);
 	}
 }

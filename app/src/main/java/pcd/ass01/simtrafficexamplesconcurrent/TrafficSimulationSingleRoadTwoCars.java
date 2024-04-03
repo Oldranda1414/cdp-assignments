@@ -31,6 +31,7 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation<Roads
 		int t0 = 0;
 		int dt = 1;
 		
+		this.setupNumberOfAgents(numberOfAgents);
 		this.setupTimings(t0, dt);
 		
 		AbstractEnvironment<CarAgent> env = new RoadsEnv(numberOfAgents);
