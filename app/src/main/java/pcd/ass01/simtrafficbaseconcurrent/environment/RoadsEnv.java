@@ -26,7 +26,8 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	private List<TrafficLight> trafficLights;
 
 
-	public RoadsEnv() {
+	public RoadsEnv(int numberOfAgents) {
+		this.setupNumberOfAgents(numberOfAgents);
 		trafficLights = new ArrayList<>(); //unused for now
 		roads = new ArrayList<>();
 	}
@@ -35,7 +36,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	public void setup() {
 		var road = this.createRoad(ROAD_LENGHT);
 		//TODO setup traffic lights
-		for(int i = 1; i > 0; i++){
+		for(int i = 1; i <= this.numberOfAgents; i++){
 			double position = i * (ROAD_LENGHT/NUMBER_OF_CARS);
 			var car = new CarAgent(Integer.toString(i), road, position, 
 				CAR_ACCELLERATION, 

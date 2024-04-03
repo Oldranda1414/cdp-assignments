@@ -39,7 +39,7 @@ public class Worker extends Thread {
 
     private void log(String message){
         synchronized(System.out){
-            System.out.println("[worker]: " + message);
+            System.out.println("[" + this.getName() + "]: " + message);
         }
     }
 }
