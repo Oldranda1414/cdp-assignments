@@ -69,9 +69,8 @@ public class Master extends Thread {
                 }
                 this.workReady.countDown(); //notifing workers that bag is full of tasks
                 log("going to sleep until workers finish current tasks");
+                this.workReady.reset(); //reset the latch for the next tasks
                 this.workersDone.await(); //wait for all workers to finish the tasks
-                this.workReady.reset();
-
                 log("filling the bag with tasks act");
                 for(var work : actWorks){
                         this.bagOfTasks.put(work);
