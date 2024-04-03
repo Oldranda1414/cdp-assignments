@@ -16,7 +16,7 @@ public class Master extends Thread {
     private int nAgents;
     private List<Worker> workers;
     private Buffer<Runnable> bagOfTasks;
-    private ResettableLatch workersDone;
+    private ResettableLatch workersReady;
     private ResettableLatch workReady;
     private AbstractEnvironment<? extends AbstractAgent> env;
     private int dt;
@@ -40,7 +40,7 @@ public class Master extends Thread {
         this.env = env;
         this.dt = dt;
         //this.t0 = t0;
-        this.workersDone = new ResettableLatchImpl(nWorkers);
+        this.workersReady = new ResettableLatchImpl(nWorkers);
         this.workReady = new ResettableLatchImpl(1);
         this.bagOfTasks = new BagOfTasks(this.nAgents);
         this.nSteps = nSteps;
@@ -56,7 +56,7 @@ public class Master extends Thread {
             log("Starting Simulation");
             
             this.initWorkers();
-            this.workersDone.await();   //wait for all workers to be ready
+            this.workersReady.await();   //wait for all workers to be ready
 
             for(int step = 1; step <= nSteps; step++) {
                 log("executing step " + step + " of the simulation");
@@ -69,18 +69,18 @@ public class Master extends Thread {
                 this.workReady.countDown(); //notifing workers that bag is full of tasks
                 log("going to sleep until workers finish current tasks");
                 this.workReady.reset(); //reset the latch for the next tasks
-                this.workersDone.await(); //wait for all workers to finish the tasks
+                this.workersReady.await(); //wait for all workers to finish the tasks
                 log("filling the bag with tasks act");
                 for(var work : actWorks){
                         this.bagOfTasks.put(work);
                 }
                 this.workReady.countDown(); //notifing workers that bag is full of tasks
                 log("going to sleep until workers finish current tasks");
-                this.workersDone.await(); //wait for all workers to finish the tasks
+                this.workersReady.await(); //wait for all workers to finish the tasks
                 log("finished executing step " + step + " of the simulation");
                 //reset the latches for the next step
                 this.workReady.reset(); 
-                this.workersDone.reset();
+                this.workersReady.reset();
 
                 //t += dt;
 
@@ -94,7 +94,7 @@ public class Master extends Thread {
     private void initWorkers(){
         this.workers = new ArrayList<Worker>();
         for (int i = 0; i < this.nWorkers; i++) {
-            var w = new Worker(this.bagOfTasks, this.workersDone, this.workReady);
+            var w = new Worker(this.bagOfTasks, this.workersReady, this.workReady);
             this.workers.add(w);
             w.start();
         }

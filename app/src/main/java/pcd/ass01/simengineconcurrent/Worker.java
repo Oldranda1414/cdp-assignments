@@ -5,16 +5,16 @@ import pcd.ass01.utils.latch.ResettableLatch;
 
 public class Worker extends Thread {
     private Buffer<Runnable> bagOfTasks;
-    private ResettableLatch workersDone;
+    private ResettableLatch workersReady;
     private ResettableLatch workReady;
 
     public Worker(
         Buffer<Runnable> bagOfTasks,
-        ResettableLatch workersDone,
+        ResettableLatch workersReady,
         ResettableLatch workReady
     ) {
         this.bagOfTasks = bagOfTasks;
-        this.workersDone = workersDone;
+        this.workersReady = workersReady;
         this.workReady = workReady;
     }
 
@@ -29,7 +29,7 @@ public class Worker extends Thread {
                     task.run();
                 }
                 log("bag of tasks is empty, stopping work");
-                this.workersDone.countDown();
+                this.workersReady.countDown();
                 log("awaiting on workReady");
                 this.workReady.await();
             }

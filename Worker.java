@@ -10,20 +10,20 @@ import pcd.ass01.simengineconcurrent.latch.ResettableLatch;
 public class Worker extends Thread{
     
     private Buffer<Runnable> bagOfTasks;
-    private ResettableLatch workersDone;
+    private ResettableLatch workersReady;
     private ResettableLatch workReady;
     // private AbstractEnvironment env;
     // private List<Wills> agentWills;
 
     public Worker(Buffer<Runnable> bagOfTasks,
-            ResettableLatch workersDone,
+            ResettableLatch workersReady,
             ResettableLatch workReady//,
             // AbstractEnvironment env,
             // List<Wills> agentWills
             ){
         this.bagOfTasks = bagOfTasks;
         this.workReady = workReady;
-        this.workersDone = workersDone;
+        this.workersReady = workersReady;
         // this.env = env;
         // this.agentWills = agentWills;
     }
@@ -39,7 +39,7 @@ public class Worker extends Thread{
                     task = this.bagOfTasks.get();
                     task.run();
                 }
-                this.workersDone.countDown(); //when the bag is empty the worker notifies he is going to sleep
+                this.workersReady.countDown(); //when the bag is empty the worker notifies he is going to sleep
             }
         } catch (InterruptedException e) {
             // TODO understand if there is a better way to handle this exception
