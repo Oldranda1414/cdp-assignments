@@ -147,7 +147,9 @@ A certain state of the system caused two workers to access the bag of tasks even
  never fill the bag with new tasks, waiting indefenetly for the awaiting worker to notify
  it was ready to continue. This is a classic check and act problem.
  
-This was solved ...
+This was solved by making the buffer return an Optional istead of a Runnable. The worker
+ now receives an empty Optional from the bag if it was empty, instead of awaiting for the
+ bag to be filled again
 
 \bibliographystyle{plain}
 \bibliography{References}
