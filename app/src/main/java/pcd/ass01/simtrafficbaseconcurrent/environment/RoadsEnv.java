@@ -67,7 +67,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		moveCar(id);
 	}
 
-	private void changeCarSpeed(String id, int decision){ //TODO decision should be an enum or something of the sorts
+	private void changeCarSpeed(String id, int decision){ 
 		var speed = this.map.get(id).getCurrentSpeed();
 		var acceleration = this.map.get(id).getAcceleration();
 		var newSpeed = speed + (acceleration * Math.signum(decision));
