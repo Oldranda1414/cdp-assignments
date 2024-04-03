@@ -51,7 +51,7 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		
 		long timePerStep = 0;
 
-		this.master = new Master(ComputeBestNumOfWorkers(), this.senseDecideWorks, this.actWorks, this.env, this.t0, this.dt, numSteps, this.listeners);
+		this.master = new Master(ComputeBestNumOfWorkers(), this.senseDecideWorks, this.actWorks, this.env, (AbstractStates<AbstractEnvironment<? extends AbstractAgent>>) this.agentStates, this.t0, this.dt, numSteps, this.listeners);
 		try {
 			master.start();
 			master.join();

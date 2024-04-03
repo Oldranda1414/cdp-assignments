@@ -21,13 +21,25 @@ public class Worker extends Thread {
     public void run() {
         try {
             while (true) {
+                log("awaiting on workReady");
                 this.workReady.await();
-                var task = this.bagOfTasks.get();
-                task.run();
+                log("working...");
+                while(!this.bagOfTasks.isEmpty()){
+                    log("fetching and running one work");
+                    var task = this.bagOfTasks.get();
+                    task.run();
+                }
+                log("bag of tasks is empty, stopping work");
                 this.workersDone.countDown();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void log(String message){
+        synchronized(System.out){
+            System.out.println("[worker]: " + message);
         }
     }
 }

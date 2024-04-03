@@ -55,6 +55,8 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation<Roads
 
 	public Runnable getSenseDecide(String id){
 		return () -> {
+			
+			
 			if(isSeeingACar(id)){
 				this.getAgentStates().put(id, new ConstantSpeedState());
 			}
