@@ -149,7 +149,7 @@ A certain state of the system caused two workers to access the bag of tasks even
  
 This was solved by making the buffer return an Optional istead of a Runnable. The worker
  now receives an empty Optional from the bag if it was empty, instead of awaiting for the
- bag to be filled again
+ bag to be filled again. The notEmpty condition was removed from the bag of works monitor
 
 \bibliographystyle{plain}
 \bibliography{References}
