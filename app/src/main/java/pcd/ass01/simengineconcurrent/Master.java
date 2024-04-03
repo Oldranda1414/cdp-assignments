@@ -13,6 +13,7 @@ public class Master extends Thread {
     //private List<SimulationListener> listeners;
     private int nWorkers;
     private int nAgents;
+    private List<Worker> workers;
     private Buffer<Runnable> bagOfTasks;
     private ResettableLatch workersDone;
     private ResettableLatch workReady;
@@ -56,12 +57,7 @@ public class Master extends Thread {
             //this.notifyReset(t, env);
             log("Starting Simulation");
             
-            var workers = new ArrayList<Worker>();
-            for (int i = 0; i < this.nWorkers; i++) {
-                var w = new Worker(this.bagOfTasks, this.workersDone, this.workReady);
-                workers.add(w);
-                w.start();
-            }
+            this.initWorkers();
             
             for(int step = 1; step <= nSteps; step++) {
                 log("executing step " + step + " of the simulation");
@@ -84,7 +80,8 @@ public class Master extends Thread {
                 log("going to sleep until workers finish current tasks");
                 this.workersDone.await(); //wait for all workers to finish the tasks
                 log("finished executing step " + step + " of the simulation");
-                this.workReady.reset(); //reset the latch for the next step
+                //reset the latches for the next step
+                this.workReady.reset(); 
                 this.workersDone.reset();
 
                 //t += dt;
@@ -93,6 +90,15 @@ public class Master extends Thread {
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void initWorkers(){
+        this.workers = new ArrayList<Worker>();
+        for (int i = 0; i < this.nWorkers; i++) {
+            var w = new Worker(this.bagOfTasks, this.workersDone, this.workReady);
+            this.workers.add(w);
+            w.start();
         }
     }
     
