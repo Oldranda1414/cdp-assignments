@@ -10,22 +10,17 @@ public class BagOfTasks implements Buffer<Runnable> {
 	private List<Runnable> buffer;
 	private int maxSize;
 	private Lock mutex;
-	private Condition notEmpty, notFull;
+	private Condition notEmpty;
 
-	public BagOfTasks(int size) {
+	public BagOfTasks() {
 		buffer = new LinkedList<Runnable>();
-		maxSize = size;
 		mutex = new ReentrantLock();
 		notEmpty = mutex.newCondition();
-		notFull = mutex.newCondition();
 	}
 
 	public void put(Runnable item) throws InterruptedException {
 		try {
 			mutex.lock();
-			if (isFull()) {
-				notFull.await();
-			}
 			buffer.addLast(item);
 			notEmpty.signal();
 		} finally {
@@ -40,7 +35,6 @@ public class BagOfTasks implements Buffer<Runnable> {
 				notEmpty.await();
 			}
 			Runnable item = buffer.removeFirst();
-			notFull.signal();
 			return item;
 		} finally {
 			mutex.unlock();

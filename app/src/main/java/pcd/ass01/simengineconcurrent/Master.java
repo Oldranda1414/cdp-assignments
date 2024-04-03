@@ -42,7 +42,7 @@ public class Master extends Thread {
         //this.t0 = t0;
         this.workersReady = new ResettableLatchImpl(nWorkers);
         this.workReady = new ResettableLatchImpl(1);
-        this.bagOfTasks = new BagOfTasks(this.nAgents);
+        this.bagOfTasks = new BagOfTasks();
         this.nSteps = nSteps;
         //this.listeners = listeners;
     }
