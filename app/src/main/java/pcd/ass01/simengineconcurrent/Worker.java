@@ -7,13 +7,13 @@ import pcd.ass01.utils.Buffer;
 import pcd.ass01.utils.latch.ResettableLatch;
 
 public class Worker extends Thread {
-    private Buffer<Runnable> bagOfTasks;
+    private Buffer<Task> bagOfTasks;
     private ResettableLatch workersReady;
     private ResettableLatch workReady;
     private AtomicBoolean simulationOver;
 
     public Worker(
-        Buffer<Runnable> bagOfTasks,
+        Buffer<Task> bagOfTasks,
         ResettableLatch workersReady,
         ResettableLatch workReady,
         AtomicBoolean simulationOver
@@ -33,13 +33,14 @@ public class Worker extends Thread {
                 log("awaiting on workReady");
                 this.workReady.await();
                 log("woke up");
-                Optional<Runnable> task;
+                Optional<Task> task;
                 do{
                     log("fetching a task");
                     task = this.bagOfTasks.get();
                     if(task.isPresent()){
-                        log("running a task");
-                        task.get().run();
+                        var actualTask = task.get();
+                        log("running a " + actualTask.getTypeOfTask() + " task for agent " + actualTask.getAgentId());
+                        actualTask.getRunnable().run();
                     }
                 }while(task.isPresent());
                 //TODO check which version is prefered (while/do-while)

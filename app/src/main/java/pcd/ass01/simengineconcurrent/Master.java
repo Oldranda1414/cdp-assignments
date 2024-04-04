@@ -10,13 +10,13 @@ import pcd.ass01.utils.latch.*;
 
 public class Master extends Thread {
 
-    private List<Runnable> senseDecideWorks;
-    private List<Runnable> actWorks;
+    private List<Task> senseDecideWorks;
+    private List<Task> actWorks;
     //private List<SimulationListener> listeners;
     private int nWorkers;
     private int nAgents;
     private List<Worker> workers;
-    private Buffer<Runnable> bagOfTasks;
+    private Buffer<Task> bagOfTasks;
     private ResettableLatch workersReady;
     private ResettableLatch workReady;
     private AtomicBoolean simulationOver;
@@ -27,8 +27,8 @@ public class Master extends Thread {
 
     public Master(
         final int nWorkers,
-        final List<Runnable> senseDecideWorks,
-        final List<Runnable> actWorks,
+        final List<Task> senseDecideWorks,
+        final List<Task> actWorks,
         final AbstractEnvironment<? extends AbstractAgent> env,
         final int t0,
         final int dt,
@@ -100,7 +100,7 @@ public class Master extends Thread {
         log("workers initialized");
     }
 
-    private void bagStep(String workName, List<Runnable> works) throws InterruptedException{
+    private void bagStep(String workName, List<Task> works) throws InterruptedException{
         fillBag(workName, works);
 
         this.workReady.countDown(); //notifing workers that bag is full of tasks
@@ -110,7 +110,7 @@ public class Master extends Thread {
         this.workersReady.reset();
     }
 
-    private void fillBag(String workName, List<Runnable> works) throws InterruptedException{
+    private void fillBag(String workName, List<Task> works) throws InterruptedException{
         for(var work : works){
             this.bagOfTasks.put(work);
         }

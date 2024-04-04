@@ -3,6 +3,7 @@ package pcd.ass01.simtrafficexamplesconcurrent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineconcurrent.AbstractSimulation;
 import pcd.ass01.simengineconcurrent.AbstractStates;
+import pcd.ass01.simengineconcurrent.Task;
 import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.simtrafficbaseconcurrent.states.CarStates;
@@ -55,8 +56,8 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation<Roads
 		//this.syncWithTime(25);
 	}	
 
-	public Runnable getSenseDecide(String id){
-		return () -> {
+	public Task getSenseDecide(String id){
+		return new Task(() -> {
 			
 			
 			if(isSeeingACar(id)){
@@ -68,14 +69,15 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation<Roads
 			else{
 				this.getAgentStates().put(id, new AccelerateState());
 			}
-		};
+		},
+			id, "sense-decide");
 	}
 	
-	public Runnable getAct(String id){
-		return () -> {
+	public Task getAct(String id){
+		return new Task(() -> {
 			//TODO the double id necessary seems redundant, maybe there is some way to remove id from act() parameters
 			this.getAgentStates().get(id).act(id, (RoadsEnv)this.getEnvironment());	
-		};
+		}, id, "act");
 	}
 
 	public boolean isTooCloseToCar(String id){

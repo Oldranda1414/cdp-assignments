@@ -5,18 +5,18 @@ import java.util.concurrent.locks.*;
 
 import pcd.ass01.utils.Buffer;
 
-public class BagOfTasks implements Buffer<Runnable> {
+public class BagOfTasks implements Buffer<Task> {
 
-	private List<Runnable> buffer;
+	private List<Task> buffer;
 	private int maxSize;
 	private Lock mutex;
 
 	public BagOfTasks() {
-		buffer = new LinkedList<Runnable>();
+		buffer = new LinkedList<Task>();
 		mutex = new ReentrantLock();
 	}
 
-	public void put(Runnable item) throws InterruptedException {
+	public void put(Task item) throws InterruptedException {
 		try {
 			mutex.lock();
 			buffer.addLast(item);
@@ -25,13 +25,13 @@ public class BagOfTasks implements Buffer<Runnable> {
 		}
 	}
 
-	public Optional<Runnable> get() throws InterruptedException {
+	public Optional<Task> get() throws InterruptedException {
 		try {
 			mutex.lock();
 			if (isEmpty()) {
 				return Optional.empty();
 			}
-			Runnable item = buffer.removeFirst();
+			Task item = buffer.removeFirst();
 			return Optional.of(item);
 		} finally {
 			mutex.unlock();

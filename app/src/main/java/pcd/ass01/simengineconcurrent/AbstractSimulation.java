@@ -13,8 +13,8 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 
 	private AbstractEnvironment<? extends AbstractAgent> env;
 	private AbstractStates<T> agentStates;
-	private List<Runnable> senseDecideWorks;
-	private List<Runnable> actWorks;
+	private List<Task> senseDecideWorks;
+	private List<Task> actWorks;
 	private List<SimulationListener> listeners;
 	private int t0;
 	private int dt;
@@ -26,8 +26,8 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 
 	protected AbstractSimulation() {
 		listeners = new ArrayList<SimulationListener>();
-		senseDecideWorks = new ArrayList<Runnable>();
-		actWorks = new ArrayList<Runnable>();
+		senseDecideWorks = new ArrayList<Task>();
+		actWorks = new ArrayList<Task>();
 	}
 	
 	/**
@@ -105,11 +105,11 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		return this.agentStates;
 	}
 
-	protected void addAct(Runnable act) {
+	protected void addAct(Task act) {
 		this.actWorks.add(act);
 	}
 
-	protected void addSenseDecide(Runnable senseDecide) {
+	protected void addSenseDecide(Task senseDecide) {
 		this.senseDecideWorks.add(senseDecide);
 	}
 
