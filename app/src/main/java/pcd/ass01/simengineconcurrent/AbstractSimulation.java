@@ -5,7 +5,7 @@ import java.util.List;
 
 import pcd.ass01.masterworker.Master;
 import pcd.ass01.masterworker.Task;
-import pcd.ass01.simengineseq.SimulationListener;
+import pcd.ass01.simengineconcurrent.SimulationListener;
 
 /**
  * Base class for defining concrete simulations
@@ -56,7 +56,16 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		*/
 		long timePerStep = 0;
 
-		this.master = new Master(ComputeBestNumOfWorkers(this.numberOfAgents), this.senseDecideWorks, this.actWorks, this.env, this.t0, this.dt, numSteps, this.listeners);
+		this.master = new Master(
+			ComputeBestNumOfWorkers(this.numberOfAgents), 
+			this.senseDecideWorks, 
+			this.actWorks, 
+			this.env, 
+			this.t0, 
+			this.dt, 
+			numSteps, 
+			this.listeners
+		);
 		try {
 			master.start();
 			master.join();

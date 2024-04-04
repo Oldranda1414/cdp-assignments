@@ -1,26 +1,26 @@
 package pcd.ass01.simtrafficexamplesconcurrent;
 
-// import java.awt.Graphics;
-// import java.awt.Graphics2D;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import pcd.ass01.simengineseq.AbstractAgent;
-import pcd.ass01.simengineseq.AbstractEnvironment;
-import pcd.ass01.simengineseq.SimulationListener;
-// import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
-// import pcd.ass01.simtrafficbaseconcurrent.V2d;
-// import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
-// import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
+import pcd.ass01.simengineconcurrent.AbstractAgent;
+import pcd.ass01.simengineconcurrent.AbstractEnvironment;
+import pcd.ass01.simengineconcurrent.SimulationListener;
+import pcd.ass01.simtrafficbaseconcurrent.P2d;
+import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
+import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
+import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
+
 import javax.swing.*;
 
 public class RoadSimView extends JFrame implements SimulationListener {
 
 	private RoadSimViewPanel panel;
-	// private static final int CAR_DRAW_SIZE = 10;
+	private static final int CAR_DRAW_SIZE = 10;
 	
 	public RoadSimView() {
 		super("RoadSim View");
@@ -44,29 +44,17 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			this.setVisible(true);
 		});
 	}
-
-	@Override
-	public void notifyInit(int t, List<AbstractAgent> agents, AbstractEnvironment env) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void notifyStepDone(int t, List<AbstractAgent> agents, AbstractEnvironment env) {
-		// TODO Auto-generated method stub
-	}
 	
 	
 	class RoadSimViewPanel extends JPanel {
-		/* 
 		
-		List<CarAgentInfo> cars;
+		List<CarAgent> cars;
 		List<Road> roads;
 		List<TrafficLight> sems;
-		*/	
+		
 		public RoadSimViewPanel(int w, int h){
 		}
-		/* 
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);   
 	        Graphics2D g2 = (Graphics2D)g;
@@ -76,7 +64,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			
 			if (roads != null) {
 				for (var r: roads) {
-					g2.drawLine((int)r.getFrom().x(), (int)r.getFrom().y(), (int)r.getTo().x(), (int)r.getTo().y());
+					g2.drawLine(0, getHeight() / 2, getWidth(), getHeight() / 2);
 				}
 			}
 			
@@ -103,15 +91,34 @@ public class RoadSimView extends JFrame implements SimulationListener {
 					g2.drawOval((int)(r.getFrom().x() + dir.x() - CAR_DRAW_SIZE/2), (int)(r.getFrom().y() + dir.y() - CAR_DRAW_SIZE/2), CAR_DRAW_SIZE , CAR_DRAW_SIZE);
 				}
 			}
-  	   }
-	   public void update(List<Road> roads, 
-			   			  List<CarAgentInfo> cars,
-			   			List<TrafficLight> sems) {
-		   this.roads = roads;
-		   this.cars = cars;
-		   this.sems = sems;
-		   repaint();
-	   }
-	*/
+		}
+		
+		public void update(
+			List<Road> roads, 
+			List<CarAgent> cars,
+			List<TrafficLight> sems
+		) {
+			this.roads = roads;
+			this.cars = cars;
+			this.sems = sems;
+			repaint();
+		}
+
+		// private P2D mapEntityOnRoad(double position, Road road) {
+		// 	return new P2d(, );
+		// }
+	}
+
+
+	@Override
+	public void notifyInit(int t, AbstractEnvironment<? extends AbstractAgent> env) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'notifyInit'");
+	}
+
+	@Override
+	public void notifyStepDone(int t, AbstractEnvironment<? extends AbstractAgent> env) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'notifyStepDone'");
 	}
 }

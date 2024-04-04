@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import pcd.ass01.simengineconcurrent.AbstractAgent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
-import pcd.ass01.simengineseq.SimulationListener;
+import pcd.ass01.simengineconcurrent.SimulationListener;
 import pcd.ass01.utils.Buffer;
 import pcd.ass01.utils.latch.*;
 
@@ -14,7 +14,7 @@ public class Master extends Thread {
 
     private List<Task> senseDecideWorks;
     private List<Task> actWorks;
-    //private List<SimulationListener> listeners;
+    private List<SimulationListener> listeners;
     private int nWorkers;
     private List<Worker> workers;
     private Buffer<Task> bagOfTasks;
@@ -45,7 +45,7 @@ public class Master extends Thread {
         this.bagOfTasks = new BagOfTasks(this.workersReady);
         this.simulationOver = new AtomicBoolean(false);
         this.nSteps = nSteps;
-        //this.listeners = listeners;
+        this.listeners = listeners;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class Master extends Thread {
 
                 //t += dt;
 
-                //notifyNewStep(t, env);
+                notifyNewStep(dt, env);
             }
             this.simulationOver.set(true);
 
@@ -125,7 +125,6 @@ public class Master extends Thread {
         }
     }
 	
-    /* 
 	private void notifyReset(int t0, AbstractEnvironment<? extends AbstractAgent> env) {
 		for (var l: listeners) {
 			// l.notifyInit(t0, env.getAgents(), env);
@@ -134,8 +133,7 @@ public class Master extends Thread {
 
 	private void notifyNewStep(int t, AbstractEnvironment<? extends AbstractAgent> env) {
 		for (var l: listeners) {
-			// l.notifyStepDone(t, env.getAgents(), env);
+			l.notifyStepDone(t, env);
 		}
 	}
-    */
 }

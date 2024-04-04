@@ -2,9 +2,9 @@ package pcd.ass01.simtrafficexamplesconcurrent;
 
 import java.util.List;
 
-import pcd.ass01.simengineseq.AbstractAgent;
-import pcd.ass01.simengineseq.AbstractEnvironment;
-import pcd.ass01.simengineseq.SimulationListener;
+import pcd.ass01.simengineconcurrent.AbstractAgent;
+import pcd.ass01.simengineconcurrent.AbstractEnvironment;
+import pcd.ass01.simengineconcurrent.SimulationListener;
 //import pcd.ass01.simtrafficbaseconcurrent.*;
 //import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
 
@@ -25,14 +25,14 @@ public class RoadSimStatistics implements SimulationListener {
 	}
 	
 	@Override
-	public void notifyInit(int t, List<AbstractAgent> agents, AbstractEnvironment env) {
+	public void notifyInit(int t, AbstractEnvironment<? extends AbstractAgent> env) {
 		// TODO Auto-generated method stub
 		// log("reset: " + t);
 		averageSpeed = 0;
 	}
 
 	@Override
-	public void notifyStepDone(int t, List<AbstractAgent> agents, AbstractEnvironment env) {
+	public void notifyStepDone(int t, AbstractEnvironment<? extends AbstractAgent> env) {
 		// TODO Auto-generated method stub
 	}
 	
