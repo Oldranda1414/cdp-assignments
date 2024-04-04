@@ -35,7 +35,7 @@ public class BagOfTasks implements Buffer<Task> {
 	public Task get(String id) throws InterruptedException {
 		try {
 			mutex.lock();
-			if (buffer.size() == 0) {
+			while(buffer.size() == 0) {
 				log("[" + id + "]: bag is empty, going to sleep");
 				this.latch.countDown();
 				notEmpty.await();
