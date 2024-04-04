@@ -1,6 +1,7 @@
 package pcd.ass01.simengineconcurrent;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import pcd.ass01.utils.Buffer;
 import pcd.ass01.utils.latch.ResettableLatch;
@@ -9,21 +10,25 @@ public class Worker extends Thread {
     private Buffer<Runnable> bagOfTasks;
     private ResettableLatch workersReady;
     private ResettableLatch workReady;
+    private AtomicBoolean simulationOver;
 
     public Worker(
         Buffer<Runnable> bagOfTasks,
         ResettableLatch workersReady,
-        ResettableLatch workReady
+        ResettableLatch workReady,
+        AtomicBoolean simulationOver
     ) {
         this.bagOfTasks = bagOfTasks;
         this.workersReady = workersReady;
         this.workReady = workReady;
+        this.simulationOver = simulationOver;
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
+            while (!simulationOver.get()) {
+                log("bag of tasks is empty, stopping work");
                 this.workersReady.countDown();
                 log("awaiting on workReady");
                 this.workReady.await();
@@ -47,8 +52,9 @@ public class Worker extends Thread {
                     }
                 }
                 */
-                log("bag of tasks is empty, stopping work");
             }
+
+            log("worker killed");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

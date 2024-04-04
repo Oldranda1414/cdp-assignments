@@ -2,6 +2,7 @@ package pcd.ass01.simengineconcurrent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import pcd.ass01.simengineseq_improved.SimulationListener;
 import pcd.ass01.utils.Buffer;
@@ -18,6 +19,7 @@ public class Master extends Thread {
     private Buffer<Runnable> bagOfTasks;
     private ResettableLatch workersReady;
     private ResettableLatch workReady;
+    private AtomicBoolean simulationOver;
     private AbstractEnvironment<? extends AbstractAgent> env;
     private int dt;
     //private int t0;
@@ -43,6 +45,7 @@ public class Master extends Thread {
         this.workersReady = new ResettableLatchImpl(nWorkers);
         this.workReady = new ResettableLatchImpl(1);
         this.bagOfTasks = new BagOfTasks();
+        this.simulationOver = new AtomicBoolean(false);
         this.nSteps = nSteps;
         //this.listeners = listeners;
     }
@@ -75,6 +78,13 @@ public class Master extends Thread {
 
                 //notifyNewStep(t, env);
             }
+
+            this.simulationOver.set(true);
+            this.workReady.countDown();
+
+            for(var worker : this.workers)worker.join();
+
+            log("simulation finished");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -83,7 +93,7 @@ public class Master extends Thread {
     private void initWorkers(){
         this.workers = new ArrayList<Worker>();
         for (int i = 0; i < this.nWorkers; i++) {
-            var w = new Worker(this.bagOfTasks, this.workersReady, this.workReady);
+            var w = new Worker(this.bagOfTasks, this.workersReady, this.workReady, this.simulationOver);
             this.workers.add(w);
             w.start();
         }
