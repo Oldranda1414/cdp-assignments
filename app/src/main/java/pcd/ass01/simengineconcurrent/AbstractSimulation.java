@@ -25,6 +25,8 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	private long endWallTime;
 	private long averageTimePerStep;
 	private Master master;
+	private boolean toBeInSyncWithWallTime;
+	private int nStepsPerSec;
 
 	protected AbstractSimulation() {
 		listeners = new ArrayList<SimulationListener>();
@@ -61,7 +63,9 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 			this.t0, 
 			this.dt, 
 			numSteps, 
-			this.listeners
+			this.listeners,
+			this.toBeInSyncWithWallTime,
+			this.nStepsPerSec
 		);
 		try {
 			master.start();
@@ -125,6 +129,11 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 
 	protected void setupNumberOfAgents(int numberOfAgents){
 		this.numberOfAgents = numberOfAgents;
+	}
+
+	protected void syncWithTime(int nCyclesPerSec){
+		this.toBeInSyncWithWallTime = true;
+		this.nStepsPerSec = nCyclesPerSec;
 	}
 
 	/*

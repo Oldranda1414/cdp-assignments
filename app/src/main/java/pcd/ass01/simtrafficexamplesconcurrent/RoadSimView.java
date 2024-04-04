@@ -62,15 +62,16 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			g2.clearRect(0,0,this.getWidth(),this.getHeight());
 			
+			var maxBounds = new Pair<Double, Double>(
+				roads.stream()
+					.map(road -> {return road.getTo().x() > road.getFrom().x() ? road.getTo().x() : road.getFrom().x();})
+					.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get(),
+				roads.stream()
+					.map(road -> {return road.getTo().y() > road.getFrom().y() ? road.getTo().y() : road.getFrom().y();})
+					.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get() * 1.5d //it's times 1.5 because we dont want the longest road to be in a side of the screen
+			);
+
 			if (roads != null) {
-				var maxBounds = new Pair<Double, Double>(
-					roads.stream()
-						.map(road -> {return road.getTo().x() > road.getFrom().x() ? road.getTo().x() : road.getFrom().x();})
-						.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get(),
-					roads.stream()
-						.map(road -> {return road.getTo().y() > road.getFrom().y() ? road.getTo().y() : road.getFrom().y();})
-						.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get() * 1.5d //it's times 1.5 because we dont want the longest road to be in a side of the screen
-				);
 				for (var r: roads) {
 					g2.drawLine(
 						(int)mapValue(r.getFrom().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
@@ -91,21 +92,17 @@ public class RoadSimView extends JFrame implements SimulationListener {
 						g.setColor(new Color(255, 255, 0, 255));
 					}
 					var point = mapEntityOnRoad(s.getCurrentPosition(), s.getRoad());
-					g2.fillRect((int)point.x() - 5, (int)point.y() - 5, 10, 10);
+					var mappedPoint = new P2d(
+						mapValue(point.x(), 0, maxBounds.getFirst(), 0, this.getWidth()),
+						mapValue(point.y(), 0, maxBounds.getSecond(), 0, this.getHeight())
+					);
+					g2.fillRect((int)mappedPoint.x() - 5, (int)mappedPoint.y() - 5, 10, 10);
 				}
 			}
 			
 			g.setColor(new Color(0, 0, 0, 255));
 
 			if (cars != null) {
-				var maxBounds = new Pair<Double, Double>(
-					roads.stream()
-						.map(road -> {return road.getTo().x() > road.getFrom().x() ? road.getTo().x() : road.getFrom().x();})
-						.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get(),
-					roads.stream()
-						.map(road -> {return road.getTo().y() > road.getFrom().y() ? road.getTo().y() : road.getFrom().y();})
-						.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get() * 1.5d //it's times 1.5 because we dont want the longest road to be in a side of the screen
-				);
 				for (var c: cars) {
 					double pos = c.getCurrentPosition();
 					Road r = c.getRoad();

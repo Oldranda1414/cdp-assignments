@@ -13,7 +13,7 @@ import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		
 	private static final int ROAD_LENGHT = 100; 
-	private static final int MIN_DIST_ALLOWED = 5;
+	private static final int MIN_DIST_ALLOWED = 15;
 	
 	/* list of roads */
 	private List<Road> roads;

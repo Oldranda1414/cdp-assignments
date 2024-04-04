@@ -24,6 +24,10 @@ public class Master extends Thread {
     private int dt;
     private int t0;
     private int nSteps;
+    private boolean toBeInSyncWithWallTime;
+    private int nStepsPerSec;
+    private long currentWallTime;
+    private long timePerStep;
 
     public Master(
         final int nWorkers,
@@ -33,7 +37,9 @@ public class Master extends Thread {
         final int t0,
         final int dt,
         final int nSteps,
-        final List<SimulationListener> listeners
+        final List<SimulationListener> listeners,
+        final boolean toBeInSyncWithWallTime,
+        final int nStepsPerSec
     ) {
         this.nWorkers = nWorkers;
         this.senseDecideWorks = senseDecideWorks;
@@ -46,6 +52,8 @@ public class Master extends Thread {
         this.simulationOver = new AtomicBoolean(false);
         this.nSteps = nSteps;
         this.listeners = listeners;
+        this.toBeInSyncWithWallTime = toBeInSyncWithWallTime;
+        this.nStepsPerSec = nStepsPerSec;
     }
 
     @Override
@@ -63,6 +71,8 @@ public class Master extends Thread {
 
             for(int step = 1; step <= nSteps; step++) {
                 
+                currentWallTime = System.currentTimeMillis();
+
                 log("executing step " + step + " of the simulation");
                 
                 this.env.step(dt);
@@ -76,6 +86,12 @@ public class Master extends Thread {
                 t += dt;
 
                 notifyNewStep(dt, env);
+
+                timePerStep += System.currentTimeMillis() - currentWallTime;
+
+                if (toBeInSyncWithWallTime) {
+                    syncWithWallTime();
+                }
             }
             this.simulationOver.set(true);
 
@@ -135,5 +151,16 @@ public class Master extends Thread {
 		for (var l: listeners) {
 			l.notifyStepDone(t, env);
 		}
+	}
+
+    private void syncWithWallTime() {
+		try {
+			long newWallTime = System.currentTimeMillis();
+			long delay = 1000 / this.nStepsPerSec;
+			long wallTimeDT = newWallTime - currentWallTime;
+			if (wallTimeDT < delay) {
+				Thread.sleep(delay - wallTimeDT);
+			}
+		} catch (Exception ex) {}
 	}
 }

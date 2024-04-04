@@ -46,7 +46,7 @@ public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
 		}
 
 		/* sync with wall-time: 25 steps per sec */
-		//this.syncWithTime(25);
+		this.syncWithTime(5);
 	}	
 
 }
