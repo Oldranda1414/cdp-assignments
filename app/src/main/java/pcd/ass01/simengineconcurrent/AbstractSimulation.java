@@ -3,6 +3,8 @@ package pcd.ass01.simengineconcurrent;
 import java.util.ArrayList;
 import java.util.List;
 
+import pcd.ass01.masterworker.Master;
+import pcd.ass01.masterworker.Task;
 import pcd.ass01.simengineseq_improved.SimulationListener;
 
 /**

@@ -1,4 +1,4 @@
-package pcd.ass01.simengineconcurrent;
+package pcd.ass01.masterworker;
 
 public class Task implements Runnable{
     private Runnable runnable;

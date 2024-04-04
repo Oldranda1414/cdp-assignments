@@ -1,9 +1,9 @@
 package pcd.ass01.simtrafficexamplesconcurrent.simulations;
 
+import pcd.ass01.masterworker.Task;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineconcurrent.AbstractSimulation;
 import pcd.ass01.simengineconcurrent.AbstractStates;
-import pcd.ass01.simengineconcurrent.Task;
 import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.simtrafficbaseconcurrent.states.CarStates;

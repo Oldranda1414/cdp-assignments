@@ -1,4 +1,4 @@
-package pcd.ass01.simengineconcurrent;
+package pcd.ass01.masterworker;
 
 import java.util.*;
 import java.util.concurrent.locks.*;
