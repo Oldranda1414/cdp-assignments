@@ -30,6 +30,7 @@ public class CarAgent extends AbstractAgent implements RoadEntity{
 		this.deceleration = dec;
 		this.maxSpeed = vmax;
 		this.currentSpeed = 0;
+		this.currentPosition = initialPos;
 	}
 
 	public double getCurrentSpeed() {

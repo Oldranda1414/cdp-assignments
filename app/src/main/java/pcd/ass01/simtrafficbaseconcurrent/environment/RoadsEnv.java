@@ -11,8 +11,7 @@ import pcd.ass01.simtrafficbaseconcurrent.entity.TrafficLight;
 import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 
 public class RoadsEnv extends AbstractEnvironment<CarAgent>{
-		
-	private static final int ROAD_LENGHT = 100; 
+
 	private static final int MIN_DIST_ALLOWED = 15;
 	
 	/* list of roads */
@@ -79,8 +78,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 
 	private void accelerateCar(CarAgent car){
 		var currentSpeed = car.getCurrentSpeed();
-		var delta = car.getAcceleration();
-		var newSpeed = currentSpeed + delta;
+		var newSpeed = currentSpeed + car.getAcceleration();
 		changeCarSpeed(car, newSpeed);	
 	}
 
@@ -112,10 +110,11 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
 
 	public boolean canMove(String id, double position){
+		var car = this.map.get(id);
 		return !this.map.entrySet().stream()
 			.filter(couple -> id != couple.getKey())
 			.map(couple -> couple.getValue())
-			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < ROAD_LENGHT;
+			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < car.getRoad().getLen();
 	}
 
 	public Optional<Double> nearestCarInFrontDistance(String id){
@@ -130,7 +129,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
  
 	public List<CarAgent> getAgentInfo() {
-		return this.map.entrySet().stream().map(el -> el.getValue()).toList();
+		return new ArrayList<>(this.map.values());
 	}
 
 	public List<Road> getRoads(){

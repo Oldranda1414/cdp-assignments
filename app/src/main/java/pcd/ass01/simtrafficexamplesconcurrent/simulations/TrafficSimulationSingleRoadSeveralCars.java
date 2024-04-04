@@ -19,7 +19,7 @@ public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
 	
 	public void setup() {
 
-		final double carMaxSpeed = 10;
+		final double carMaxSpeed = 50;
 		final double carAccelleration = 2;
 		final double carDecelleration = 2;
 		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 300), new P2d(1000, 300));
@@ -46,7 +46,7 @@ public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
 		}
 
 		/* sync with wall-time: 25 steps per sec */
-		this.syncWithTime(5);
+		this.syncWithTime(10);
 	}	
 
 }
