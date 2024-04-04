@@ -29,7 +29,6 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 	
 	protected Task getAct(String id){
 		return new Task(() -> {
-			//TODO the double id necessary seems redundant, maybe there is some way to remove id from act() parameters
 			this.getAgentStates().get(id).act(id, (RoadsEnv)this.getEnvironment());	
 		}, id, "act");
 	}

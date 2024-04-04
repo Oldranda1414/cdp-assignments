@@ -22,7 +22,7 @@ public class Master extends Thread {
     private AtomicBoolean simulationOver;
     private AbstractEnvironment<? extends AbstractAgent> env;
     private int dt;
-    //private int t0;
+    private int t0;
     private int nSteps;
 
     public Master(
@@ -40,7 +40,7 @@ public class Master extends Thread {
         this.actWorks = actWorks;
         this.env = env;
         this.dt = dt;
-        //this.t0 = t0;
+        this.t0 = t0;
         this.workersReady = new ResettableLatchImpl(nWorkers);
         this.bagOfTasks = new BagOfTasks(this.workersReady);
         this.simulationOver = new AtomicBoolean(false);
@@ -51,9 +51,9 @@ public class Master extends Thread {
     @Override
     public void run() {
         /* initialize the env and the agents inside */
-		//int t = t0;
+		int t = t0;
         try {
-            //this.notifyReset(t, env);
+            this.notifyReset(t, env);
             log("starting...");
             
             this.initWorkers();
@@ -73,7 +73,7 @@ public class Master extends Thread {
 
                 log("finished executing step " + step + " of the simulation");
 
-                //t += dt;
+                t += dt;
 
                 notifyNewStep(dt, env);
             }
@@ -127,7 +127,7 @@ public class Master extends Thread {
 	
 	private void notifyReset(int t0, AbstractEnvironment<? extends AbstractAgent> env) {
 		for (var l: listeners) {
-			// l.notifyInit(t0, env.getAgents(), env);
+			l.notifyInit(t0, env);
 		}
 	}
 

@@ -7,13 +7,13 @@ import javax.swing.JPanel;
 import pcd.ass01.simengineconcurrent.AbstractAgent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineconcurrent.SimulationListener;
-import pcd.ass01.simtrafficbaseconcurrent.P2d;
 import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
+import pcd.ass01.simtrafficbaseconcurrent.V2d;
 import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
+import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 
 import java.awt.*;
-import java.awt.geom.Line2D;
 
 import javax.swing.*;
 
@@ -64,7 +64,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			
 			if (roads != null) {
 				for (var r: roads) {
-					g2.drawLine(0, getHeight() / 2, getWidth(), getHeight() / 2);
+					g2.drawLine((int)r.getFrom().x(), (int)r.getFrom().y(), (int)r.getTo().x(), (int)r.getTo().y());
 				}
 			}
 			
@@ -85,7 +85,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 
 			if (cars != null) {
 				for (var c: cars) {
-					double pos = c.getPos();
+					double pos = c.getCurrentPosition();
 					Road r = c.getRoad();
 					V2d dir = V2d.makeV2d(r.getFrom(), r.getTo()).getNormalized().mul(pos);
 					g2.drawOval((int)(r.getFrom().x() + dir.x() - CAR_DRAW_SIZE/2), (int)(r.getFrom().y() + dir.y() - CAR_DRAW_SIZE/2), CAR_DRAW_SIZE , CAR_DRAW_SIZE);
@@ -111,14 +111,11 @@ public class RoadSimView extends JFrame implements SimulationListener {
 
 
 	@Override
-	public void notifyInit(int t, AbstractEnvironment<? extends AbstractAgent> env) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'notifyInit'");
-	}
+	public void notifyInit(int t, AbstractEnvironment<? extends AbstractAgent> env) { }
 
 	@Override
 	public void notifyStepDone(int t, AbstractEnvironment<? extends AbstractAgent> env) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'notifyStepDone'");
+		var e = ((RoadsEnv) env);
+		panel.update(e.getRoads(), e.getAgentInfo(), e.getTrafficLights());
 	}
 }

@@ -2,8 +2,10 @@
 package pcd.ass01.simtrafficexamplesconcurrent.simulations;
 
 import pcd.ass01.simengineconcurrent.AbstractStates;
+import pcd.ass01.simtrafficbaseconcurrent.P2d;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.simtrafficbaseconcurrent.states.CarStates;
+import pcd.ass01.utils.Pair;
 
 /**
  * 
@@ -21,7 +23,8 @@ public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends CarSimul
 		final double carMaxSpeed = 10;
 		final double carAccelleration = 2;
 		final double carDecelleration = 2;
-		final double roadLenght = 1000;
+		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 0), new P2d(0, 1000));
+
 
 		int numberOfCars = 2;
 
@@ -35,9 +38,9 @@ public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends CarSimul
 		this.setupEnvironment(env);
 		AbstractStates<RoadsEnv> states = new CarStates();	
 		this.setupAgentStates(states);
-		var road = env.createRoad(roadLenght);
+		var road = env.createRoad(roadPoints.getFirst(), roadPoints.getSecond());
 		for(int i = 1; i <= numberOfCars; i++){
-			double position = i * (roadLenght/numberOfCars);
+			double position = i * (road.getLen()/numberOfCars);
 			var id = Integer.toString(i);
 			env.createCar(id, road, position, carAccelleration, carDecelleration, carMaxSpeed);
 			this.addSenseDecide(this.getSenseDecide(id));

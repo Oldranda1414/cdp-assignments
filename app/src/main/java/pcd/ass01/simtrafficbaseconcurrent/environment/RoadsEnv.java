@@ -38,8 +38,8 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		return car;
 	}
 
-	public Road createRoad(double lenght) {
-		Road r = new Road(lenght);
+	public Road createRoad(P2d from, P2d to) {
+		Road r = new Road(from, to);
 		this.roads.add(r);
 		return r;
 	}
@@ -111,40 +111,21 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < ROAD_LENGHT;
 	}
 
-	//TODO maybe this should be redone with steams as with canMove()
 	public Optional<Double> nearestCarInFrontDistance(String id){
 		var currentCar = this.map.get(id);
 		var currentPosition = currentCar.getCurrentPosition();
 		var currentRoad = currentCar.getRoad();
-		double minDist = Double.POSITIVE_INFINITY;
-		for(var car : this.map.values()){
-			//check if this car is not the current car
-			if(car != currentCar){
-				var carRoad = car.getRoad();
-
-				//check if this car and the current car are on the same road
-				if(carRoad == currentRoad){
-					var carPosition = car.getCurrentPosition();
-
-					//adjust because of pacman effect
-					if(carPosition < currentPosition) carPosition =+ currentRoad.getLen();
-	
-					var currentDistance = carPosition - currentPosition;
-	
-					//if the distance from this car to the current car is the min found until now, update the min
-					if(currentDistance < minDist) minDist = currentDistance;
-				}
-			}
-		}
-
-		return (minDist == Double.POSITIVE_INFINITY)? Optional.empty(): Optional.of(minDist);
+		return this.map.values().stream()
+			.filter(car -> {return car != currentCar && car.getRoad() == currentRoad;})
+			.map(car -> {return car.getCurrentPosition() + currentRoad.getLen();})
+			.map(carPos -> {return carPos - currentPosition;})
+			.reduce((dist1, dist2) -> {return dist1 < dist2 ? dist2 : dist1;});
+	}
+ 
+	public List<CarAgent> getAgentInfo() {
+		return this.map.entrySet().stream().map(el -> el.getValue()).toList();
 	}
 
-	/* 
-	public List<CarAgent> getAgentInfo(){
-		return this.registeredCars.entrySet().stream().map(el -> el.getValue()).toList();
-	}
-	*/
 	public List<Road> getRoads(){
 		return roads;
 	}
