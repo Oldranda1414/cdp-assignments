@@ -7,8 +7,8 @@ import java.util.Optional;
 
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simtrafficbaseconcurrent.P2d;
-import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
-import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
+import pcd.ass01.simtrafficbaseconcurrent.entity.TrafficLight;
+import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 
 public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		
@@ -47,8 +47,8 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		return r;
 	}
 
-	public TrafficLight createTrafficLight(P2d pos, TrafficLight.TrafficLightState initialState, int greenDuration, int yellowDuration, int redDuration) {
-		TrafficLight tl = new TrafficLight(pos, initialState, greenDuration, yellowDuration, redDuration);
+	public TrafficLight createTrafficLight(double pos, Road road, TrafficLight.TrafficLightState initialState, int greenDuration, int yellowDuration, int redDuration) {
+		TrafficLight tl = new TrafficLight(pos, road, initialState, greenDuration, yellowDuration, redDuration);
 		this.trafficLights.add(tl);
 		return tl;
 	}
@@ -87,6 +87,9 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		var maxSpeed = car.getMaxSpeed();
 		if(newSpeed > maxSpeed){
 			car.setCurrentSpeed(maxSpeed);
+		}
+		else if(newSpeed < 0){
+			car.setCurrentSpeed(0);
 		}
 		else{
 			car.setCurrentSpeed(newSpeed);

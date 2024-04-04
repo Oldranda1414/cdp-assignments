@@ -1,4 +1,4 @@
-package pcd.ass01.simtrafficbaseconcurrent.agent;
+package pcd.ass01.simtrafficbaseconcurrent.entity;
 
 import pcd.ass01.simengineconcurrent.*;
 import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
@@ -8,7 +8,7 @@ import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
  * Base class modeling the skeleton of an agent modeling a car in the traffic environment
  * 
  */
-public class CarAgent extends AbstractAgent {
+public class CarAgent extends AbstractAgent implements RoadEntity{
 	
 	/* car model */
 	protected double maxSpeed;

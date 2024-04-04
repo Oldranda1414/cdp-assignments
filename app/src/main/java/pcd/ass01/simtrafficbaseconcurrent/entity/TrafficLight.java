@@ -1,23 +1,22 @@
-package pcd.ass01.simtrafficbaseconcurrent;
+package pcd.ass01.simtrafficbaseconcurrent.entity;
 
-/**
- * Class modeling the structure and behaviour of a traffic light
- *  
- */
-public class TrafficLight {
-	
+import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
+
+public class TrafficLight implements RoadEntity{
 	public static enum TrafficLightState {GREEN, YELLOW, RED}
 	private TrafficLightState state, initialState;
 	private int currentTimeInState;
 	private int redDuration, greenDuration, yellowDuration;
-	private P2d pos;
+	private double position;
+    private Road road;
 	
-	public TrafficLight(P2d pos, TrafficLightState initialState, int greenDuration, int yellowDuration, int redDuration) {
+	public TrafficLight(double pos, Road road, TrafficLightState initialState, int greenDuration, int yellowDuration, int redDuration) {
 		this.redDuration = redDuration;
 		this.greenDuration = greenDuration;
 		this.yellowDuration = yellowDuration;
-		this.pos = pos;
+		this.position = pos;
 		this.initialState = initialState;
+        this.road = road;
 	}
 	
 	public void init() {
@@ -65,7 +64,14 @@ public class TrafficLight {
 		return state.equals(TrafficLightState.YELLOW);
 	}
 	
-	public P2d getPos() {
-		return pos;
+    @Override
+	public double getCurrentPosition() {
+		return position;
 	}
+
+    @Override
+    public Road getRoad() {
+        return road;
+    }
+
 }
