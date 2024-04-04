@@ -1,7 +1,10 @@
 package pcd.ass01.simtrafficexamplesconcurrent.simulations;
 
+import java.util.List;
+
 import pcd.ass01.masterworker.Task;
 import pcd.ass01.simengineconcurrent.AbstractSimulation;
+import pcd.ass01.simtrafficbaseconcurrent.entity.TrafficLight;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.simtrafficbaseconcurrent.states.state.AccelerateState;
 import pcd.ass01.simtrafficbaseconcurrent.states.state.ConstantSpeedState;
@@ -50,5 +53,17 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 			}
 		}
 		return false;
+	}
+
+	protected boolean isSeeingAHaltingTrafficLight(String id){
+		var env = ((RoadsEnv)this.getEnvironment());
+		var car = env.get(id);
+		var road = car.getRoad();
+		List<TrafficLight> trafficLights = env.getTrafficLights();
+		return trafficLights.stream()
+			.filter(trafficLight -> {return trafficLight.getRoad() == road;})
+			.filter(trafficLight -> {return trafficLight.isRed() || trafficLight.isYellow();})
+			.map(trafficLight -> {return trafficLight.getCurrentPosition() + road.getLen();})
+			.anyMatch(trafficLightPos -> {return (trafficLightPos - car.getCurrentPosition()) < SEEING_DISTANCE;});
 	}
 }
