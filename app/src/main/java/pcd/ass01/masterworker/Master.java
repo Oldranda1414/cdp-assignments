@@ -54,7 +54,7 @@ public class Master extends Thread {
 		//int t = t0;
         try {
             //this.notifyReset(t, env);
-            log("Starting Simulation");
+            log("starting...");
             
             this.initWorkers();
             log("awaiting for workers to be ready");

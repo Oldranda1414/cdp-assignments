@@ -22,7 +22,7 @@ public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
 		final double carDecelleration = 2;
 		final double roadLenght = 1000;
 
-		int numberOfCars = 2;
+		int numberOfCars = 30;
 
 		int t0 = 0;
 		int dt = 1;
