@@ -51,7 +51,6 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 
 		startWallTime = System.currentTimeMillis();
 
-
 		long timePerStep = 0;
 
 		this.master = new Master(

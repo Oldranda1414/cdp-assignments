@@ -23,7 +23,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 
 
 	public RoadsEnv(int numberOfAgents) {
-		trafficLights = new ArrayList<>(); //unused for now
+		trafficLights = new ArrayList<>();
 		roads = new ArrayList<>();
 	}
 	
@@ -33,6 +33,9 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
 
 	public CarAgent createCar(String id, Road road, double position, double accelleration, double decelleration, double maxSpeed){
+		if (position > road.getLen() || position < 0) {
+			throw new IllegalArgumentException("You must pass a position that is more than 0 and less than the road length.");
+		}
 		var car = new CarAgent(id, road, position, accelleration, decelleration, maxSpeed);
 		this.map.put(id, car);
 		return car;

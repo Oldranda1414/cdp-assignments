@@ -7,14 +7,14 @@ import javax.swing.JPanel;
 import pcd.ass01.simengineconcurrent.AbstractAgent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineconcurrent.SimulationListener;
+import pcd.ass01.simtrafficbaseconcurrent.P2d;
 import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
 import pcd.ass01.simtrafficbaseconcurrent.V2d;
 import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
-
+import pcd.ass01.utils.Pair;
 import java.awt.*;
-
 import javax.swing.*;
 
 public class RoadSimView extends JFrame implements SimulationListener {
@@ -63,8 +63,21 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			g2.clearRect(0,0,this.getWidth(),this.getHeight());
 			
 			if (roads != null) {
+				var maxBounds = new Pair<Double, Double>(
+					roads.stream()
+						.map(road -> {return road.getTo().x() > road.getFrom().x() ? road.getTo().x() : road.getFrom().x();})
+						.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get(),
+					roads.stream()
+						.map(road -> {return road.getTo().y() > road.getFrom().y() ? road.getTo().y() : road.getFrom().y();})
+						.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get() * 1.5d //it's times 1.5 because we dont want the longest road to be in a side of the screen
+				);
 				for (var r: roads) {
-					g2.drawLine((int)r.getFrom().x(), (int)r.getFrom().y(), (int)r.getTo().x(), (int)r.getTo().y());
+					g2.drawLine(
+						(int)mapValue(r.getFrom().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
+						(int)mapValue(r.getFrom().y(), 0, maxBounds.getSecond(), 0, this.getHeight()), 
+						(int)mapValue(r.getTo().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
+						(int)mapValue(r.getTo().y(), 0, maxBounds.getSecond(), 0, this.getHeight())
+					);
 				}
 			}
 			
@@ -84,13 +97,37 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			g.setColor(new Color(0, 0, 0, 255));
 
 			if (cars != null) {
+				var maxBounds = new Pair<Double, Double>(
+					roads.stream()
+						.map(road -> {return road.getTo().x() > road.getFrom().x() ? road.getTo().x() : road.getFrom().x();})
+						.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get(),
+					roads.stream()
+						.map(road -> {return road.getTo().y() > road.getFrom().y() ? road.getTo().y() : road.getFrom().y();})
+						.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get() * 1.5d //it's times 1.5 because we dont want the longest road to be in a side of the screen
+				);
 				for (var c: cars) {
 					double pos = c.getCurrentPosition();
 					Road r = c.getRoad();
-					V2d dir = V2d.makeV2d(r.getFrom(), r.getTo()).getNormalized().mul(pos);
-					g2.drawOval((int)(r.getFrom().x() + dir.x() - CAR_DRAW_SIZE/2), (int)(r.getFrom().y() + dir.y() - CAR_DRAW_SIZE/2), CAR_DRAW_SIZE , CAR_DRAW_SIZE);
+					var mapped = new Pair<P2d, P2d>(
+						new P2d(
+							mapValue(r.getFrom().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
+							mapValue(r.getFrom().y(), 0, maxBounds.getSecond(), 0, this.getHeight())
+						), new P2d(
+							mapValue(r.getTo().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
+							mapValue(r.getTo().y(), 0, maxBounds.getSecond(), 0, this.getHeight())
+						)
+					);
+					V2d dir = V2d.makeV2d(mapped.getFirst(), mapped.getSecond()).getNormalized().mul(pos);
+					g2.drawOval(
+						(int)(mapped.getFirst().x() + dir.x() - CAR_DRAW_SIZE/2), 
+						(int)(mapped.getFirst().y() + dir.y() - CAR_DRAW_SIZE/2), CAR_DRAW_SIZE , CAR_DRAW_SIZE
+					);
 				}
 			}
+		}
+
+		private double mapValue(double value, double fromX, double fromY, double toX, double toY) {
+			return toX + ((value - fromX) / (fromY - fromX)) * (toY - toX);
 		}
 		
 		public void update(

@@ -23,7 +23,5 @@ public record P2d(double x, double y) {
     	double dx = p0.x - p1.x;
     	double dy = p0.y - p1.y;   	
         return (double)Math.sqrt(dx*dx+dy*dy);
-
     }
-
 }

@@ -22,7 +22,7 @@ public class TrafficSimulationSingleRoadTwoCars extends CarSimulation{
 		final double carMaxSpeed = 10;
 		final double carAccelleration = 2;
 		final double carDecelleration = 2;
-		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 0), new P2d(0, 1000));
+		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 300), new P2d(1000, 300));
 
 
 		int numberOfCars = 2;
