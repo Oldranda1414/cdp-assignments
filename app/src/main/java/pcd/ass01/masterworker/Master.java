@@ -19,7 +19,6 @@ public class Master extends Thread {
     private List<Worker> workers;
     private Buffer<Task> bagOfTasks;
     private ResettableLatch workersReady;
-    private ResettableLatch workReady;
     private AtomicBoolean simulationOver;
     private AbstractEnvironment<? extends AbstractAgent> env;
     private int dt;
@@ -43,8 +42,7 @@ public class Master extends Thread {
         this.dt = dt;
         //this.t0 = t0;
         this.workersReady = new ResettableLatchImpl(nWorkers);
-        this.workReady = new ResettableLatchImpl(1);
-        this.bagOfTasks = new BagOfTasks();
+        this.bagOfTasks = new BagOfTasks(this.workersReady);
         this.simulationOver = new AtomicBoolean(false);
         this.nSteps = nSteps;
         //this.listeners = listeners;
@@ -80,7 +78,6 @@ public class Master extends Thread {
             }
 
             this.simulationOver.set(true);
-            this.workReady.countDown();
 
             for(var worker : this.workers)worker.join();
 
@@ -93,7 +90,7 @@ public class Master extends Thread {
     private void initWorkers(){
         this.workers = new ArrayList<Worker>();
         for (int i = 0; i < this.nWorkers; i++) {
-            var w = new Worker(this.bagOfTasks, this.workersReady, this.workReady, this.simulationOver);
+            var w = new Worker(this.bagOfTasks, this.simulationOver);
             this.workers.add(w);
             w.start();
         }
@@ -103,9 +100,7 @@ public class Master extends Thread {
     private void bagStep(String workName, List<Task> works) throws InterruptedException{
         fillBag(workName, works);
 
-        this.workReady.countDown(); //notifing workers that bag is full of tasks
         log("going to sleep until workers finish " + workName + " works");
-        this.workReady.reset(); //reset the latch for the next tasks
         this.workersReady.await(); //wait for all workers to finish the tasks
         this.workersReady.reset();
     }
