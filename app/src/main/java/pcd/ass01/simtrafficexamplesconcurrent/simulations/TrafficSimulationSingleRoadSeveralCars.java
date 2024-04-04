@@ -1,25 +1,15 @@
 package pcd.ass01.simtrafficexamplesconcurrent.simulations;
 
-import pcd.ass01.masterworker.Task;
-import pcd.ass01.simengineconcurrent.AbstractEnvironment;
-import pcd.ass01.simengineconcurrent.AbstractSimulation;
 import pcd.ass01.simengineconcurrent.AbstractStates;
-import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.simtrafficbaseconcurrent.states.CarStates;
-import pcd.ass01.simtrafficbaseconcurrent.states.state.AccelerateState;
-import pcd.ass01.simtrafficbaseconcurrent.states.state.ConstantSpeedState;
-import pcd.ass01.simtrafficbaseconcurrent.states.state.DecelerateState;
 
 /**
  * 
- * Traffic Simulation about 30 cars moving on a single road, no traffic lights
+ * Traffic Simulation about 2 cars moving on a single road, no traffic lights
  * 
  */
-public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation<RoadsEnv> {
-
-	private final double seeingDistance = 30;
-	private final double brakingDistance = 20;
+public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
 
 	public TrafficSimulationSingleRoadSeveralCars() {
 		super();
@@ -27,7 +17,12 @@ public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation<R
 	
 	public void setup() {
 
-		int numberOfCars = 30;
+		final double carMaxSpeed = 10;
+		final double carAccelleration = 2;
+		final double carDecelleration = 2;
+		final double roadLenght = 1000;
+
+		int numberOfCars = 2;
 
 		int t0 = 0;
 		int dt = 1;
@@ -35,12 +30,15 @@ public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation<R
 		this.setupNumberOfAgents(numberOfCars);
 		this.setupTimings(t0, dt);
 		
-		AbstractEnvironment<CarAgent> env = new RoadsEnv(numberOfCars);
+		RoadsEnv env = new RoadsEnv(numberOfCars);
 		this.setupEnvironment(env);
 		AbstractStates<RoadsEnv> states = new CarStates();	
 		this.setupAgentStates(states);
+		var road = env.createRoad(roadLenght);
 		for(int i = 1; i <= numberOfCars; i++){
+			double position = i * (roadLenght/numberOfCars);
 			var id = Integer.toString(i);
+			env.createCar(id, road, position, carAccelleration, carDecelleration, carMaxSpeed);
 			this.addSenseDecide(this.getSenseDecide(id));
 			this.addAct(this.getAct(id));
 		}
@@ -49,46 +47,4 @@ public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation<R
 		//this.syncWithTime(25);
 	}	
 
-	public Task getSenseDecide(String id){
-		return new Task(() -> {
-			
-			
-			if(isSeeingACar(id)){
-				this.getAgentStates().put(id, new ConstantSpeedState());
-			}
-			else if(isTooCloseToCar(id)){
-				this.getAgentStates().put(id, new DecelerateState());
-			}
-			else{
-				this.getAgentStates().put(id, new AccelerateState());
-			}
-		},
-			id, "sense-decide");
-	}
-	
-	public Task getAct(String id){
-		return new Task(() -> {
-			//TODO the double id necessary seems redundant, maybe there is some way to remove id from act() parameters
-			this.getAgentStates().get(id).act(id, (RoadsEnv)this.getEnvironment());	
-		}, id, "act");
-	}
-
-	public boolean isTooCloseToCar(String id){
-		return this.isCloserThanFromCar(id, this.brakingDistance);
-	}
-
-	public boolean isSeeingACar(String id){
-		return this.isCloserThanFromCar(id, this.seeingDistance);
-	}
-
-	public boolean isCloserThanFromCar(String id, double distance){
-		var env = ((RoadsEnv)this.getEnvironment());
-		var distanceToClosestCar = env.nearestCarInFrontDistance(id);
-		if(distanceToClosestCar.isPresent()){
-			if(distanceToClosestCar.get() < distance){
-				return true;
-			}
-		}
-		return false;
-	}
 }
