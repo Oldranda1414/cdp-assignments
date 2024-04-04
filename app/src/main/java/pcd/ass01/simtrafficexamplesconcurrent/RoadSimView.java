@@ -9,7 +9,7 @@ import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineconcurrent.SimulationListener;
 import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
 import pcd.ass01.simtrafficbaseconcurrent.V2d;
-import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
+import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 

@@ -8,7 +8,7 @@ import java.util.Optional;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simtrafficbaseconcurrent.P2d;
 import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
-import pcd.ass01.simtrafficbaseconcurrent.agent.CarAgent;
+import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 
 public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		
