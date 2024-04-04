@@ -35,7 +35,6 @@ public class Master extends Thread {
         final List<SimulationListener> listeners
     ) {
         this.nWorkers = nWorkers;
-        this.nAgents = senseDecideWorks.size();
         this.senseDecideWorks = senseDecideWorks;
         this.actWorks = actWorks;
         this.env = env;
