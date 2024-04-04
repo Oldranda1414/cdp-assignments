@@ -21,8 +21,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	/* traffic lights */
 	private List<TrafficLight> trafficLights;
 
-
-	public RoadsEnv(int numberOfAgents) {
+	public RoadsEnv() {
 		trafficLights = new ArrayList<>();
 		roads = new ArrayList<>();
 	}
