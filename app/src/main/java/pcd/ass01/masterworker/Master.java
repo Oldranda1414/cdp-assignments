@@ -62,10 +62,11 @@ public class Master extends Thread {
             this.workersReady.reset();
 
             for(int step = 1; step <= nSteps; step++) {
+                
                 log("executing step " + step + " of the simulation");
-
+                
                 this.env.step(dt);
-
+                
                 bagStep("sense-decide", senseDecideWorks);
                 
                 bagStep("act", actWorks);
@@ -76,12 +77,16 @@ public class Master extends Thread {
 
                 //notifyNewStep(t, env);
             }
-
             this.simulationOver.set(true);
 
-            for(var worker : this.workers)worker.join();
+            for(var worker : this.workers) {
+                worker.interrupt();
+            }
+            for(var worker : this.workers) {
+                worker.join();
+            }
 
-            log("simulation finished");
+            log("master thread finished");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -100,9 +105,11 @@ public class Master extends Thread {
     private void bagStep(String workName, List<Task> works) throws InterruptedException{
         fillBag(workName, works);
 
-        log("going to sleep until workers finish " + workName + " works");
-        this.workersReady.await(); //wait for all workers to finish the tasks
-        this.workersReady.reset();
+        if (!this.simulationOver.get()) {
+            log("going to sleep until workers finish " + workName + " works");
+            this.workersReady.await(); //wait for all workers to finish the tasks
+            this.workersReady.reset();
+        }
     }
 
     private void fillBag(String workName, List<Task> works) throws InterruptedException{

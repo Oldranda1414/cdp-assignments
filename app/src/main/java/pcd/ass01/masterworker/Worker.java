@@ -19,15 +19,16 @@ public class Worker extends Thread {
     @Override
     public void run() {
         try {
-            while (!simulationOver.get()) {
+            while (true) {
                 var task = this.bagOfTasks.get(this.getName());
                 log("running a " + task.getTypeOfTask() + " task for agent " + task.getAgentId());
                 task.run();
+                if (simulationOver.get()) break;
             }
-
-            log("worker killed");
+            
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log("worker killed");
+            //e.printStackTrace();
         }
     }
 

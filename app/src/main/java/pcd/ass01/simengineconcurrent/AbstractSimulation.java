@@ -66,6 +66,8 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 
 		endWallTime = System.currentTimeMillis();
 		this.averageTimePerStep = timePerStep / numSteps;
+
+		System.out.println("Simulation finished");
 	}
 
 	public long getSimulationDuration() {
