@@ -14,9 +14,6 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		
 	private static final int ROAD_LENGHT = 100; 
 	private static final int MIN_DIST_ALLOWED = 5;
-	private static final double CAR_MAX_SPEED = 10;
-	private static final double CAR_ACCELLERATION = 2;
-	private static final double CAR_DECELLERATION = 2;
 	
 	/* list of roads */
 	private List<Road> roads;
@@ -26,23 +23,8 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 
 
 	public RoadsEnv(int numberOfAgents) {
-		this.setupNumberOfAgents(numberOfAgents);
 		trafficLights = new ArrayList<>(); //unused for now
 		roads = new ArrayList<>();
-	}
-	
-	@Override
-	public void setup() {
-		var road = this.createRoad(ROAD_LENGHT);
-		//TODO setup traffic lights
-		for(int i = 1; i <= this.numberOfAgents; i++){
-			double position = i * (ROAD_LENGHT/this.numberOfAgents);
-			var car = new CarAgent(Integer.toString(i), road, position, 
-				CAR_ACCELLERATION, 
-				CAR_DECELLERATION, 
-				CAR_MAX_SPEED);
-			this.map.put(car.getId(), car);
-		}
 	}
 	
 	@Override
@@ -50,7 +32,13 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		//TODO step for traffic lights
 	}
 
-	public Road createRoad(int lenght) {
+	public CarAgent createCar(String id, Road road, double position, double accelleration, double decelleration, double maxSpeed){
+		var car = new CarAgent(id, road, position, accelleration, decelleration, maxSpeed);
+		this.map.put(id, car);
+		return car;
+	}
+
+	public Road createRoad(double lenght) {
 		Road r = new Road(lenght);
 		this.roads.add(r);
 		return r;
@@ -62,20 +50,43 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		return tl;
 	}
 
-	public void updateAgent(String id, int decision){
-		changeCarSpeed(id, decision);
-		moveCar(id);
+	public void updateCar(String id, int decision){
+		var car = this.map.get(id);
+		takeCarDecision(car, decision);
+		moveCar(car);
 	}
 
-	private void changeCarSpeed(String id, int decision){ 
-		var speed = this.map.get(id).getCurrentSpeed();
-		var acceleration = this.map.get(id).getAcceleration();
-		var newSpeed = speed + (acceleration * Math.signum(decision));
-		if(newSpeed > CAR_MAX_SPEED){
-			this.map.get(id).setCurrentSpeed(CAR_MAX_SPEED);
+	//TODO decision should be an enum
+	private void takeCarDecision(CarAgent car, int decision){ 
+		if(decision < 0){
+			decelerateCar(car);
+		}
+		else if(decision > 0){
+			accelerateCar(car);
+		}
+	}
+
+	private void decelerateCar(CarAgent car){
+		var currentSpeed = car.getCurrentSpeed();
+		var delta = car.getDeceleration();
+		var newSpeed = currentSpeed + (delta * -1);
+		changeCarSpeed(car, newSpeed);	
+	}
+
+	private void accelerateCar(CarAgent car){
+		var currentSpeed = car.getCurrentSpeed();
+		var delta = car.getAcceleration();
+		var newSpeed = currentSpeed + delta;
+		changeCarSpeed(car, newSpeed);	
+	}
+
+	private void changeCarSpeed(CarAgent car, double newSpeed){
+		var maxSpeed = car.getMaxSpeed();
+		if(newSpeed > maxSpeed){
+			car.setCurrentSpeed(maxSpeed);
 		}
 		else{
-			this.map.get(id).setCurrentSpeed(newSpeed);
+			car.setCurrentSpeed(newSpeed);
 		}
 	}
 
@@ -84,12 +95,12 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	 * @param id
 	 * @param position
 	 */
-	private void moveCar(String id){
-		var currentSpeed = this.map.get(id).getCurrentSpeed();
-		var currentPosition = this.map.get(id).getCurrentPosition();
+	private void moveCar(CarAgent car){
+		var currentSpeed = car.getCurrentSpeed();
+		var currentPosition = car.getCurrentPosition();
 		var position = currentPosition + currentSpeed;
-		if(canMove(id, position)){
-			this.map.get(id).setCurrentPosition(position);
+		if(canMove(car.getId(), position)){
+			car.setCurrentPosition(position);
 		}
 	}
 

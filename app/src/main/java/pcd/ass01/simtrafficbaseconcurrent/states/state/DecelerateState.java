@@ -7,7 +7,7 @@ public class DecelerateState implements AgentState<RoadsEnv> {
 
     @Override
     public void act(String id, RoadsEnv env) {
-        env.updateAgent(id, -1);
+        env.updateCar(id, -1);
     }
 
 }

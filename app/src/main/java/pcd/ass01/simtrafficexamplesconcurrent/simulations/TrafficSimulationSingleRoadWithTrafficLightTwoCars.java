@@ -1,4 +1,4 @@
-package pcd.ass01.simtrafficexamplesconcurrent;
+package pcd.ass01.simtrafficexamplesconcurrent.simulations;
 
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineconcurrent.AbstractSimulation;
@@ -13,21 +13,21 @@ import pcd.ass01.simtrafficbaseconcurrent.states.state.DecelerateState;
 
 /**
  * 
- * Traffic Simulation about 2 cars moving on a single road, no traffic lights
+ * Traffic Simulation about 2 cars moving on a single road, with one traffic light
  * 
  */
-public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation<RoadsEnv> {
+public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends AbstractSimulation<RoadsEnv> {
 
 	private final double seeingDistance = 30;
 	private final double brakingDistance = 20;
 
-	public TrafficSimulationSingleRoadSeveralCars() {
+	public TrafficSimulationSingleRoadWithTrafficLightTwoCars() {
 		super();
 	}
 	
 	public void setup() {
 
-		int numberOfCars = 30;
+		int numberOfCars = 2;
 
 		int t0 = 0;
 		int dt = 1;
@@ -36,7 +36,8 @@ public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation<R
 		this.setupTimings(t0, dt);
 		
 		AbstractEnvironment<CarAgent> env = new RoadsEnv(numberOfCars);
-		env.setup();
+        //TODO add traffic lights
+        //env.addTrafficLight(new TrafficLight(50, TrafficLight.TrafficLightState.GREEN, 75, 25, 100));
 		this.setupEnvironment(env);
 		AbstractStates<RoadsEnv> states = new CarStates();	
 		this.setupAgentStates(states);
@@ -93,3 +94,4 @@ public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation<R
 		return false;
 	}
 }
+

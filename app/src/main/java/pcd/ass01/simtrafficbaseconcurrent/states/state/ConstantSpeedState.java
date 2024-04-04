@@ -7,7 +7,7 @@ public class ConstantSpeedState implements AgentState<RoadsEnv> {
 
     @Override
     public void act(String id, RoadsEnv env) {
-        env.updateAgent(id, 0);
+        env.updateCar(id, 0);
     }
 
 }

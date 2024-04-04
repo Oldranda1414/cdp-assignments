@@ -9,17 +9,9 @@ import pcd.ass01.utils.RWBuffer;
 */
 public abstract class AbstractEnvironment<I extends AbstractAgent> extends RWBuffer<I> {
 
-	protected int numberOfAgents;
-
 	protected AbstractEnvironment() {
 		
 	}
-	
-	/**
-	 * 
-	 * Called at the beginning of the simulation
-	 */
-	public abstract void setup();
 	
 	/**
 	 * 
@@ -29,8 +21,4 @@ public abstract class AbstractEnvironment<I extends AbstractAgent> extends RWBuf
 	 */
 	public abstract void step(int dt);
 
-	protected void setupNumberOfAgents(int numberOfAgents){
-		this.numberOfAgents = numberOfAgents;
-	}
-    
 }
