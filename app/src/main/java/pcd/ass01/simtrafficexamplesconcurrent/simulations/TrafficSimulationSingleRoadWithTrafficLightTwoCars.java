@@ -1,15 +1,15 @@
-
 package pcd.ass01.simtrafficexamplesconcurrent.simulations;
 
 import pcd.ass01.simengineconcurrent.AbstractStates;
 import pcd.ass01.simtrafficbaseconcurrent.P2d;
+import pcd.ass01.simtrafficbaseconcurrent.entity.TrafficLight;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.simtrafficbaseconcurrent.states.CarStates;
 import pcd.ass01.utils.Pair;
 
 /**
  * 
- * Traffic Simulation about 2 cars moving on a single road, no traffic lights
+ * Traffic Simulation about 2 cars moving on a single road, with one semaphore
  * 
  */
 public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends CarSimulation{
@@ -25,7 +25,6 @@ public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends CarSimul
 		final double carDecelleration = 2;
 		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 0), new P2d(0, 1000));
 
-
 		int numberOfCars = 2;
 
 		int t0 = 0;
@@ -34,11 +33,12 @@ public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends CarSimul
 		this.setupNumberOfAgents(numberOfCars);
 		this.setupTimings(t0, dt);
 		
-		RoadsEnv env = new RoadsEnv(numberOfCars);
+		RoadsEnv env = new RoadsEnv();
 		this.setupEnvironment(env);
 		AbstractStates<RoadsEnv> states = new CarStates();	
 		this.setupAgentStates(states);
 		var road = env.createRoad(roadPoints.getFirst(), roadPoints.getSecond());
+		env.createTrafficLight(500, road, TrafficLight.TrafficLightState.GREEN, 75, 25, 100);
 		for(int i = 1; i <= numberOfCars; i++){
 			double position = i * (road.getLen()/numberOfCars);
 			var id = Integer.toString(i);

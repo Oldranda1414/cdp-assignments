@@ -8,7 +8,7 @@ import pcd.ass01.utils.Pair;
 
 /**
  * 
- * Traffic Simulation about 2 cars moving on a single road, no traffic lights
+ * Traffic Simulation about 30 cars moving on a single road, no traffic lights
  * 
  */
 public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
@@ -32,7 +32,7 @@ public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
 		this.setupNumberOfAgents(numberOfCars);
 		this.setupTimings(t0, dt);
 		
-		RoadsEnv env = new RoadsEnv(numberOfCars);
+		RoadsEnv env = new RoadsEnv();
 		this.setupEnvironment(env);
 		AbstractStates<RoadsEnv> states = new CarStates();	
 		this.setupAgentStates(states);
