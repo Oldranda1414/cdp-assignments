@@ -20,7 +20,7 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 			if(isSeeingACar(id)){
 				this.getAgentStates().put(id, new ConstantSpeedState());
 			}
-			else if(isTooCloseToCar(id)){
+			else if(isTooCloseToCar(id) || isSeeingAHaltingTrafficLight(id)){
 				this.getAgentStates().put(id, new DecelerateState());
 			}
 			else{
