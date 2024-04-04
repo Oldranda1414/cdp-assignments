@@ -46,14 +46,12 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	 * @param numSteps
 	 */
 	public void run(int numSteps) {
-		startWallTime = System.currentTimeMillis();
-		//TODO check if this is correct.
-		//I did this in the setup of the concrete implementation
-		/* 
-		env.setupNumberOfAgents(this.numberOfAgents);
 
-		env.setup();
-		*/
+		System.out.println("Simulation started");
+
+		startWallTime = System.currentTimeMillis();
+
+
 		long timePerStep = 0;
 
 		this.master = new Master(ComputeBestNumOfWorkers(this.numberOfAgents), this.senseDecideWorks, this.actWorks, this.env, this.t0, this.dt, numSteps, this.listeners);
