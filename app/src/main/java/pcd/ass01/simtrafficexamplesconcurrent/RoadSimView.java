@@ -8,7 +8,7 @@ import pcd.ass01.simengineconcurrent.AbstractAgent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
 import pcd.ass01.simengineconcurrent.SimulationListener;
 import pcd.ass01.simtrafficbaseconcurrent.P2d;
-import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
+import pcd.ass01.simtrafficbaseconcurrent.entity.TrafficLight;
 import pcd.ass01.simtrafficbaseconcurrent.V2d;
 import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
@@ -90,7 +90,8 @@ public class RoadSimView extends JFrame implements SimulationListener {
 					} else {
 						g.setColor(new Color(255, 255, 0, 255));
 					}
-					g2.fillRect((int)(s.getPos().x()-5), (int)(s.getPos().y()-5), 10, 10);
+					var point = mapEntityOnRoad(s.getCurrentPosition(), s.getRoad());
+					g2.fillRect((int)point.x() - 5, (int)point.y() - 5, 10, 10);
 				}
 			}
 			
@@ -141,9 +142,13 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			repaint();
 		}
 
-		// private P2D mapEntityOnRoad(double position, Road road) {
-		// 	return new P2d(, );
-		// }
+		private P2d mapEntityOnRoad(double position, Road road) {
+			double segmentLength = Math.sqrt(Math.pow(road.getTo().x() - road.getFrom().x(), 2) + Math.pow(road.getTo().y() - road.getFrom().y(), 2));
+			double percentage = position / segmentLength;
+			double newX = road.getFrom().x() + (road.getTo().x() - road.getFrom().x()) * percentage;
+			double newY = road.getFrom().y() + (road.getTo().y() - road.getFrom().y()) * percentage;
+			return new P2d(newX, newY);
+		}
 	}
 
 
