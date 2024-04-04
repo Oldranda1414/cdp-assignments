@@ -151,6 +151,23 @@ This was solved by making the buffer return an Optional istead of a Runnable. Th
  now receives an empty Optional from the bag if it was empty, instead of awaiting for the
  bag to be filled again. The notEmpty condition was removed from the bag of works monitor
 
+\section{True Syncronization}
+The fact that a worker executed the countDownLatch() on the workers
+ ready latch and the await() on the work ready latch in a non atomic way
+ the master could execute the countDownLatch on the work ready latch ,signaling
+ to the workers that the bag was full of new works, before
+ all the workers where awaiting on it. This would make it so that the master would
+ wait for the workers to signal that they had executed all the works available but
+ some workers would wait for the master to signal that the bag was full.
+
+This was solved by eliminating the workReady latch, exchanging it for a condition
+ of the bag of tasks: notEmpty. This means that workers no longer wait on a latch
+ but wait directly on the notEmpty condition inside the bag of tasks. Before blocking
+ a worker the bag of task executes the countDownLatch() on the workers ready latch,
+ telling the master that a worker has paused. The master is then signaled that all
+ workers are paused through the workers ready latch and as soon as a new task is added
+ to the bag by the master a worker is woken to resume it's working loop.
+
 \bibliographystyle{plain}
 \bibliography{References}
 
