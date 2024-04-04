@@ -4,7 +4,7 @@ import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
 
 public class TrafficLight implements RoadEntity{
 	public static enum TrafficLightState {GREEN, YELLOW, RED}
-	private TrafficLightState state, initialState;
+	private TrafficLightState state;
 	private int currentTimeInState;
 	private int redDuration, greenDuration, yellowDuration;
 	private double position;
@@ -15,11 +15,7 @@ public class TrafficLight implements RoadEntity{
 		this.greenDuration = greenDuration;
 		this.yellowDuration = yellowDuration;
 		this.position = pos;
-		this.initialState = initialState;
         this.road = road;
-	}
-	
-	public void init() {
 		state = initialState;
 		currentTimeInState = 0;
 	}

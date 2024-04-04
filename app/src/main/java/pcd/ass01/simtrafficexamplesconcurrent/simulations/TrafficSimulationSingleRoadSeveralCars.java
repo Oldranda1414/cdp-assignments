@@ -22,7 +22,7 @@ public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
 		final double carMaxSpeed = 10;
 		final double carAccelleration = 2;
 		final double carDecelleration = 2;
-		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 0), new P2d(0, 1000));
+		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 300), new P2d(1000, 300));
 
 		int numberOfCars = 30;
 
@@ -38,7 +38,7 @@ public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
 		this.setupAgentStates(states);
 		var road = env.createRoad(roadPoints.getFirst(), roadPoints.getSecond());
 		for(int i = 1; i <= numberOfCars; i++){
-			double position = i * (road.getLen()/numberOfCars);
+			double position = i * ((road.getLen() - 2)/numberOfCars);
 			var id = Integer.toString(i);
 			env.createCar(id, road, position, carAccelleration, carDecelleration, carMaxSpeed);
 			this.addSenseDecide(this.getSenseDecide(id));

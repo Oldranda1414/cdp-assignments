@@ -28,12 +28,14 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	
 	@Override
 	public void step(int dt) {
-		//TODO step for traffic lights
+		for(var tf : this.trafficLights) {
+			tf.step(dt);
+		}
 	}
 
 	public CarAgent createCar(String id, Road road, double position, double accelleration, double decelleration, double maxSpeed){
-		if (position > road.getLen() || position < 0) {
-			throw new IllegalArgumentException("You must pass a position that is more than 0 and less than the road length.");
+		if (position > road.getLen() || position <= 0) {
+			throw new IllegalArgumentException("The value " + position + " is not valid. You must pass a position that is more than or equals to 0 and less than the road length.");
 		}
 		var car = new CarAgent(id, road, position, accelleration, decelleration, maxSpeed);
 		this.map.put(id, car);

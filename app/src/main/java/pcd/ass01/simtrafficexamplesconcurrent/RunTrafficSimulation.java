@@ -13,9 +13,9 @@ public class RunTrafficSimulation {
 
 		final int nSteps = 100;
 
-		var simulation = new TrafficSimulationSingleRoadTwoCars();
-		// var simulation = new TrafficSimulationSingleRoadSeveralCars();
-		//var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
+		//var simulation = new TrafficSimulationSingleRoadTwoCars();
+		//var simulation = new TrafficSimulationSingleRoadSeveralCars();
+		var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
 		// var simulation = new TrafficSimulationWithCrossRoads();
 		simulation.setup();
 		
