@@ -14,7 +14,6 @@ public class Master extends Thread {
     private List<Task> actWorks;
     //private List<SimulationListener> listeners;
     private int nWorkers;
-    private int nAgents;
     private List<Worker> workers;
     private Buffer<Task> bagOfTasks;
     private ResettableLatch workersReady;
