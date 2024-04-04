@@ -5,7 +5,7 @@ import java.util.List;
 
 import pcd.ass01.masterworker.Master;
 import pcd.ass01.masterworker.Task;
-import pcd.ass01.simengineseq_improved.SimulationListener;
+import pcd.ass01.simengineseq.SimulationListener;
 
 /**
  * Base class for defining concrete simulations

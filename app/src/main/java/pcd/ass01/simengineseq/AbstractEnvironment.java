@@ -1,7 +1,4 @@
-package pcd.ass01.simengineseq_improved;
-
-import java.util.ArrayList;
-import java.util.List;
+package pcd.ass01.simengineseq;
 
 /**
  *   
@@ -11,11 +8,9 @@ import java.util.List;
 public abstract class AbstractEnvironment {
 
 	private String id;
-	protected List<Action> submittedActions;
-
+	
 	protected AbstractEnvironment(String id) {
 		this.id = id;		
-		this.submittedActions = new ArrayList<>();
 	}
 	
 	public String getId() {
@@ -49,28 +44,8 @@ public abstract class AbstractEnvironment {
 	 * 
 	 * Called by agent to submit an action to the environment
 	 * 
+	 * @param agentId - identifier of the agent doing the action
 	 * @param act - the action
 	 */
-	public void submitAction(Action act) {
-		submittedActions.add(act);
-	}
-	
-	/**
-	 * 
-	 * Called at each simulation step to clean the list of actions
-	 * submitted by agents
-	 * 
-	 */
-	public void cleanActions() {
-		submittedActions.clear();
-	}
-
-	/**
-	 * 
-	 * Called at each simulation step to process the actions 
-	 * submitted by agents. 
-	 * 
-	 */
-	public abstract void processActions();
-
+	public abstract void doAction(String agentId, Action act);
 }

@@ -1,4 +1,4 @@
-package pcd.ass01.simengineseq_improved;
+package pcd.ass01.simengineseq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,21 +78,10 @@ public abstract class AbstractSimulation {
 			/* make a step */
 			
 			env.step(dt);
-			
-			/* clean the submitted actions */
-			
-			env.cleanActions();
-			
-			/* ask each agent to make a step */
-			
 			for (var agent: agents) {
 				agent.step(dt);
 			}
 			t += dt;
-						
-			/* process actions submitted to the environment */
-			
-			env.processActions();
 			
 			notifyNewStep(t, agents, env);
 

@@ -1,8 +1,8 @@
-package pcd.ass01.simtrafficbase_improved;
+package pcd.ass01.simtrafficbase;
 
 import java.util.Optional;
 
-import pcd.ass01.simengineseq_improved.*;
+import pcd.ass01.simengineseq.*;
 
 /**
  * 
@@ -55,7 +55,7 @@ public abstract class CarAgent extends AbstractAgent {
 		/* act */
 		
 		if (selectedAction.isPresent()) {
-			env.submitAction(selectedAction.get());
+			env.doAction(getId(), selectedAction.get());
 		}
 	}
 	

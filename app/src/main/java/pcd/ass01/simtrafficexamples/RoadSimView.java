@@ -1,12 +1,19 @@
-package pcd.ass01.simtrafficexamples_improved;
+package pcd.ass01.simtrafficexamples;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import pcd.ass01.simengineseq_improved.*;
-import pcd.ass01.simtrafficbase_improved.*;
+
+import pcd.ass01.simengineseq.AbstractAgent;
+import pcd.ass01.simengineseq.AbstractEnvironment;
+import pcd.ass01.simengineseq.SimulationListener;
+import pcd.ass01.simtrafficbase.CarAgentInfo;
+import pcd.ass01.simtrafficbase.Road;
+import pcd.ass01.simtrafficbase.RoadsEnv;
+import pcd.ass01.simtrafficbase.TrafficLight;
+import pcd.ass01.simtrafficbase.V2d;
 
 import java.awt.*;
 import javax.swing.*;

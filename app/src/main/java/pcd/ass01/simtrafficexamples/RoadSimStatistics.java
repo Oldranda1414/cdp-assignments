@@ -1,8 +1,11 @@
-package pcd.ass01.simtrafficexamples_improved;
+package pcd.ass01.simtrafficexamples;
 
 import java.util.List;
-import pcd.ass01.simengineseq_improved.*;
-import pcd.ass01.simtrafficbase_improved.*;
+
+import pcd.ass01.simengineseq.AbstractAgent;
+import pcd.ass01.simengineseq.AbstractEnvironment;
+import pcd.ass01.simengineseq.SimulationListener;
+import pcd.ass01.simtrafficbase.*;
 
 /**
  * Simple class keeping track of some statistics about a traffic simulation

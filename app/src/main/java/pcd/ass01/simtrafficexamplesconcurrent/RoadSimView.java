@@ -6,9 +6,9 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import pcd.ass01.simengineseq_improved.AbstractAgent;
-import pcd.ass01.simengineseq_improved.AbstractEnvironment;
-import pcd.ass01.simengineseq_improved.SimulationListener;
+import pcd.ass01.simengineseq.AbstractAgent;
+import pcd.ass01.simengineseq.AbstractEnvironment;
+import pcd.ass01.simengineseq.SimulationListener;
 // import pcd.ass01.simtrafficbaseconcurrent.TrafficLight;
 // import pcd.ass01.simtrafficbaseconcurrent.V2d;
 // import pcd.ass01.simtrafficbaseconcurrent.environment.Road;

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import pcd.ass01.simengineconcurrent.AbstractAgent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
-import pcd.ass01.simengineseq_improved.SimulationListener;
+import pcd.ass01.simengineseq.SimulationListener;
 import pcd.ass01.utils.Buffer;
 import pcd.ass01.utils.latch.*;
 

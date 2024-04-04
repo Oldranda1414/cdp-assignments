@@ -1,11 +1,13 @@
-package pcd.ass01.simtrafficbase_improved;
+package pcd.ass01.simtrafficbase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import pcd.ass01.simengineseq_improved.*;
+import pcd.ass01.simengineseq.AbstractEnvironment;
+import pcd.ass01.simengineseq.Action;
+import pcd.ass01.simengineseq.Percept;
 
 public class RoadsEnv extends AbstractEnvironment {
 		
@@ -96,30 +98,28 @@ public class RoadsEnv extends AbstractEnvironment {
 	
 	
 	@Override
-	public void processActions() {
-		for (var act: submittedActions) {
-			switch (act) {
-			case MoveForward mv: {
-				CarAgentInfo info = registeredCars.get(mv.agentId());
-				Road road = info.getRoad();
-				Optional<CarAgentInfo> nearestCar = getNearestCarInFront(road, info.getPos(), CAR_DETECTION_RANGE);
-				
-				if (!nearestCar.isEmpty()) {
-					double dist = nearestCar.get().getPos() - info.getPos();
-					if (dist > mv.distance() + MIN_DIST_ALLOWED) {
-						info.updatePos(info.getPos() + mv.distance());
-					}
-				} else {
+	public void doAction(String agentId, Action act) {
+		switch (act) {
+		case MoveForward mv: {
+			CarAgentInfo info = registeredCars.get(agentId);
+			Road road = info.getRoad();
+			Optional<CarAgentInfo> nearestCar = getNearestCarInFront(road, info.getPos(), CAR_DETECTION_RANGE);
+			
+			if (!nearestCar.isEmpty()) {
+				double dist = nearestCar.get().getPos() - info.getPos();
+				if (dist > mv.distance() + MIN_DIST_ALLOWED) {
 					info.updatePos(info.getPos() + mv.distance());
 				}
-	
-				if (info.getPos() > road.getLen()) {
-					info.updatePos(0);
-				}
-				break;
+			} else {
+				info.updatePos(info.getPos() + mv.distance());
 			}
-			default: break;
+
+			if (info.getPos() > road.getLen()) {
+				info.updatePos(0);
 			}
+			break;
+		}
+		default: break;
 		}
 	}
 	

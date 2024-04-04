@@ -1,4 +1,4 @@
-package pcd.ass01.simtrafficbaseconcurrent;
+package pcd.ass01.simtrafficbase;
 
 import pcd.ass01.simengineseq.Action;
 
