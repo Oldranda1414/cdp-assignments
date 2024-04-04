@@ -40,7 +40,7 @@ public class Worker extends Thread {
                     if(task.isPresent()){
                         var actualTask = task.get();
                         log("running a " + actualTask.getTypeOfTask() + " task for agent " + actualTask.getAgentId());
-                        actualTask.getRunnable().run();
+                        actualTask.run();
                     }
                 }while(task.isPresent());
                 //TODO check which version is prefered (while/do-while)

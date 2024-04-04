@@ -1,6 +1,6 @@
 package pcd.ass01.simengineconcurrent;
 
-public class Task {
+public class Task implements Runnable{
     private Runnable runnable;
     private String agentId;
     private String typeOfTask;
@@ -11,15 +11,16 @@ public class Task {
         this.typeOfTask = type;
     }
 
-    public Runnable getRunnable() {
-        return this.runnable;
-    }
-
     public String getAgentId() {
         return this.agentId;
     }
 
     public String getTypeOfTask() {
         return this.typeOfTask;
+    }
+
+    @Override
+    public void run() {
+        this.runnable.run();
     }
 }
