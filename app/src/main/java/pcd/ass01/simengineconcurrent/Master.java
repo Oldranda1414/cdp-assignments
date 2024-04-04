@@ -56,31 +56,20 @@ public class Master extends Thread {
             log("Starting Simulation");
             
             this.initWorkers();
+            log("awaiting for workers to be ready");
             this.workersReady.await();   //wait for all workers to be ready
+            this.workersReady.reset();
 
             for(int step = 1; step <= nSteps; step++) {
                 log("executing step " + step + " of the simulation");
+
                 this.env.step(dt);
 
-                log("filling the bag with tasks sense-decide");
-                for(var work : senseDecideWorks){
-                    this.bagOfTasks.put(work);
-                }
-                this.workReady.countDown(); //notifing workers that bag is full of tasks
-                log("going to sleep until workers finish current tasks");
-                this.workReady.reset(); //reset the latch for the next tasks
-                this.workersReady.await(); //wait for all workers to finish the tasks
-                log("filling the bag with tasks act");
-                for(var work : actWorks){
-                    this.bagOfTasks.put(work);
-                }
-                this.workReady.countDown(); //notifing workers that bag is full of tasks
-                log("going to sleep until workers finish current tasks");
-                this.workersReady.await(); //wait for all workers to finish the tasks
+                bagStep("sense-decide", senseDecideWorks);
+                
+                bagStep("act", actWorks);
+
                 log("finished executing step " + step + " of the simulation");
-                //reset the latches for the next step
-                this.workReady.reset(); 
-                this.workersReady.reset();
 
                 //t += dt;
 
@@ -98,6 +87,24 @@ public class Master extends Thread {
             this.workers.add(w);
             w.start();
         }
+        log("workers initialized");
+    }
+
+    private void bagStep(String workName, List<Runnable> works) throws InterruptedException{
+        fillBag(workName, works);
+
+        this.workReady.countDown(); //notifing workers that bag is full of tasks
+        log("going to sleep until workers finish " + workName + " works");
+        this.workReady.reset(); //reset the latch for the next tasks
+        this.workersReady.await(); //wait for all workers to finish the tasks
+        this.workersReady.reset();
+    }
+
+    private void fillBag(String workName, List<Runnable> works) throws InterruptedException{
+        for(var work : works){
+            this.bagOfTasks.put(work);
+        }
+        log("filled bag with " + workName + " works");
     }
     
     private void log(String message){
