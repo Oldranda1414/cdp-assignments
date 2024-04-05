@@ -1,6 +1,5 @@
 package pcd.ass01.simtrafficexamplesconcurrent.part2;
 
-import pcd.ass01.simtrafficexamplesconcurrent.RoadSimStatistics;
 import pcd.ass01.simtrafficexamplesconcurrent.simulations.*;
 
 /**
@@ -18,7 +17,7 @@ public class RunMassiveTrafficSimulation {
 		simulation.setup();
 		
 		try {
-			simulation.resumeSimulation();
+			simulation.resume();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
