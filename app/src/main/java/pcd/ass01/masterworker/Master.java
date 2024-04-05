@@ -27,7 +27,6 @@ public class Master extends Thread {
     private boolean toBeInSyncWithWallTime;
     private int nStepsPerSec;
     private long currentWallTime;
-    private long timePerStep;
 
     public Master(
         final int nWorkers,
@@ -85,13 +84,11 @@ public class Master extends Thread {
 
                 t += dt;
 
-                notifyNewStep(dt, env);
-
-                timePerStep += System.currentTimeMillis() - currentWallTime;
-
                 if (toBeInSyncWithWallTime) {
                     syncWithWallTime();
                 }
+                
+                notifyNewStep(t, step, System.currentTimeMillis() - currentWallTime, env);
             }
             this.simulationOver.set(true);
 
@@ -147,9 +144,9 @@ public class Master extends Thread {
 		}
 	}
 
-	private void notifyNewStep(int t, AbstractEnvironment<? extends AbstractAgent> env) {
+	private void notifyNewStep(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) {
 		for (var l: listeners) {
-			l.notifyStepDone(t, env);
+			l.notifyStepDone(t, stepNumber, deltaMillis, env);
 		}
 	}
 

@@ -8,7 +8,6 @@ public interface SimulationListener {
 	 * Called at the beginning of the simulation
 	 * 
 	 * @param t
-	 * @param agents
 	 * @param env
 	 */
 	void notifyInit(int t, AbstractEnvironment<? extends AbstractAgent> env);
@@ -16,8 +15,8 @@ public interface SimulationListener {
 	/**
 	 * Called at each step, updater all updates
 	 * @param t
-	 * @param agents
+	 * @param deltaMillis
 	 * @param env
 	 */
-	void notifyStepDone(int t, AbstractEnvironment<? extends AbstractAgent> env);
+	void notifyStepDone(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env);
 }
