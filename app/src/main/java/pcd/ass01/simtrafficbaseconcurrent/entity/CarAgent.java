@@ -72,9 +72,4 @@ public class CarAgent extends AbstractAgent implements RoadEntity{
 	public double getMaxSpeed(){
 		return this.maxSpeed;
 	}
-
-	protected void log(String msg) {
-		System.out.println("[CAR " + this.getId() + "] " + msg);
-	}
-	
 }

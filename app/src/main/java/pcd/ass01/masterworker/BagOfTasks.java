@@ -37,10 +37,8 @@ public class BagOfTasks implements Buffer<Task> {
 			mutex.lock();
 			
 			while (buffer.size() == 0) {
-				//log("[" + id + "]: bag is empty, going to sleep");
 				this.latch.countDown();
 				notEmpty.await();
-				//log("[" + id + "]: woke up");
 			}
 			Task item = buffer.removeFirst();
 			return item;
@@ -59,10 +57,4 @@ public class BagOfTasks implements Buffer<Task> {
 			mutex.unlock();
 		}
 	}
-
-    private void log(String message){
-        synchronized(System.out){
-            System.out.println(message);
-        }
-    }
 }

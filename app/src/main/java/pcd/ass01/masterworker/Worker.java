@@ -21,20 +21,11 @@ public class Worker extends Thread {
         try {
             while (true) {
                 var task = this.bagOfTasks.get(this.getName());
-                //log("running a " + task.getTypeOfTask() + " task for agent " + task.getAgentId());
                 task.run();
                 if (simulationOver.get()) break;
             }
             
         } catch (InterruptedException e) {
-            log("worker killed");
-            //e.printStackTrace();
-        }
-    }
-
-    private void log(String message){
-        synchronized(System.out){
-            System.out.println("[" + this.getName() + "]: " + message);
         }
     }
 }
