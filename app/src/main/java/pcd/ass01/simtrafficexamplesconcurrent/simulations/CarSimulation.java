@@ -12,8 +12,10 @@ import pcd.ass01.simtrafficbaseconcurrent.states.state.DecelerateState;
 
 public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
     
-	private static final double SEEING_DISTANCE = 30;
-	private static final double BRAKING_DISTANCE = 20;
+	protected double brakingDistance;
+	protected double seeingDistance;
+
+	protected abstract void setBrakingDistance();
 
 	protected Task getSenseDecide(String id){
 		return new Task(() -> {
@@ -37,11 +39,11 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 	}
 
 	protected boolean isTooCloseToCar(String id){
-		return this.isCloserThanFromCar(id, BRAKING_DISTANCE);
+		return this.isCloserThanFromCar(id, brakingDistance);
 	}
 
 	protected boolean isSeeingACar(String id){
-		return this.isCloserThanFromCar(id, SEEING_DISTANCE);
+		return this.isCloserThanFromCar(id, seeingDistance);
 	}
 
 	protected boolean isCloserThanFromCar(String id, double distance){
@@ -64,6 +66,6 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 			.filter(trafficLight -> {return trafficLight.getRoad() == road;})
 			.filter(trafficLight -> {return trafficLight.isRed() || trafficLight.isYellow();})
 			.map(trafficLight -> {return trafficLight.getCurrentPosition() < car.getCurrentPosition() ? trafficLight.getCurrentPosition() + road.getLen() : trafficLight.getCurrentPosition();})
-			.anyMatch(trafficLightPos -> {return (trafficLightPos - car.getCurrentPosition()) < SEEING_DISTANCE;});
+			.anyMatch(trafficLightPos -> {return (trafficLightPos - car.getCurrentPosition()) < brakingDistance;});
 	}
 }
