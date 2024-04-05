@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 
 import pcd.ass01.simengineconcurrent.AbstractAgent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
+import pcd.ass01.simengineconcurrent.AbstractSimulation;
 import pcd.ass01.simengineconcurrent.SimulationListener;
 import pcd.ass01.simtrafficbaseconcurrent.P2d;
 import pcd.ass01.simtrafficbaseconcurrent.entity.TrafficLight;
@@ -22,11 +23,11 @@ public class RoadSimView extends JFrame implements SimulationListener {
 	private RoadSimViewPanel panel;
 	private static final int CAR_DRAW_SIZE = 10;
 	
-	public RoadSimView() {
+	public RoadSimView(AbstractSimulation<? extends AbstractEnvironment<? extends AbstractAgent>> sim) {
 		super("RoadSim View");
 		setSize(1500,600);
 			
-		panel = new RoadSimViewPanel(1500,600); 
+		panel = new RoadSimViewPanel(1500,600, sim); 
 		panel.setSize(1500, 600);
 
 		JPanel cp = new JPanel();
@@ -51,8 +52,29 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		List<CarAgent> cars;
 		List<Road> roads;
 		List<TrafficLight> sems;
+		AbstractSimulation<? extends AbstractEnvironment<? extends AbstractAgent>> simulation;
 		
-		public RoadSimViewPanel(int w, int h){
+		public RoadSimViewPanel(int w, int h, AbstractSimulation<? extends AbstractEnvironment<? extends AbstractAgent>> sim){
+			this.simulation = sim;
+			var button = new JButton("Start");
+			this.add(button);
+			button.addActionListener((click) -> {
+				if (button.getText().equals("Stop")) {
+					button.setText("Resume");
+					try {
+						this.simulation.stopSimulation();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				} else {
+					button.setText("Stop");
+					try {
+						this.simulation.resumeSimulation();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			});
 		}
 
 		public void paintComponent(Graphics g) {

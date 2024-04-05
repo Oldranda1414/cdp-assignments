@@ -2,6 +2,7 @@ package pcd.ass01.simengineconcurrent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import pcd.ass01.masterworker.Master;
 import pcd.ass01.masterworker.Task;
@@ -27,11 +28,13 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	private Master master;
 	private boolean toBeInSyncWithWallTime;
 	private int nStepsPerSec;
+	private Semaphore startAndStop;
 
 	protected AbstractSimulation() {
 		listeners = new ArrayList<SimulationListener>();
 		senseDecideWorks = new ArrayList<Task>();
 		actWorks = new ArrayList<Task>();
+		startAndStop = new Semaphore(0);
 	}
 	
 	/**
@@ -65,7 +68,8 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 			numSteps, 
 			this.listeners,
 			this.toBeInSyncWithWallTime,
-			this.nStepsPerSec
+			this.nStepsPerSec,
+			this.startAndStop
 		);
 		try {
 			master.start();
@@ -78,6 +82,14 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		this.averageTimePerStep = timePerStep / numSteps;
 
 		System.out.println("Simulation finished");
+	}
+
+	public void stopSimulation() throws InterruptedException {
+		startAndStop.acquire();
+	}
+
+	public void resumeSimulation() throws InterruptedException {
+		startAndStop.release();
 	}
 
 	public long getSimulationDuration() {

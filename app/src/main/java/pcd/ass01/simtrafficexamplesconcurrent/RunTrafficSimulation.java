@@ -9,7 +9,7 @@ import pcd.ass01.simtrafficexamplesconcurrent.simulations.*;
  */
 public class RunTrafficSimulation {
 
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 
 		final int nSteps = 10_000;
 
@@ -19,8 +19,8 @@ public class RunTrafficSimulation {
 		// var simulation = new TrafficSimulationWithCrossRoads();
 		simulation.setup();
 		
+		RoadSimView view = new RoadSimView(simulation);
 		RoadSimStatistics stat = new RoadSimStatistics();
-		RoadSimView view = new RoadSimView();
 		view.display();
 		
 		simulation.addSimulationListener(stat);
