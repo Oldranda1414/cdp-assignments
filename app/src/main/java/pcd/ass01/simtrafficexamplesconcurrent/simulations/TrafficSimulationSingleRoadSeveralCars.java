@@ -14,11 +14,11 @@ import pcd.ass01.utils.Pair;
 public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation{
 
 	public TrafficSimulationSingleRoadSeveralCars() {
-		this.setBrakingDistance(20);
+		this.setDistances(20);
 	}
 
 	@Override
-	protected void setBrakingDistance(double breakingDistance) {
+	protected void setDistances(double breakingDistance) {
 		this.brakingDistance = breakingDistance;
 		this.seeingDistance = brakingDistance + 10;
 	}

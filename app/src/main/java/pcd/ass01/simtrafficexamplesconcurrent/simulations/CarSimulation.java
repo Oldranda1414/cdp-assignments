@@ -15,7 +15,7 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 	protected double brakingDistance;
 	protected double seeingDistance;
 
-	protected abstract void setBrakingDistance(double brakingDistance);
+	protected abstract void setDistances(double brakingDistance);
 
 	protected Task getSenseDecide(String id){
 		return new Task(() -> {
