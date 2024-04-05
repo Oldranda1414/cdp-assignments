@@ -1,5 +1,7 @@
 package pcd.ass01.simtrafficexamplesconcurrent.simulations;
 
+import java.util.Random;
+
 import pcd.ass01.simengineconcurrent.AbstractStates;
 import pcd.ass01.simtrafficbaseconcurrent.P2d;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
@@ -14,25 +16,23 @@ import pcd.ass01.utils.Pair;
 public class TrafficSimulationSingleRoadTwoCars extends CarSimulation{
 
 	public TrafficSimulationSingleRoadTwoCars() {
-		super();
+		this.setBrakingDistance(20);
 	}
 
 	@Override
-	protected void setBrakingDistance() {
-		this.brakingDistance = 20;
+	protected void setBrakingDistance(double breakingDistance) {
+		this.brakingDistance = breakingDistance;
 		this.seeingDistance = brakingDistance + 10;
 	}
 
 	public void setup() {
 
-		// carMaxSpeed < BREAKING_DISTANCE * carDecelleration
-		final double carMaxSpeed = 5;
-		final double carAccelleration = 1;
-		final double carDecelleration = 2;
-		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 300), new P2d(1000, 300));
-
-
+		double carMaxSpeed = 5;
+		double carAccelleration = 1;
+		double carDecelleration = 2;
 		int numberOfCars = 2;
+
+		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 300), new P2d(1000, 300));
 
 		int t0 = 0;
 		int dt = 1;
