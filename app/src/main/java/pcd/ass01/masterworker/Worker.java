@@ -21,7 +21,7 @@ public class Worker extends Thread {
         try {
             while (true) {
                 var task = this.bagOfTasks.get(this.getName());
-                log("running a " + task.getTypeOfTask() + " task for agent " + task.getAgentId());
+                //log("running a " + task.getTypeOfTask() + " task for agent " + task.getAgentId());
                 task.run();
                 if (simulationOver.get()) break;
             }
