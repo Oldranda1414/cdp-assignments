@@ -106,7 +106,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 				for (var c: cars) {
 					double pos = c.getCurrentPosition();
 					Road r = c.getRoad();
-					var mapped = new Pair<P2d, P2d>(
+					var mappedRoad = new Pair<P2d, P2d>(
 						new P2d(
 							mapValue(r.getFrom().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
 							mapValue(r.getFrom().y(), 0, maxBounds.getSecond(), 0, this.getHeight())
@@ -115,10 +115,11 @@ public class RoadSimView extends JFrame implements SimulationListener {
 							mapValue(r.getTo().y(), 0, maxBounds.getSecond(), 0, this.getHeight())
 						)
 					);
-					V2d dir = V2d.makeV2d(mapped.getFirst(), mapped.getSecond()).getNormalized().mul(pos);
+					V2d dir = V2d.makeV2d(mappedRoad.getFirst(), mappedRoad.getSecond()).getNormalized().mul(pos);
+					var point = mapEntityOnRoad(mappedRoad.getFirst().x() + dir.x(), r);
 					g2.drawOval(
-						(int)(mapped.getFirst().x() + dir.x() - CAR_DRAW_SIZE/2), 
-						(int)(mapped.getFirst().y() + dir.y() - CAR_DRAW_SIZE/2), CAR_DRAW_SIZE , CAR_DRAW_SIZE
+						(int)(mapValue(point.x(), 0, maxBounds.getFirst(), 0, this.getWidth()) - CAR_DRAW_SIZE/2), 
+						(int)(mapValue(point.y(), 0, maxBounds.getSecond(), 0, this.getHeight()) - CAR_DRAW_SIZE/2), CAR_DRAW_SIZE , CAR_DRAW_SIZE
 					);
 				}
 			}

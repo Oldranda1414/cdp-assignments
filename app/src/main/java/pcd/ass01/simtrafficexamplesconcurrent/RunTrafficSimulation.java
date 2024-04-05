@@ -11,11 +11,11 @@ public class RunTrafficSimulation {
 
 	public static void main(String[] args) {		
 
-		final int nSteps = 100;
+		final int nSteps = 10_000;
 
 		//var simulation = new TrafficSimulationSingleRoadTwoCars();
-		var simulation = new TrafficSimulationSingleRoadSeveralCars();
-		//var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
+		//var simulation = new TrafficSimulationSingleRoadSeveralCars();
+		var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
 		// var simulation = new TrafficSimulationWithCrossRoads();
 		simulation.setup();
 		

@@ -38,7 +38,7 @@ public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends CarSimul
 		AbstractStates<RoadsEnv> states = new CarStates();	
 		this.setupAgentStates(states);
 		var road = env.createRoad(roadPoints.getFirst(), roadPoints.getSecond());
-		env.createTrafficLight(500, road, TrafficLight.TrafficLightState.GREEN, 75, 25, 100);
+		env.createTrafficLight(500, road, TrafficLight.TrafficLightState.RED, 75, 25, 1000000);
 		for(int i = 1; i <= numberOfCars; i++){
 			double position = i * (road.getLen()/numberOfCars);
 			var id = Integer.toString(i);
@@ -48,7 +48,7 @@ public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends CarSimul
 		}
 
 		/* sync with wall-time: 25 steps per sec */
-		//this.syncWithTime(25);
+		this.syncWithTime(4);
 	}	
 
 }

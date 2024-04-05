@@ -103,7 +103,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	private void moveCar(CarAgent car){
 		var currentSpeed = car.getCurrentSpeed();
 		var currentPosition = car.getCurrentPosition();
-		var position = currentPosition + currentSpeed;
+		var position = (currentPosition + currentSpeed) % car.getRoad().getLen();
 		if(canMove(car.getId(), position)){
 			car.setCurrentPosition(position);
 		}
