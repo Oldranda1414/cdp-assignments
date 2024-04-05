@@ -13,17 +13,17 @@ public class RunTrafficSimulation {
 
 		final int nSteps = 10_000;
 
-		//var simulation = new TrafficSimulationSingleRoadTwoCars();
+		var simulation = new TrafficSimulationSingleRoadTwoCars();
 		//var simulation = new TrafficSimulationSingleRoadSeveralCars();
-		var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
+		//var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
 		// var simulation = new TrafficSimulationWithCrossRoads();
 		simulation.setup();
 		
-		//RoadSimStatistics stat = new RoadSimStatistics();
 		RoadSimView view = new RoadSimView(simulation);
+		RoadSimStatistics stat = new RoadSimStatistics();
 		view.display();
 		
-		//simulation.addSimulationListener(stat);
+		simulation.addSimulationListener(stat);
 		simulation.addSimulationListener(view);
 		simulation.run(nSteps);
 	}

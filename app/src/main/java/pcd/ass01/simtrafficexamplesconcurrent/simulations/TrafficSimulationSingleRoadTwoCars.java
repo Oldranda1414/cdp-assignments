@@ -25,7 +25,7 @@ public class TrafficSimulationSingleRoadTwoCars extends CarSimulation{
 		final Pair<P2d, P2d> roadPoints = new Pair<>(new P2d(0, 300), new P2d(1000, 300));
 
 
-		int numberOfCars = 2;
+		int numberOfCars = 1;
 
 		int t0 = 0;
 		int dt = 1;

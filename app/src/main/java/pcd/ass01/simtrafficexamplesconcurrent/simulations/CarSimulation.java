@@ -63,7 +63,7 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 		return trafficLights.stream()
 			.filter(trafficLight -> {return trafficLight.getRoad() == road;})
 			.filter(trafficLight -> {return trafficLight.isRed() || trafficLight.isYellow();})
-			.map(trafficLight -> {return trafficLight.getCurrentPosition() + road.getLen();})
+			.map(trafficLight -> {return trafficLight.getCurrentPosition() < car.getCurrentPosition() ? trafficLight.getCurrentPosition() + road.getLen() : trafficLight.getCurrentPosition();})
 			.anyMatch(trafficLightPos -> {return (trafficLightPos - car.getCurrentPosition()) < SEEING_DISTANCE;});
 	}
 }
