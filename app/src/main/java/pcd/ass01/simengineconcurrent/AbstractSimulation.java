@@ -34,7 +34,7 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		listeners = new ArrayList<SimulationListener>();
 		senseDecideWorks = new ArrayList<Task>();
 		actWorks = new ArrayList<Task>();
-		startAndStop = new Semaphore(1);
+		startAndStop = new Semaphore(0);
 	}
 	
 	/**

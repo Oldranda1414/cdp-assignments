@@ -59,15 +59,15 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			var button = new JButton("Start");
 			this.add(button);
 			button.addActionListener((click) -> {
-				if (button.getText().equals("Start") || button.getText().equals("Resume")) {
-					button.setText("Stop");
+				if (button.getText().equals("Stop")) {
+					button.setText("Resume");
 					try {
 						this.simulation.stopSimulation();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				} else {
-					button.setText("Resume");
+					button.setText("Stop");
 					try {
 						this.simulation.resumeSimulation();
 					} catch (InterruptedException e) {
