@@ -8,7 +8,7 @@ import pcd.ass01.simtrafficexamplesconcurrent.simulations.*;
 
 /**
  * 
- * Main class to create and run a simulation
+ * Main class to create anclass RunMassiveTrafficSimulationd run a simulation
  * 
  */
 public class RunRandomTrafficSimulation {

@@ -65,10 +65,10 @@ public class Master extends Thread {
 		int t = t0;
         try {
             this.notifyReset(t, env);
-            log("starting...");
+            //log("starting...");
             
             this.initWorkers();
-            log("awaiting for workers to be ready");
+            //log("awaiting for workers to be ready");
             this.workersReady.await();   //wait for all workers to be ready
             this.workersReady.reset();
 
@@ -78,7 +78,7 @@ public class Master extends Thread {
                 
                 currentWallTime = System.currentTimeMillis();
 
-                log("executing step " + step + " of the simulation");
+                //log("executing step " + step + " of the simulation");
                 
                 this.env.step(dt);
                 
@@ -86,7 +86,7 @@ public class Master extends Thread {
                 
                 bagStep("act", actWorks);
 
-                log("finished executing step " + step + " of the simulation");
+                //log("finished executing step " + step + " of the simulation");
 
                 t += dt;
 
@@ -120,14 +120,14 @@ public class Master extends Thread {
             this.workers.add(w);
             w.start();
         }
-        log("workers initialized");
+        //log("workers initialized");
     }
 
     private void bagStep(String workName, List<Task> works) throws InterruptedException{
         fillBag(workName, works);
 
         if (!this.simulationOver.get()) {
-            log("going to sleep until workers finish " + workName + " works");
+            //log("going to sleep until workers finish " + workName + " works");
             this.workersReady.await(); //wait for all workers to finish the tasks
             this.workersReady.reset();
         }
@@ -137,7 +137,7 @@ public class Master extends Thread {
         for(var work : works){
             this.bagOfTasks.put(work);
         }
-        log("filled bag with " + workName + " works");
+        //log("filled bag with " + workName + " works");
     }
     
     private void log(String message){
