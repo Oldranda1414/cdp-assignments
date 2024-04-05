@@ -13,7 +13,7 @@ public class RunTrafficSimulation {
 
 	public static void main(String[] args) {
 
-		final int nSteps = 10_000;
+		// final int nSteps = 10_000;
 
 		var simulation = new TrafficSimulationSingleRoadTwoCars();
 		//var simulation = new TrafficSimulationSingleRoadSeveralCars();
@@ -27,6 +27,6 @@ public class RunTrafficSimulation {
 		
 		simulation.addSimulationListener(stat);
 		simulation.addSimulationListener(view);
-		simulation.run(nSteps);
+		// simulation.run(nSteps);
 	}
 }

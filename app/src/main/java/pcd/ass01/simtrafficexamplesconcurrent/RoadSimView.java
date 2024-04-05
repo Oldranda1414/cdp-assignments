@@ -1,8 +1,12 @@
 package pcd.ass01.simtrafficexamplesconcurrent;
 
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
 
 import pcd.ass01.simengineconcurrent.AbstractAgent;
 import pcd.ass01.simengineconcurrent.AbstractEnvironment;
@@ -16,6 +20,7 @@ import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.utils.Pair;
 import java.awt.*;
+
 import javax.swing.*;
 
 public class RoadSimView extends JFrame implements SimulationListener {
@@ -27,14 +32,14 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		super("RoadSim View");
 		setSize(1500,600);
 			
-		panel = new RoadSimViewPanel(1500,600, sim); 
+		panel = new RoadSimViewPanel(1500,600, sim, this); 
 		panel.setSize(1500, 600);
 
 		JPanel cp = new JPanel();
 		LayoutManager layout = new BorderLayout();
 		cp.setLayout(layout);
 		cp.add(BorderLayout.CENTER,panel);
-		setContentPane(cp);		
+		setContentPane(cp);
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 			
@@ -53,32 +58,47 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		List<Road> roads;
 		List<TrafficLight> sems;
 		AbstractSimulation<? extends AbstractEnvironment<? extends AbstractAgent>> simulation;
+		JButton startButton;
 		
-		public RoadSimViewPanel(int w, int h, AbstractSimulation<? extends AbstractEnvironment<? extends AbstractAgent>> sim){
+		public RoadSimViewPanel(int w, int h, AbstractSimulation<? extends AbstractEnvironment<? extends AbstractAgent>> sim, JFrame frame){
 			this.simulation = sim;
-			var button = new JButton("Start");
-			this.add(button);
-			button.addActionListener((click) -> {
-				if (button.getText().equals("Stop")) {
-					button.setText("Resume");
+			this.startButton = new JButton("Start");
+			var textField = new JTextField();
+			var label = new JLabel("Insert number of steps: ");
+			textField.setText("1000");
+			textField.setColumns(10);
+			((AbstractDocument) textField.getDocument()).setDocumentFilter(new NumberOnlyFilter());
+			startButton.addActionListener((click) -> {
+				if (startButton.getText().equals("Stop")) {
+					startButton.setText("Resume");
 					try {
-						this.simulation.stopSimulation();
+						this.simulation.stop();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				} else {
-					button.setText("Stop");
+					startButton.setText("Stop");
 					try {
-						this.simulation.resumeSimulation();
+						this.remove(label);
+						this.remove(textField);
+						this.simulation.resume();
+						new Thread(() -> {
+							this.simulation.run(Integer.parseInt(textField.getText()));
+							this.remove(this.startButton);
+						}).start();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 			});
+			this.add(label);
+			this.add(textField);
+			this.add(startButton);
 		}
 
 		public void paintComponent(Graphics g) {
-			super.paintComponent(g);   
+			super.paintComponent(g);
+			if (startButton.getText() == "Start") return;
 	        Graphics2D g2 = (Graphics2D)g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 			g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -180,4 +200,56 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		var e = ((RoadsEnv) env);
 		panel.update(e.getRoads(), e.getAgentInfo(), e.getTrafficLights());
 	}
+
+	private class NumberOnlyFilter extends DocumentFilter {
+        @Override
+        public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr)
+                throws BadLocationException {
+
+            Document doc = fb.getDocument();
+            StringBuilder sb = new StringBuilder();
+            sb.append(doc.getText(0, doc.getLength()));
+            sb.insert(offset, string);
+
+            if (test(sb.toString())) {
+                super.insertString(fb, offset, string, attr);
+            } else {
+                // Do nothing, if the input is not a number
+            }
+        }
+
+        private boolean test(String text) {
+            return text.matches("\\d*"); // Match zero or more digits
+        }
+
+        @Override
+        public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                throws BadLocationException {
+
+            Document doc = fb.getDocument();
+            StringBuilder sb = new StringBuilder();
+            sb.append(doc.getText(0, doc.getLength()));
+            sb.replace(offset, offset + length, text);
+
+            if (test(sb.toString())) {
+                super.replace(fb, offset, length, text, attrs);
+            } else {
+                // Do nothing, if the input is not a number
+            }
+        }
+
+        @Override
+        public void remove(DocumentFilter.FilterBypass fb, int offset, int length) throws BadLocationException {
+            Document doc = fb.getDocument();
+            StringBuilder sb = new StringBuilder();
+            sb.append(doc.getText(0, doc.getLength()));
+            sb.delete(offset, offset + length);
+
+            if (test(sb.toString())) {
+                super.remove(fb, offset, length);
+            } else {
+                // Do nothing, if the input is not a number
+            }
+        }
+    }
 }

@@ -84,11 +84,11 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		System.out.println("Simulation finished");
 	}
 
-	public void stopSimulation() throws InterruptedException {
+	public void stop() throws InterruptedException {
 		startAndStop.acquire();
 	}
 
-	public void resumeSimulation() throws InterruptedException {
+	public void resume() throws InterruptedException {
 		startAndStop.release();
 	}
 
