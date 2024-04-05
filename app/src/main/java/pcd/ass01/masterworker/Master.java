@@ -2,6 +2,7 @@ package pcd.ass01.masterworker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import pcd.ass01.simengineconcurrent.AbstractAgent;
@@ -28,6 +29,7 @@ public class Master extends Thread {
     private int nStepsPerSec;
     private long currentWallTime;
     private long timePerStep;
+    private Semaphore startAndStop;
 
     public Master(
         final int nWorkers,
@@ -39,7 +41,8 @@ public class Master extends Thread {
         final int nSteps,
         final List<SimulationListener> listeners,
         final boolean toBeInSyncWithWallTime,
-        final int nStepsPerSec
+        final int nStepsPerSec,
+        final Semaphore startAndStop
     ) {
         this.nWorkers = nWorkers;
         this.senseDecideWorks = senseDecideWorks;
@@ -54,6 +57,7 @@ public class Master extends Thread {
         this.listeners = listeners;
         this.toBeInSyncWithWallTime = toBeInSyncWithWallTime;
         this.nStepsPerSec = nStepsPerSec;
+        this.startAndStop = startAndStop;
     }
 
     @Override
@@ -70,6 +74,8 @@ public class Master extends Thread {
             this.workersReady.reset();
 
             for(int step = 1; step <= nSteps; step++) {
+                
+                startAndStop.acquire();
                 
                 currentWallTime = System.currentTimeMillis();
 
@@ -88,7 +94,9 @@ public class Master extends Thread {
                 notifyNewStep(dt, env);
 
                 timePerStep += System.currentTimeMillis() - currentWallTime;
-
+                
+                startAndStop.release();
+                
                 if (toBeInSyncWithWallTime) {
                     syncWithWallTime();
                 }
