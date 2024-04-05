@@ -1,7 +1,9 @@
-package pcd.ass01.simtrafficexamplesconcurrent;
+package pcd.ass01.simtrafficexamplesconcurrent.part3;
 
 import java.util.Random;
 
+import pcd.ass01.simtrafficexamplesconcurrent.RoadSimStatistics;
+import pcd.ass01.simtrafficexamplesconcurrent.RoadSimView;
 import pcd.ass01.simtrafficexamplesconcurrent.simulations.*;
 
 /**

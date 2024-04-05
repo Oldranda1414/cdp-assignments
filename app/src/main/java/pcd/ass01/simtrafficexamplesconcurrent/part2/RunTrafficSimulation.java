@@ -1,5 +1,7 @@
-package pcd.ass01.simtrafficexamplesconcurrent;
+package pcd.ass01.simtrafficexamplesconcurrent.part2;
 
+import pcd.ass01.simtrafficexamplesconcurrent.RoadSimStatistics;
+import pcd.ass01.simtrafficexamplesconcurrent.RoadSimView;
 import pcd.ass01.simtrafficexamplesconcurrent.simulations.*;
 
 /**

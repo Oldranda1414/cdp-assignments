@@ -4,7 +4,6 @@ import java.util.Random;
 
 import pcd.ass01.simengineconcurrent.AbstractStates;
 import pcd.ass01.simtrafficbaseconcurrent.P2d;
-import pcd.ass01.simtrafficbaseconcurrent.entity.TrafficLight;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.simtrafficbaseconcurrent.states.CarStates;
 import pcd.ass01.utils.Pair;
