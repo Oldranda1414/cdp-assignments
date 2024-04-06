@@ -17,7 +17,7 @@ public class RunRandomTrafficSimulation {
 
 		final int nSteps = 10_000;
 
-        var simulation = new TrafficSimulationWithRandom(new Random(37));
+        TrafficSimulationWithRandom simulation = new TrafficSimulationWithRandom(new Random(37));
 		simulation.setup();
 		
 		RoadSimView view = new RoadSimView(simulation);

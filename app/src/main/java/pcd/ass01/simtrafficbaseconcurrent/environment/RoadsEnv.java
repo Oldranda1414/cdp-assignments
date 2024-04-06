@@ -27,7 +27,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	
 	@Override
 	public void step(int dt) {
-		for(var tf : this.trafficLights) {
+		for(TrafficLight tf : this.trafficLights) {
 			tf.step(dt);
 		}
 	}
@@ -36,7 +36,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		if (position > road.getLen() || position <= 0) {
 			throw new IllegalArgumentException("The value " + position + " is not valid. You must pass a position that is more than or equals to 0 and less than the road length.");
 		}
-		var car = new CarAgent(id, road, position, accelleration, decelleration, maxSpeed);
+		CarAgent car = new CarAgent(id, road, position, accelleration, decelleration, maxSpeed);
 		this.map.put(id, car);
 		return car;
 	}
@@ -54,7 +54,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
 
 	public void updateCar(String id, int decision){
-		var car = this.map.get(id);
+		CarAgent car = this.map.get(id);
 		takeCarDecision(car, decision);
 		moveCar(car);
 	}
@@ -70,20 +70,20 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
 
 	private void decelerateCar(CarAgent car){
-		var currentSpeed = car.getCurrentSpeed();
-		var delta = car.getDeceleration();
-		var newSpeed = currentSpeed + (delta * -1);
+		double currentSpeed = car.getCurrentSpeed();
+		double delta = car.getDeceleration();
+		double newSpeed = currentSpeed + (delta * -1);
 		changeCarSpeed(car, newSpeed);	
 	}
 
 	private void accelerateCar(CarAgent car){
-		var currentSpeed = car.getCurrentSpeed();
-		var newSpeed = currentSpeed + car.getAcceleration();
+		double currentSpeed = car.getCurrentSpeed();
+		double newSpeed = currentSpeed + car.getAcceleration();
 		changeCarSpeed(car, newSpeed);	
 	}
 
 	private void changeCarSpeed(CarAgent car, double newSpeed){
-		var maxSpeed = car.getMaxSpeed();
+		double maxSpeed = car.getMaxSpeed();
 		if(newSpeed > maxSpeed){
 			car.setCurrentSpeed(maxSpeed);
 		}
@@ -101,16 +101,16 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	 * @param position
 	 */
 	private void moveCar(CarAgent car){
-		var currentSpeed = car.getCurrentSpeed();
-		var currentPosition = car.getCurrentPosition();
-		var position = (currentPosition + currentSpeed) % car.getRoad().getLen();
+		double currentSpeed = car.getCurrentSpeed();
+		double currentPosition = car.getCurrentPosition();
+		double position = (currentPosition + currentSpeed) % car.getRoad().getLen();
 		if(canMove(car.getId(), position)){
 			car.setCurrentPosition(position);
 		}
 	}
 
 	public boolean canMove(String id, double position){
-		var car = this.map.get(id);
+		CarAgent car = this.map.get(id);
 		return !this.map.entrySet().stream()
 			.filter(couple -> id != couple.getKey())
 			.map(couple -> couple.getValue())
@@ -118,9 +118,9 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
 
 	public Optional<Double> nearestCarInFrontDistance(String id){
-		var currentCar = this.map.get(id);
-		var currentPosition = currentCar.getCurrentPosition();
-		var currentRoad = currentCar.getRoad();
+		CarAgent currentCar = this.map.get(id);
+		double currentPosition = currentCar.getCurrentPosition();
+		Road currentRoad = currentCar.getRoad();
 		return this.map.values().stream()
 			.filter(car -> {return car != currentCar && car.getRoad() == currentRoad;})
 			.map(car -> {return car.getCurrentPosition() + currentRoad.getLen();})

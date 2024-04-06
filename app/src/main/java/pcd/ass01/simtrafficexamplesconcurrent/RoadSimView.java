@@ -63,8 +63,8 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		public RoadSimViewPanel(int w, int h, AbstractSimulation<? extends AbstractEnvironment<? extends AbstractAgent>> sim, JFrame frame){
 			this.simulation = sim;
 			this.startButton = new JButton("Start");
-			var textField = new JTextField();
-			var label = new JLabel("Insert number of steps: ");
+			JTextField textField = new JTextField();
+			JLabel label = new JLabel("Insert number of steps: ");
 			textField.setText("1000");
 			textField.setColumns(10);
 			((AbstractDocument) textField.getDocument()).setDocumentFilter(new NumberOnlyFilter());
@@ -77,15 +77,17 @@ public class RoadSimView extends JFrame implements SimulationListener {
 						e.printStackTrace();
 					}
 				} else {
-					startButton.setText("Stop");
 					try {
-						this.remove(label);
-						this.remove(textField);
 						this.simulation.resume();
-						new Thread(() -> {
-							this.simulation.run(Integer.parseInt(textField.getText()));
-							this.remove(this.startButton);
-						}).start();
+						if (startButton.getText().equals("Start")) {
+							this.remove(label);
+							this.remove(textField);
+							new Thread(() -> {
+								this.simulation.run(Integer.parseInt(textField.getText()));
+								this.remove(this.startButton);
+							}).start();
+						}
+						startButton.setText("Stop");
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -96,15 +98,16 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			this.add(startButton);
 		}
 
+		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			if (startButton.getText() == "Start") return;
+			if (roads == null) return;
 	        Graphics2D g2 = (Graphics2D)g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 			g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			g2.clearRect(0,0,this.getWidth(),this.getHeight());
 			
-			var maxBounds = new Pair<Double, Double>(
+			Pair<Double, Double> maxBounds = new Pair<Double, Double>(
 				roads.stream()
 					.map(road -> {return road.getTo().x() > road.getFrom().x() ? road.getTo().x() : road.getFrom().x();})
 					.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get(),
@@ -114,7 +117,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			);
 
 			if (roads != null) {
-				for (var r: roads) {
+				for (Road r: roads) {
 					g2.drawLine(
 						(int)mapValue(r.getFrom().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
 						(int)mapValue(r.getFrom().y(), 0, maxBounds.getSecond(), 0, this.getHeight()), 
@@ -125,7 +128,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			}
 			
 			if (sems != null) {
-				for (var s: sems) {
+				for (TrafficLight s: sems) {
 					if (s.isGreen()) {
 						g.setColor(new Color(0, 255, 0, 255));
 					} else if (s.isRed()) {
@@ -133,8 +136,8 @@ public class RoadSimView extends JFrame implements SimulationListener {
 					} else {
 						g.setColor(new Color(255, 255, 0, 255));
 					}
-					var point = mapEntityOnRoad(s.getCurrentPosition(), s.getRoad());
-					var mappedPoint = new P2d(
+					P2d point = mapEntityOnRoad(s.getCurrentPosition(), s.getRoad());
+					P2d mappedPoint = new P2d(
 						mapValue(point.x(), 0, maxBounds.getFirst(), 0, this.getWidth()),
 						mapValue(point.y(), 0, maxBounds.getSecond(), 0, this.getHeight())
 					);
@@ -145,10 +148,10 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			g.setColor(new Color(0, 0, 0, 255));
 
 			if (cars != null) {
-				for (var c: cars) {
+				for (CarAgent c: cars) {
 					double pos = c.getCurrentPosition();
 					Road r = c.getRoad();
-					var mappedRoad = new Pair<P2d, P2d>(
+					Pair<P2d, P2d> mappedRoad = new Pair<P2d, P2d>(
 						new P2d(
 							mapValue(r.getFrom().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
 							mapValue(r.getFrom().y(), 0, maxBounds.getSecond(), 0, this.getHeight())
@@ -158,7 +161,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 						)
 					);
 					V2d dir = V2d.makeV2d(mappedRoad.getFirst(), mappedRoad.getSecond()).getNormalized().mul(pos);
-					var point = mapEntityOnRoad(mappedRoad.getFirst().x() + dir.x(), r);
+					P2d point = mapEntityOnRoad(mappedRoad.getFirst().x() + dir.x(), r);
 					g2.drawOval(
 						(int)(mapValue(point.x(), 0, maxBounds.getFirst(), 0, this.getWidth()) - CAR_DRAW_SIZE/2), 
 						(int)(mapValue(point.y(), 0, maxBounds.getSecond(), 0, this.getHeight()) - CAR_DRAW_SIZE/2), CAR_DRAW_SIZE , CAR_DRAW_SIZE
@@ -197,7 +200,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 
 	@Override
 	public void notifyStepDone(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) {
-		var e = ((RoadsEnv) env);
+		RoadsEnv e = ((RoadsEnv) env);
 		panel.update(e.getRoads(), e.getAgentInfo(), e.getTrafficLights());
 	}
 

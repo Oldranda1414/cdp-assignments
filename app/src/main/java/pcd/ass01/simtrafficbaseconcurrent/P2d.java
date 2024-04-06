@@ -5,7 +5,23 @@ package pcd.ass01.simtrafficbaseconcurrent;
  * P2d -- modelling a point in a 2D space
  * 
  */
-public record P2d(double x, double y) {
+public class P2d {
+
+    private final double x;
+    private final double y;
+
+    public P2d(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double x() {
+        return this.x;
+    }
+
+    public double y() {
+        return this.y;
+    }
 
     public P2d sum(V2d v){
         return new P2d(x+v.x(),y+v.y());
@@ -15,9 +31,10 @@ public record P2d(double x, double y) {
         return new V2d(x-v.x,y-v.y);
     }
 
-    public String toString(){
-        return "P2d("+x+","+y+")";
-    }
+    // @Override
+    // public String toString(){
+    //     return "P2d("+x+","+y+")";
+    // }
 
     public static double len(P2d p0, P2d p1) {
     	double dx = p0.x - p1.x;

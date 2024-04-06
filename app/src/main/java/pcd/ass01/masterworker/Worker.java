@@ -20,7 +20,7 @@ public class Worker extends Thread {
     public void run() {
         try {
             while (true) {
-                var task = this.bagOfTasks.get(this.getName());
+                Task task = this.bagOfTasks.get(this.getName());
                 task.run();
                 if (simulationOver.get()) break;
             }

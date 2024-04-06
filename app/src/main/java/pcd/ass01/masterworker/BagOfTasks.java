@@ -24,7 +24,8 @@ public class BagOfTasks implements Buffer<Task> {
 	public void put(Task item) throws InterruptedException {
 		try {
 			mutex.lock();
-			buffer.addLast(item);
+			buffer.add(buffer.size(), item);
+			// buffer.addLast(item);
 			notEmpty.signal();
 		} finally {
 			mutex.unlock();
@@ -40,7 +41,9 @@ public class BagOfTasks implements Buffer<Task> {
 				this.latch.countDown();
 				notEmpty.await();
 			}
-			Task item = buffer.removeFirst();
+			Task item = buffer.get(0);
+			buffer.remove(0);
+			// Task item = buffer.removeFirst();
 			return item;
 		} finally {
 			mutex.unlock();

@@ -94,10 +94,10 @@ public class Master extends Thread {
             }
             this.simulationOver.set(true);
 
-            for(var worker : this.workers) {
+            for(Worker worker : this.workers) {
                 worker.interrupt();
             }
-            for(var worker : this.workers) {
+            for(Worker worker : this.workers) {
                 worker.join();
             }
 
@@ -109,7 +109,7 @@ public class Master extends Thread {
     private void initWorkers(){
         this.workers = new ArrayList<Worker>();
         for (int i = 0; i < this.nWorkers; i++) {
-            var w = new Worker(this.bagOfTasks, this.simulationOver);
+            Worker w = new Worker(this.bagOfTasks, this.simulationOver);
             this.workers.add(w);
             w.start();
         }
@@ -125,19 +125,19 @@ public class Master extends Thread {
     }
 
     private void fillBag(String workName, List<Task> works) throws InterruptedException{
-        for(var work : works){
+        for(Task work : works){
             this.bagOfTasks.put(work);
         }
     }
 	
 	private void notifyReset(int t0, AbstractEnvironment<? extends AbstractAgent> env) {
-		for (var l: listeners) {
+		for (SimulationListener l: listeners) {
 			l.notifyInit(t0, env);
 		}
 	}
 
 	private void notifyNewStep(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) {
-		for (var l: listeners) {
+		for (SimulationListener l: listeners) {
 			l.notifyStepDone(t, stepNumber, deltaMillis, env);
 		}
 	}

@@ -5,7 +5,23 @@ package pcd.ass01.simtrafficbaseconcurrent;
  * V2d represents a vector in a 2d space
  * 
  */
-public record V2d(double x, double y) {
+public class V2d {
+
+    private final double x;
+    private final double y;
+
+    public V2d(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double x() {
+        return this.x;
+    }
+
+    public double y() {
+        return this.y;
+    }
 
     public static V2d makeV2d(P2d from, P2d to) {
     	return new V2d(to.x() - from.x(), to.y() - from.y());
@@ -28,7 +44,8 @@ public record V2d(double x, double y) {
         return new V2d(x*fact,y*fact);
     }
 
-    public String toString(){
-        return "V2d("+x+","+y+")";
-    }
+    // @Override
+    // public String toString(){
+    //     return "V2d("+x+","+y+")";
+    // }
 }

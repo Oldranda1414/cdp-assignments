@@ -1,10 +1,13 @@
 package pcd.ass01.simtrafficexamplesconcurrent.simulations;
 
 import java.util.List;
+import java.util.Optional;
 
 import pcd.ass01.masterworker.Task;
 import pcd.ass01.simengineconcurrent.AbstractSimulation;
+import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.entity.TrafficLight;
+import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
 import pcd.ass01.simtrafficbaseconcurrent.states.state.AccelerateState;
 import pcd.ass01.simtrafficbaseconcurrent.states.state.ConstantSpeedState;
@@ -47,8 +50,8 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 	}
 
 	protected boolean isCloserThanFromCar(String id, double distance){
-		var env = ((RoadsEnv)this.getEnvironment());
-		var distanceToClosestCar = env.nearestCarInFrontDistance(id);
+		RoadsEnv env = ((RoadsEnv)this.getEnvironment());
+		Optional<Double> distanceToClosestCar = env.nearestCarInFrontDistance(id);
 		if(distanceToClosestCar.isPresent()){
 			if(distanceToClosestCar.get() < distance){
 				return true;
@@ -58,9 +61,9 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 	}
 
 	protected boolean isSeeingAHaltingTrafficLight(String id){
-		var env = ((RoadsEnv)this.getEnvironment());
-		var car = env.get(id);
-		var road = car.getRoad();
+		RoadsEnv env = ((RoadsEnv)this.getEnvironment());
+		CarAgent car = env.get(id);
+		Road road = car.getRoad();
 		List<TrafficLight> trafficLights = env.getTrafficLights();
 		return trafficLights.stream()
 			.filter(trafficLight -> {return trafficLight.getRoad() == road;})

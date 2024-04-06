@@ -155,9 +155,6 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		int cores = Runtime.getRuntime().availableProcessors();
 		int standardThreads = 2; //number of threads to be used for other processes (in this case I calculate 1 thread for Master and 1 for the gui)
 		int availableThreads = cores - standardThreads;
-		int coefficent = 4; //computed euristically
-		int result = Math.min(Math.max(availableThreads, 1), numberOfAgents) * coefficent;
-		System.out.println(result);
-		return result;
+		return Math.min((availableThreads > 0) ? availableThreads : 1, numberOfAgents);
 	}
 }

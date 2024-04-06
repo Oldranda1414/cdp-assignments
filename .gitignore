@@ -65,7 +65,6 @@ chantilly.txt
 *.class
 /bin
 
-
 ## JPF Runner
 !jpf-runner/build/
 !jpf-runner/build/*.jar
