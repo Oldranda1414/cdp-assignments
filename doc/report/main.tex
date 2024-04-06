@@ -114,23 +114,23 @@ The environment is implemented as a readers-writers monitor, which
 2 Latches are used for syncronization between master and workers.
 
 \begin{figure}
-    \caption{UML diagram showing relationships between monitors, active components and syncronization components}
     \centering
     \includegraphics{UML1.png}
+    \caption{UML diagram showing relationships between monitors, active components and syncronization components}
 \end{figure}
 
 \section{Visual Formalisms}
 
 \begin{figure}
-    \caption{Petri net diagram showing the beheviour of the master and workers threads}
     \centering
-    \includegraphics{UML1.png}
+    \includegraphics{petriNet.png}
+    \caption{Petri net diagram showing the beheviour of the master and workers threads. N is the number of agents in the simulation. The master beheviour is rappresented by 4 places and 4 transitions. The worker is rappresented by one place and one transition. A place containing a token for every step of the simulation regulates the number of steps. Two places (in red), rappresenting the number of tasks in the bag and the number of tasks finished, regulate the syncronization between master and workers}
 \end{figure}
 
 \begin{figure}
-    \caption{A state graph summarizing the beheviour of the system}
     \centering
     \includegraphics{UML1.png}
+    \caption{A state graph summarizing the beheviour of the system}
 \end{figure}
 \chapter{Implementation}
 
@@ -209,7 +209,26 @@ The main classes for the part3 requirements are contained in the simtrafficexamp
     \item RunRandomTrafficSimulation.java
 \end{itemize}
 
-//TODO add the tests for execution time of massive simulation
+\section{Number of Workers}
+The number of workers  is calculated based on the number of cores the executing environment has with the following
+ formula:
+
+\[min(max(cores - 2, 1), nAgents) * coef\]
+
+where \emph{cores} is the number of cores of the executing environment, \emph{nAgents} is the number of agents in the simulation,
+ \emph{coef} is a coefficient euristically determined to be equal to 4.
+
+We believe that if every java thread coencided with an actual core being used (low level thread) the coefficient
+ would not be necessary. 
+
+\section{Sequential and Concurrent Comparison}
+Testing the execution speed of the concurrent and sequential versions of the simulation with a massive number of cars
+ we obtained the following data:
+\begin{itemize}
+    \item concurrent execution time: 25.8 seconds on average
+    \item sequential execution time: 30.4 seconds on average
+\end{itemize}
+
 \bibliographystyle{plain}
 \bibliography{References}
 
