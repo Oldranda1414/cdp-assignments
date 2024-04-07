@@ -1,14 +1,11 @@
 package pcd.ass01.simengineconcurrent;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import pcd.ass01.masterworker.Master;
 import pcd.ass01.masterworker.Task;
-// import pcd.ass01.simengineconcurrent.SimulationListener;
-import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 
 /**
  * Base class for defining concrete simulations
