@@ -76,17 +76,17 @@ public class RoadSimView extends JFrame implements SimulationListener {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+				} else if (startButton.getText().equals("Start")) {
+					this.remove(label);
+					this.remove(textField);
+					new Thread(() -> {
+						this.simulation.run(Integer.parseInt(textField.getText()));
+						this.remove(this.startButton);
+					}).start();
+					startButton.setText("Stop");
 				} else {
 					try {
-						this.simulation.resume();
-						if (startButton.getText().equals("Start")) {
-							this.remove(label);
-							this.remove(textField);
-							new Thread(() -> {
-								this.simulation.run(Integer.parseInt(textField.getText()));
-								this.remove(this.startButton);
-							}).start();
-						}
+						sim.resume();
 						startButton.setText("Stop");
 					} catch (InterruptedException e) {
 						e.printStackTrace();

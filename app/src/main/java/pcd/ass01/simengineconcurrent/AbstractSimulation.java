@@ -51,7 +51,11 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	 * @param numSteps
 	 */
 	public void run(int numSteps) {
-
+		try {
+			this.resume();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		System.out.println("Simulation started");
 
 		startWallTime = System.currentTimeMillis();

@@ -11,20 +11,20 @@ import pcd.ass01.simtrafficexamplesconcurrent.simulations.*;
  */
 public class RunTrafficSimulation {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 
-		final int nSteps = 10_000;
+		final int nSteps = 100;
 		TrafficSimulationSingleRoadTwoCars simulation = new TrafficSimulationSingleRoadTwoCars();
 		//var simulation = new TrafficSimulationSingleRoadSeveralCars();
 		//var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
 		// var simulation = new TrafficSimulationWithCrossRoads();
 		simulation.setup();
-		// RoadSimView view = new RoadSimView(simulation);
-		// RoadSimStatistics stat = new RoadSimStatistics();
-		// view.display();
+		RoadSimView view = new RoadSimView(simulation);
+		RoadSimStatistics stat = new RoadSimStatistics();
+		view.display();
 		
-		// simulation.addSimulationListener(stat);
-		// simulation.addSimulationListener(view);
-		simulation.run(nSteps);
+		simulation.addSimulationListener(stat);
+		simulation.addSimulationListener(view);
+		// simulation.run(nSteps);
 	}
 }
