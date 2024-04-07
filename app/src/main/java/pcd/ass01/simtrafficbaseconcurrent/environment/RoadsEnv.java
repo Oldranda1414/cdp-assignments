@@ -53,19 +53,17 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		return tl;
 	}
 
-	public void updateCar(String id, int decision){
+	public void updateCar(String id, CarDecision decision){
 		CarAgent car = super.get(id);
 		takeCarDecision(car, decision);
 		moveCar(car);
 	}
 
-	//TODO decision should be an enum
-	private void takeCarDecision(CarAgent car, int decision){ 
-		if(decision < 0){
-			decelerateCar(car);
-		}
-		else if(decision > 0){
-			accelerateCar(car);
+	private void takeCarDecision(CarAgent car, CarDecision decision){ 
+		switch (decision) {
+			case ACCELERATING: accelerateCar(car); break;
+			case DECELERATING: decelerateCar(car); break;
+			default: break;
 		}
 	}
 
@@ -122,10 +120,10 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 		double currentPosition = currentCar.getCurrentPosition();
 		Road currentRoad = currentCar.getRoad();
 		return super.values().stream()
-			.filter(car -> {return car != currentCar && car.getRoad() == currentRoad;})
-			.map(car -> {return car.getCurrentPosition() + currentRoad.getLen();})
-			.map(carPos -> {return carPos - currentPosition;})
-			.reduce((dist1, dist2) -> {return dist1 < dist2 ? dist2 : dist1;});
+			.filter(car -> car != currentCar && car.getRoad() == currentRoad)
+			.map(car -> car.getCurrentPosition() + (car.getCurrentPosition() < currentPosition ? currentRoad.getLen() : 0))
+			.map(carPos -> carPos - currentPosition)
+			.reduce((dist1, dist2) -> dist1 < dist2 ? dist2 : dist1);
 	}
  
 	public List<CarAgent> getAgentInfo() {

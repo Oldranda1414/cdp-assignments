@@ -1,12 +1,14 @@
 package pcd.ass01.simengineconcurrent;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import pcd.ass01.masterworker.Master;
 import pcd.ass01.masterworker.Task;
 // import pcd.ass01.simengineconcurrent.SimulationListener;
+import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 
 /**
  * Base class for defining concrete simulations
@@ -80,9 +82,14 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 				e.printStackTrace();
 			}
 			while (this.master.isAlive()) {
-				System.out.println(this.getAgentStates());
+				String s = "[";
+				for (AbstractAgent c : this.env.values()) {
+					s += c.getId() + ": " + ((CarAgent) c).getCurrentSpeed() + ", ";
+				}
+				s += "]";
+				System.out.println(s);
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(50);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

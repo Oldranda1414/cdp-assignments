@@ -16,7 +16,7 @@ import pcd.ass01.utils.Pair;
 public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends CarSimulation{
 
 	public TrafficSimulationSingleRoadWithTrafficLightTwoCars() {
-		this.setDistances(20);
+		this.setDistances(40);
 	}
 
 	@Override

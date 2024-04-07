@@ -67,7 +67,7 @@ public class TrafficSimulationWithCrossRoads extends CarSimulation{
 		super.addAct(super.getAct(car.getId()));
 
 		/* sync with wall-time: 25 steps per sec */
-		super.syncWithTime(2);
+		super.syncWithTime(25);
 	}	
 
 }

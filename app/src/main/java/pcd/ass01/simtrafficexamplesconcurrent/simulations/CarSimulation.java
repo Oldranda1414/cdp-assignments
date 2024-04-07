@@ -20,16 +20,24 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 
 	protected abstract void setDistances(double brakingDistance);
 
-	protected Task getSenseDecide(String id){
+	protected Task getSenseDecide(String id) {
 		return new Task(() -> {
-			if(isSeeingACar(id)){
+			if (isTooCloseToCar(id) || isSeeingAHaltingTrafficLight(id)) {
+				CarAgent car = ((CarAgent) getEnvironment().get(id));
+				if (car.getCurrentSpeed() < car.getDeceleration()) {
+					this.getAgentStates().put(id, new ConstantSpeedState());
+				} else {
+					this.getAgentStates().put(id, new DecelerateState());
+				}
+			} else if (isSeeingACar(id)) {
 				this.getAgentStates().put(id, new ConstantSpeedState());
-			}
-			else if(isTooCloseToCar(id) || isSeeingAHaltingTrafficLight(id)){
-				this.getAgentStates().put(id, new DecelerateState());
-			}
-			else{
-				this.getAgentStates().put(id, new AccelerateState());
+			} else {
+				CarAgent car = ((CarAgent) getEnvironment().get(id));
+				if (car.getCurrentSpeed() >= car.getMaxSpeed()) {
+					this.getAgentStates().put(id, new ConstantSpeedState());
+				} else {
+					this.getAgentStates().put(id, new AccelerateState());
+				}
 			}
 		}, id, "sense-decide");
 	}
@@ -65,9 +73,9 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 		Road road = car.getRoad();
 		List<TrafficLight> trafficLights = env.getTrafficLights();
 		return trafficLights.stream()
-			.filter(trafficLight -> {return trafficLight.getRoad() == road;})
-			.filter(trafficLight -> {return trafficLight.isRed() || trafficLight.isYellow();})
-			.map(trafficLight -> {return trafficLight.getCurrentPosition() < car.getCurrentPosition() ? trafficLight.getCurrentPosition() + road.getLen() : trafficLight.getCurrentPosition();})
-			.anyMatch(trafficLightPos -> {return (trafficLightPos - car.getCurrentPosition()) < brakingDistance;});
+			.filter(trafficLight -> trafficLight.getRoad() == road)
+			.filter(trafficLight -> trafficLight.isRed() || trafficLight.isYellow())
+			.map(trafficLight -> trafficLight.getCurrentPosition() + (trafficLight.getCurrentPosition() < car.getCurrentPosition() ? road.getLen() : 0))
+			.anyMatch(trafficLightPos -> (trafficLightPos - car.getCurrentPosition()) < brakingDistance);
 	}
 }
