@@ -113,46 +113,21 @@ The environment is implemented as a readers-writers monitor, which
 
 2 Latches are used for syncronization between master and workers.
 
+\section{Visual Formalisms}
+
 \begin{figure}
     \centering
     \includegraphics{UML1.png}
     \caption{UML diagram showing relationships between monitors, active components and syncronization components}
 \end{figure}
 
-\section{Visual Formalisms}
-
 \begin{figure}
     \centering
     \includegraphics{PetriNetColored.png}
-    \caption{Petri net diagram showing the beheviour of the master and workers threads. N is the number of agents in the simulation. The master beheviour is rappresented by 4 places and 4 transitions. The worker is rappresented by one place and one transition. A place containing a token for every step of the simulation regulates the number of steps. Two places (in red), rappresenting the number of tasks in the bag and the number of tasks finished, regulate the syncronization between master and workers}
+    \caption{Petri net diagram showing the beheviour of the master and workers threads. N is the number of agents in the simulation. The master beheviour is rappresented by 4 places and 4 transitions. The worker is rappresented by one place and one transition. A place containing a token for every step of the simulation regulates the number of steps. Two places rappresent the number of tasks in the bag and the number of tasks finished, regulate the syncronization between master and workers}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics{UML1.png}
-    \caption{A state graph summarizing the beheviour of the system}
-\end{figure}
 \chapter{Implementation}
-
-\section{Source Code Organization}
-The basic simulation implementation has been extended with the GUI implementation
-
-The GUI source code is comprised of only one class: simtrafficexamplesconcurrent/RoadSimView.java
-
-The class simtrafficexamplesconcurrent/RoadSimView.java prints information of the simulation on the terminal
-
-The src is organized in the following packages:
-\begin{itemize}
-    \item masterworker: containing classes for the master worker pattern implementation
-    \item simengineconcurrent: abstract classes for the simulation framework
-    \item simtrafficbaseconcurrent: concrete classes for the traffic simulation
-    \item simtrafficexamplesconcurrent: concrete simulation and main classes given as examples
-\end{itemize}
-
-\section{Thread Organization} %TODO check if this is actually necessary
-The master is implemented as a single thread. The Gui will have a dedicated thread
- managing its events. Depending on the machine architecture, the remaining number
- of instantiable threads are created and used as workers.
 
 \section{Deadlock Problems Encountered}
 During implementation some deadlock problems arised.
@@ -197,6 +172,30 @@ This was solved by eliminating the workReady latch, exchanging it for a conditio
  workers are paused through the workers ready latch and as soon as a new task is added
  to the bag by the master a worker is woken to resume it's working loop.
 
+\section{Components}
+The master and worker threads are the active components. The bag of tasks, the environment, the agent wills and the workers ready
+ latch are all passive components, implemented as monitors
+
+\section{Source Code Organization}
+The basic simulation implementation has been extended with the GUI implementation
+
+The GUI source code is comprised of only one class: simtrafficexamplesconcurrent/RoadSimView.java
+
+The class simtrafficexamplesconcurrent/RoadSimView.java prints information of the simulation on the terminal
+
+The src is organized in the following packages:
+\begin{itemize}
+    \item masterworker: containing classes for the master worker pattern implementation
+    \item simengineconcurrent: abstract classes for the simulation framework
+    \item simtrafficbaseconcurrent: concrete classes for the traffic simulation
+    \item simtrafficexamplesconcurrent: concrete simulation and main classes given as examples
+\end{itemize}
+
+\section{Thread Organization} %TODO check if this is actually necessary
+The master is implemented as a single thread. The Gui will have a dedicated thread
+ managing its events. Depending on the machine architecture, the remaining number
+ of instantiable threads are created and used as workers.
+
 \chapter{Execution and Evaluation}
 The main classes for the part1 and part2 requirements are contained in the simtrafficexamplesconcurrent/part2 package
 \begin{itemize}
@@ -228,6 +227,8 @@ Testing the execution speed of the concurrent and sequential versions of the sim
     \item concurrent execution time: 25.8 seconds on average
     \item sequential execution time: 30.4 seconds on average
 \end{itemize}
+
+//TODO add considerations for the jpf
 
 \bibliographystyle{plain}
 \bibliography{References}
