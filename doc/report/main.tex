@@ -72,11 +72,11 @@ This means that for a given step there will be 3 tasks:
 \end{itemize}
 
 The total number of tasks for a given step is 3 * nAgents
- where nAgents is the number of agents
+ where nAgents is the number of agents.
 
 \section{Data Decomposition}
 The environment can be subdevided in agent's states which
- means the data can be divided in nAgents indipendent states
+ means the data can be divided in nAgents indipendent states.
 
 \section{Dependency Analysis}
 The sense and decide tasks can be joined in a single
@@ -92,7 +92,7 @@ The sense and decide tasks can be joined in a single
 % a simulation must give the same results indipendently from it
 % being implementes sequentialy or concurrently. This means that
 % act tasks must be executed in an orderly manner.
-The act tasks in a given step can by parallelised between each other, but
+The act tasks in a given step can be parallelised between each other, but
  must be executed after the sense-decide task.
 
 The steps of the simulation must be serialized.
@@ -104,12 +104,12 @@ Using agenda parallelism we design the system around an agenda
 
 \section{Architecture}
 The master-worker architecture is a natural implementation of
- agenda parallelism, using a bag of works. The bag of words is
+ agenda parallelism, using a bag of works. The bag of works is
  implemented as a bounded buffer.
 
 The environment is implemented as a readers-writers monitor, which
  lets threads read from the environment in a parallel manner, but imposes
- that no writing can be executed concurrently with other writing or reading
+ that no writing can be executed concurrently with other writing or reading.
 
 2 Latches are used for syncronization between master and workers.
 
@@ -135,18 +135,18 @@ The environment is implemented as a readers-writers monitor, which
 \chapter{Implementation}
 
 \section{Source Code Organization}
-The basic simulation implementation has been extended with the GUI implementation
-
-The GUI source code is comprised of only one class: simtrafficexamplesconcurrent/RoadSimView.java
-
-The class simtrafficexamplesconcurrent/RoadSimView.java prints information of the simulation on the terminal
-
+The basic simulation implementation has been extended with the GUI implementation.
+%
+The GUI source code is comprised of only one class:\\ \texttt{simtrafficexamplesconcurrent/RoadSimView.java}.
+%
+The class \texttt{RoadSimView.java} prints information of the simulation on the terminal.
+%
 The src is organized in the following packages:
 \begin{itemize}
-    \item masterworker: containing classes for the master worker pattern implementation
-    \item simengineconcurrent: abstract classes for the simulation framework
-    \item simtrafficbaseconcurrent: concrete classes for the traffic simulation
-    \item simtrafficexamplesconcurrent: concrete simulation and main classes given as examples
+    \item \texttt{masterworker}: containing classes for the master worker pattern implementation
+    \item \texttt{simengineconcurrent}: abstract classes for the simulation framework
+    \item \texttt{simtrafficbaseconcurrent}: concrete classes for the traffic simulation
+    \item \texttt{simtrafficexamplesconcurrent}: concrete simulation and main classes given as examples
 \end{itemize}
 
 \section{Thread Organization} %TODO check if this is actually necessary
@@ -159,13 +159,13 @@ During implementation some deadlock problems arised.
 
 \subsection{Worker Initialization}
 A certain state of the system caused some workers to be left behind.
- After being initialized a worker could start waiting on the workReady latch after
- the master started a step. This caused a deadlock as the worker waited indefenetly
- for the master to signal that the bag was full and the master waited indefenelty for
+ After being initialized a worker could start waiting on the \texttt{workReady} latch after
+ the master started a step. This caused a deadlock as the worker waited indefinitely
+ for the master to signal that the bag was full and the master waited indefinitely for
  all the workers to signal they where ready to recieve other work.
 
-This was solved by having the master wait on the workersReady latch after initializing
- the workers. This way when the first step of the simulation started all workers where
+This was solved by having the master wait on the \texttt{workersReady} latch after initializing
+ the workers. This way, when the first step of the simulation started, all workers where
  ready to start, making sure no worker was left behind.
 
 \subsection{Check and Act}
@@ -176,37 +176,37 @@ A certain state of the system caused two workers to access the bag of tasks even
  never fill the bag with new tasks, waiting indefenetly for the awaiting worker to notify
  it was ready to continue. This is a classic check and act problem.
  
-This was solved by making the buffer return an Optional istead of a Runnable. The worker
- now receives an empty Optional from the bag if it was empty, instead of awaiting for the
- bag to be filled again. The notEmpty condition was removed from the bag of works monitor
+This was solved by making the buffer return an \texttt{Optional} istead of a \texttt{Runnable}. The worker
+ now receives an empty \texttt{Optional} from the bag if it was empty, instead of awaiting for the
+ bag to be filled again. The notEmpty condition was removed from the bag of works monitor.
 
 \subsection{True Syncronization}
-The fact that a worker executed the countDownLatch() on the workers
- ready latch and the await() on the work ready latch in a non atomic way
- the master could execute the countDownLatch on the work ready latch ,signaling
+The fact that a worker executed the \texttt{countDownLatch()} on the workers
+ ready latch and the \texttt{await()} on the work ready latch in a non atomic way,
+ the master could execute the \texttt{countDownLatch()} on the work ready latch, signaling
  to the workers that the bag was full of new works, before
  all the workers where awaiting on it. This would make it so that the master would
  wait for the workers to signal that they had executed all the works available but
  some workers would wait for the master to signal that the bag was full.
 
-This was solved by eliminating the workReady latch, exchanging it for a condition
+This was solved by eliminating the \texttt{workReady} latch, exchanging it for a condition
  of the bag of tasks: notEmpty. This means that workers no longer wait on a latch
  but wait directly on the notEmpty condition inside the bag of tasks. Before blocking
- a worker the bag of task executes the countDownLatch() on the workers ready latch,
+ a worker the bag of task executes the \texttt{countDownLatch()} on the workers ready latch,
  telling the master that a worker has paused. The master is then signaled that all
  workers are paused through the workers ready latch and as soon as a new task is added
  to the bag by the master a worker is woken to resume it's working loop.
 
 \chapter{Execution and Evaluation}
-The main classes for the part1 and part2 requirements are contained in the simtrafficexamplesconcurrent/part2 package
+The main classes for the part1 and part2 requirements are contained in the \texttt{simtrafficexamplesconcurrent/part2} package.
 \begin{itemize}
-    \item RunTrafficSimulation.java: some simple examples of traffic simulations
-    \item RunMassiveTrafficSimulation.java: a simulation with a massive number of cars
+    \item \texttt{RunTrafficSimulation.java}: some simple examples of traffic simulations
+    \item \texttt{RunMassiveTrafficSimulation.java}: a simulation with a massive number of cars
 \end{itemize}
 
-The main classes for the part3 requirements are contained in the simtrafficexamplesconcurrent/part2 package
+The main classes for the part3 requirements are contained in the\\ \texttt{simtrafficexamplesconcurrent/part3} package
 \begin{itemize}
-    \item RunRandomTrafficSimulation.java
+    \item \texttt{RunRandomTrafficSimulation.java}: simple example that introduces randomness
 \end{itemize}
 
 \section{Number of Workers}
@@ -228,6 +228,10 @@ Testing the execution speed of the concurrent and sequential versions of the sim
     \item concurrent execution time: 25.8 seconds on average
     \item sequential execution time: 30.4 seconds on average
 \end{itemize}
+
+\chapter{Conclusions}
+As written above, in the end we actually got an improvement on the timings. We also noticed that our software is more scalable compared to the sequential one. Since the difference that we've calculated between the two kind of \texttt{RunMassiveTrafficSimulation} did not satisfy our wills, we at least tried to understand why there were such results. We came up with the idea that the bottleneck on our application is set on the large use of data structures. All workers do not have any state inside, leading to the necessity to create this state somewhere else.
+//TODO explain why scalable
 
 \bibliographystyle{plain}
 \bibliography{References}
