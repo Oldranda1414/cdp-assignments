@@ -60,7 +60,6 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		startWallTime = System.currentTimeMillis();
 
 		long timePerStep = 0;
-
 		this.master = new Master(
 			ComputeBestNumOfWorkers(), 
 			this.senseDecideWorks, 
@@ -74,6 +73,21 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 			this.nStepsPerSec,
 			this.startAndStop
 		);
+		new Thread(() -> {
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			while (this.master.isAlive()) {
+				System.out.println(this.getAgentStates());
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 		try {
 			master.start();
 			master.join();
