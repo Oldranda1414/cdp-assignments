@@ -31,7 +31,7 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 			else{
 				this.getAgentStates().put(id, new AccelerateState());
 			}
-			System.out.println(this.getAgentStates());
+			// System.out.println(this.getAgentStates());
 		}, id, "sense-decide");
 	}
 	

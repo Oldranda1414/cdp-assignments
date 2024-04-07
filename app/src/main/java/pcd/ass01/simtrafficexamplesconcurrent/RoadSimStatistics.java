@@ -56,9 +56,9 @@ public class RoadSimStatistics implements SimulationListener {
 		}
 
 		log(
-			"Average speed: " + this.getAverageSpeed()
-			+ ", Min speed: " + this.getMinSpeed()
-			+ ", Max speed: " + this.getMaxSpeed()
+			"Average step speed: " + this.getAverageSpeed()
+			+ ", Min step speed: " + this.getMinSpeed()
+			+ ", Max step speed: " + this.getMaxSpeed()
 		);
 	}
 	

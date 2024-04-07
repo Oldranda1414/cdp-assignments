@@ -20,10 +20,10 @@ public class RunTrafficSimulation {
 		TrafficSimulationWithCrossRoads simulation = new TrafficSimulationWithCrossRoads();
 		simulation.setup();
 		RoadSimView view = new RoadSimView(simulation);
-		// RoadSimStatistics stat = new RoadSimStatistics();
+		RoadSimStatistics stat = new RoadSimStatistics();
 		view.display();
 		
-		// simulation.addSimulationListener(stat);
+		simulation.addSimulationListener(stat);
 		simulation.addSimulationListener(view);
 		// simulation.run(nSteps);
 	}
