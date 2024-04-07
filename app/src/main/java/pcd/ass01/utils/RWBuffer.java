@@ -1,93 +1,101 @@
 package pcd.ass01.utils;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 // import java.util.concurrent.locks.Lock;
 // import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Set;
 
 public class RWBuffer<I> implements MapBuffer<I> {
 
     protected final Map<String, I> map = new SafeTreeMap<String, I>();
-    // private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    // private final Lock readLock = readWriteLock.readLock();
-    // private final Lock writeLock = readWriteLock.writeLock();
     private final Object lock = new Object();
+    private int readers = 0;
+    private int writers = 0;
 
 
     @Override
-    public I get(String key) {
-        // readLock.lock();
-        // try {
-        //     return map.get(key);
-        // } finally {
-        //     readLock.unlock();
-        // }
-        synchronized(lock) {
-            return map.get(key);
-        }
+    public I get(String key){
+        startRead();
+        I value = map.get(key);
+        endRead();
+        return value;
     }
 
-    public String[] allKeys() {
-        // readLock.lock();
-        // try {
-        //     return map.keySet().toArray(new String[0]);
-        // } finally {
-        //     readLock.unlock();
-        // }
-        synchronized(lock) {
-            return map.keySet().toArray(new String[0]);
-        }
+    public String[] allKeys(){
+        startRead();
+        String[] value = map.keySet().toArray(new String[0]);
+        endRead();
+        return value;
     }
 
-    public Set<Entry<String, I>> entrySet() {
-        // readLock.lock();
-        // try {
-        //     return map.entrySet();
-        // } finally {
-        //     readLock.unlock();
-        // }
-        synchronized(lock) {
-            return map.entrySet();
-        }
+    public Set<Entry<String, I>> entrySet(){
+        startRead();
+        Set<Entry<String, I>> set = map.entrySet();
+        endRead();
+        return set;
     }
 
     @Override
-    public void put(String key, I value) {
-        // writeLock.lock();
-        // try {
-        //     map.put(key, value);
-        // } finally {
-        //     writeLock.unlock();
-        // }
-        synchronized(lock) {
-            map.put(key, value);
-        }
+    public void put(String key, I value){
+        startWrite();
+        map.put(key, value);
+        endWrite();
     }
 
-    public void clear() {
-        // writeLock.lock();
-        // try {
-        //     map.clear();
-        // } finally {
-        //     writeLock.unlock();
-        // }
-        synchronized(lock) {
-            map.clear();
-        }
+    public void clear(){
+        startWrite();
+        map.clear();
+        endWrite();
     }
 
     @Override
-    public boolean isEmpty() {
-        // readLock.lock();
-        // try {
-        //     return this.map.isEmpty();
-        // } finally {
-        //     readLock.unlock();
-        // }
+    public boolean isEmpty(){
+        startRead();
+        boolean value = this.map.isEmpty();
+        endRead();
+        return value;
+    }
+
+    private void startRead(){
         synchronized (lock) {
-            return this.map.isEmpty();
+            while (writers > 0) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            readers++;
         }
     }
 
+    private void endRead() {
+        synchronized (lock) {
+            readers--;
+            if (readers == 0) {
+                lock.notifyAll();
+            }
+        }
+    }
+
+    private void startWrite(){
+        synchronized (lock) {
+            while (readers > 0 || writers > 0) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            writers++;
+        }
+    }
+
+    private void endWrite() {
+        synchronized (lock) {
+            writers--;
+            lock.notifyAll();
+        }
+    }
 }

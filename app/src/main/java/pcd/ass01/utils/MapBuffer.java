@@ -6,5 +6,5 @@ public interface MapBuffer<I> {
     
     public I get(String key) throws InterruptedException;
     
-    public boolean isEmpty();
+    public boolean isEmpty() throws InterruptedException;
 }
