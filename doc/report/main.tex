@@ -227,8 +227,8 @@ Testing the execution speed of the concurrent and sequential versions of the sim
     \item concurrent execution time: 25.8 seconds on average
     \item sequential execution time: 30.4 seconds on average
 \end{itemize}
+We also tried to use \emph{Java Path Finder} but after converting all the codebase into Java 8, solving uncountable issues with gradle and having still compile errors thrown, we decided to give it a chance in the future (i.e. never).
 
-//TODO add considerations for the jpf
 \chapter{Conclusions}
 As stated previously, execution time improvements where mesured. The concurrent version is consequently more scalable, as the number of workers is computer based on the number fo cores available. The difference in the execution times detected between the two kind of \texttt{RunMassiveTrafficSimulation} seems too little. We came up with the idea that the bottleneck on our application is the large use of data structures. All workers do not have any state inside, leading to the necessity to store the state of every agent on a seperate data structure (AgentWills) to be retrieved at a further time.
 
