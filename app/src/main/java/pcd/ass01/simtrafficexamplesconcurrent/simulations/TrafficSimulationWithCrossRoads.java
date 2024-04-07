@@ -17,7 +17,7 @@ import pcd.ass01.utils.Pair;
 public class TrafficSimulationWithCrossRoads extends CarSimulation{
 
 	public TrafficSimulationWithCrossRoads() {
-		this.setDistances(80);
+		this.setDistances(40);
 	}
 
 	@Override
@@ -47,10 +47,10 @@ public class TrafficSimulationWithCrossRoads extends CarSimulation{
         env.createTrafficLight(740, firstRoad, TrafficLight.TrafficLightState.GREEN, 75, 25, 100);
 
         CarAgent car;
-        car = env.createCar("1", firstRoad, firstRoad.getLen(), 0.1, 0.3, 6);
+        car = env.createCar("1", firstRoad, firstRoad.getLen(), 0.1, 0.7, 6);
 		super.addSenseDecide(super.getSenseDecide(car.getId()));
 		super.addAct(super.getAct(car.getId()));
-        car = env.createCar("2", firstRoad, 100, 0.1, 0.3, 5);
+        car = env.createCar("2", firstRoad, 100, 0.1, 0.7, 5);
 		super.addSenseDecide(super.getSenseDecide(car.getId()));
 		super.addAct(super.getAct(car.getId()));
 
@@ -59,10 +59,10 @@ public class TrafficSimulationWithCrossRoads extends CarSimulation{
 
         env.createTrafficLight(290, secondRoad, TrafficLight.TrafficLightState.RED, 75, 25, 100);
 
-        car = env.createCar("3", secondRoad, secondRoad.getLen(), 0.1, 0.3, 5);
+        car = env.createCar("3", secondRoad, secondRoad.getLen(), 0.1, 0.7, 5);
 		super.addSenseDecide(super.getSenseDecide(car.getId()));
 		super.addAct(super.getAct(car.getId()));
-        car = env.createCar("4", secondRoad, secondRoad.getLen() / 3, 0.1, 0.3, 5);
+        car = env.createCar("4", secondRoad, 100, 0.1, 0.7, 5);
 		super.addSenseDecide(super.getSenseDecide(car.getId()));
 		super.addAct(super.getAct(car.getId()));
 

@@ -75,26 +75,7 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 			this.nStepsPerSec,
 			this.startAndStop
 		);
-		new Thread(() -> {
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			while (this.master.isAlive()) {
-				String s = "[";
-				for (AbstractAgent c : this.env.values()) {
-					s += c.getId() + ": " + ((CarAgent) c).getCurrentSpeed() + ", ";
-				}
-				s += "]";
-				System.out.println(s);
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
+		
 		try {
 			master.start();
 			master.join();

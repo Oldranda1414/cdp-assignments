@@ -22,9 +22,10 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 
 	protected Task getSenseDecide(String id) {
 		return new Task(() -> {
+			CarAgent car = ((CarAgent) getEnvironment().get(id));
 			if (isTooCloseToCar(id) || isSeeingAHaltingTrafficLight(id)) {
-				CarAgent car = ((CarAgent) getEnvironment().get(id));
 				if (car.getCurrentSpeed() < car.getDeceleration()) {
+					car.setCurrentSpeed(0);
 					this.getAgentStates().put(id, new ConstantSpeedState());
 				} else {
 					this.getAgentStates().put(id, new DecelerateState());
@@ -32,7 +33,6 @@ public abstract class CarSimulation extends AbstractSimulation<RoadsEnv>{
 			} else if (isSeeingACar(id)) {
 				this.getAgentStates().put(id, new ConstantSpeedState());
 			} else {
-				CarAgent car = ((CarAgent) getEnvironment().get(id));
 				if (car.getCurrentSpeed() >= car.getMaxSpeed()) {
 					this.getAgentStates().put(id, new ConstantSpeedState());
 				} else {

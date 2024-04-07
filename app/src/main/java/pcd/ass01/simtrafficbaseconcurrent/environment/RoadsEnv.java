@@ -109,9 +109,9 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 
 	public boolean canMove(String id, double position){
 		CarAgent car = super.get(id);
-		return !super.entrySet().stream()
-			.filter(couple -> id != couple.getKey())
-			.map(couple -> couple.getValue())
+		return !super.values().stream()
+			.filter(c -> c.getRoad() == car.getRoad())
+			.filter(c -> id != c.getId())
 			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < car.getRoad().getLen();
 	}
 
