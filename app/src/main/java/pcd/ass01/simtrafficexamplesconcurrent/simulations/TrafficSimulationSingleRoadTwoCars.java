@@ -36,7 +36,6 @@ public class TrafficSimulationSingleRoadTwoCars extends CarSimulation{
 		int t0 = 0;
 		int dt = 1;
 		
-		super.setupNumberOfAgents(numberOfCars);
 		super.setupTimings(t0, dt);
 		
 		RoadsEnv env = new RoadsEnv();
@@ -53,7 +52,7 @@ public class TrafficSimulationSingleRoadTwoCars extends CarSimulation{
 		}
 
 		/* sync with wall-time: 25 steps per sec */
-		this.syncWithTime(60);
+		this.syncWithTime(25);
 	}	
 
 }

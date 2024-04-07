@@ -101,4 +101,13 @@ public class RWBuffer<I> implements MapBuffer<I> {
             lock.notifyAll();
         }
     }
+
+    @Override
+    public String toString() {
+        String ret = "[ ";
+        for (Entry<String, I> entry : this.map.entrySet()) {
+            ret += entry.getKey() + ":" + entry.getValue() + ", ";
+        }
+        return ret.substring(0, ret.length() - 2) + " ]";
+    }
 }

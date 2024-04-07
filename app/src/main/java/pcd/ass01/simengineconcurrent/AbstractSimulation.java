@@ -21,7 +21,6 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	private List<SimulationListener> listeners;
 	private int t0;
 	private int dt;
-	private int numberOfAgents;
 	private long startWallTime;
 	private long endWallTime;
 	private long averageTimePerStep;
@@ -63,7 +62,7 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		long timePerStep = 0;
 
 		this.master = new Master(
-			ComputeBestNumOfWorkers(this.numberOfAgents), 
+			ComputeBestNumOfWorkers(), 
 			this.senseDecideWorks, 
 			this.actWorks, 
 			this.env, 
@@ -143,10 +142,6 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		this.senseDecideWorks.add(senseDecide);
 	}
 
-	protected void setupNumberOfAgents(int numberOfAgents){
-		this.numberOfAgents = numberOfAgents;
-	}
-
 	protected void syncWithTime(int nCyclesPerSec){
 		this.toBeInSyncWithWallTime = true;
 		this.nStepsPerSec = nCyclesPerSec;
@@ -155,10 +150,11 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	/*
 	 * If it would return less than 1, it returns 1 instead
 	 */
-	private int ComputeBestNumOfWorkers(int numberOfAgents) {
+	private int ComputeBestNumOfWorkers() {
 		int cores = Runtime.getRuntime().availableProcessors();
 		int standardThreads = 2; //number of threads to be used for other processes (in this case I calculate 1 thread for Master and 1 for the gui)
 		int availableThreads = cores - standardThreads;
-		return Math.min((availableThreads > 0) ? availableThreads : 1, numberOfAgents);
+		int numberOfAgents = this.env.allKeys().length;
+		return Math.min((availableThreads > 0) ? availableThreads : 1, numberOfAgents); //* 4;
 	}
 }

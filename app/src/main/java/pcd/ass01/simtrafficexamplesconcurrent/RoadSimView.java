@@ -1,6 +1,7 @@
 package pcd.ass01.simtrafficexamplesconcurrent;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -18,7 +19,6 @@ import pcd.ass01.simtrafficbaseconcurrent.V2d;
 import pcd.ass01.simtrafficbaseconcurrent.entity.CarAgent;
 import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
 import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
-import pcd.ass01.utils.Pair;
 import java.awt.*;
 
 import javax.swing.*;
@@ -107,22 +107,40 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			g2.clearRect(0,0,this.getWidth(),this.getHeight());
 			
-			Pair<Double, Double> maxBounds = new Pair<Double, Double>(
+			P2d downRightCorner = new P2d(
 				roads.stream()
-					.map(road -> {return road.getTo().x() > road.getFrom().x() ? road.getTo().x() : road.getFrom().x();})
-					.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get(),
+					.map(r -> r.getFrom().x() > r.getTo().x() ? r.getFrom().x() : r.getTo().x())
+					.reduce((r1, r2) -> r1 > r2 ? r1 : r2).get(),
 				roads.stream()
-					.map(road -> {return road.getTo().y() > road.getFrom().y() ? road.getTo().y() : road.getFrom().y();})
-					.reduce((r1, r2) -> {return r1 > r2 ? r1 : r2;}).get() * 1.5d //it's times 1.5 because we dont want the longest road to be in a side of the screen
+					.map(r -> r.getFrom().y() > r.getTo().y() ? r.getFrom().y() : r.getTo().y())
+					.reduce((r1, r2) -> r1 > r2 ? r1 : r2).get()
 			);
+
+			double edgeX = downRightCorner.x();
+			Optional<Road> roadOnEdgeX = roads.stream()
+				.filter(r -> r.getFrom().x() == r.getTo().x())
+				.filter(r -> r.getFrom().x() == edgeX)
+				.findAny();
+			if (roadOnEdgeX.isPresent()) {
+				downRightCorner = new P2d(downRightCorner.x() * 2d, downRightCorner.y());
+			}
+			double edgeY = downRightCorner.y();
+			Optional<Road> roadOnEdgeY = roads.stream()
+				.filter(r -> r.getFrom().y() == r.getTo().y())
+				.filter(r -> r.getFrom().y() == edgeY)
+				.findAny();
+			
+			if (roadOnEdgeY.isPresent()) {
+				downRightCorner = new P2d(downRightCorner.x(), downRightCorner.y() * 2d);
+			}
 
 			if (roads != null) {
 				for (Road r: roads) {
 					g2.drawLine(
-						(int)mapValue(r.getFrom().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
-						(int)mapValue(r.getFrom().y(), 0, maxBounds.getSecond(), 0, this.getHeight()), 
-						(int)mapValue(r.getTo().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
-						(int)mapValue(r.getTo().y(), 0, maxBounds.getSecond(), 0, this.getHeight())
+						(int)mapValue(r.getFrom().x(), 0, downRightCorner.x(), 0, this.getWidth()), 
+						(int)mapValue(r.getFrom().y(), 0, downRightCorner.y(), 0, this.getHeight()), 
+						(int)mapValue(r.getTo().x(), 0, downRightCorner.x(), 0, this.getWidth()), 
+						(int)mapValue(r.getTo().y(), 0, downRightCorner.y(), 0, this.getHeight())
 					);
 				}
 			}
@@ -137,11 +155,12 @@ public class RoadSimView extends JFrame implements SimulationListener {
 						g.setColor(new Color(255, 255, 0, 255));
 					}
 					P2d point = mapEntityOnRoad(s.getCurrentPosition(), s.getRoad());
-					P2d mappedPoint = new P2d(
-						mapValue(point.x(), 0, maxBounds.getFirst(), 0, this.getWidth()),
-						mapValue(point.y(), 0, maxBounds.getSecond(), 0, this.getHeight())
+					g2.fillRect(
+						(int)mapValue(point.x(), 0, downRightCorner.x(), 0, this.getWidth()) - 5, 
+						(int)mapValue(point.y(), 0, downRightCorner.y(), 0, this.getHeight()) - 5, 
+						10,
+						10
 					);
-					g2.fillRect((int)mappedPoint.x() - 5, (int)mappedPoint.y() - 5, 10, 10);
 				}
 			}
 			
@@ -151,20 +170,13 @@ public class RoadSimView extends JFrame implements SimulationListener {
 				for (CarAgent c: cars) {
 					double pos = c.getCurrentPosition();
 					Road r = c.getRoad();
-					Pair<P2d, P2d> mappedRoad = new Pair<P2d, P2d>(
-						new P2d(
-							mapValue(r.getFrom().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
-							mapValue(r.getFrom().y(), 0, maxBounds.getSecond(), 0, this.getHeight())
-						), new P2d(
-							mapValue(r.getTo().x(), 0, maxBounds.getFirst(), 0, this.getWidth()), 
-							mapValue(r.getTo().y(), 0, maxBounds.getSecond(), 0, this.getHeight())
-						)
-					);
-					V2d dir = V2d.makeV2d(mappedRoad.getFirst(), mappedRoad.getSecond()).getNormalized().mul(pos);
-					P2d point = mapEntityOnRoad(mappedRoad.getFirst().x() + dir.x(), r);
+					V2d dir = V2d.makeV2d(r.getFrom(), r.getTo()).getNormalized().mul(pos);
+					P2d point = mapEntityOnRoad(dir.abs(), r);
 					g2.drawOval(
-						(int)(mapValue(point.x(), 0, maxBounds.getFirst(), 0, this.getWidth()) - CAR_DRAW_SIZE/2), 
-						(int)(mapValue(point.y(), 0, maxBounds.getSecond(), 0, this.getHeight()) - CAR_DRAW_SIZE/2), CAR_DRAW_SIZE , CAR_DRAW_SIZE
+						(int)(mapValue(point.x() , 0, downRightCorner.x(), 0, this.getWidth()) - CAR_DRAW_SIZE/2), 
+						(int)(mapValue(point.y() , 0, downRightCorner.y(), 0, this.getHeight()) - CAR_DRAW_SIZE/2), 
+						CAR_DRAW_SIZE, 
+						CAR_DRAW_SIZE
 					);
 				}
 			}

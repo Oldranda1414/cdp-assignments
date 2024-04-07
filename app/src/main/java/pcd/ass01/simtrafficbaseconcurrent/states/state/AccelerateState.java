@@ -10,4 +10,8 @@ public class AccelerateState implements AgentState<RoadsEnv> {
         env.updateCar(id, 1);
     }
 
+    @Override
+    public String toString() {
+        return "accelerating";
+    }
 }

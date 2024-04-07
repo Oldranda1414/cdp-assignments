@@ -37,7 +37,6 @@ public class TrafficSimulationSingleRoadWithTrafficLightTwoCars extends CarSimul
 		int t0 = 0;
 		int dt = 1;
 		
-		this.setupNumberOfAgents(numberOfCars);
 		this.setupTimings(t0, dt);
 		
 		RoadsEnv env = new RoadsEnv();

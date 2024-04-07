@@ -13,17 +13,17 @@ public class RunTrafficSimulation {
 
 	public static void main(String[] args) throws InterruptedException {
 
-		final int nSteps = 100;
-		TrafficSimulationSingleRoadTwoCars simulation = new TrafficSimulationSingleRoadTwoCars();
+		// final int nSteps = 100;
+		// TrafficSimulationSingleRoadTwoCars simulation = new TrafficSimulationSingleRoadTwoCars();
 		//var simulation = new TrafficSimulationSingleRoadSeveralCars();
-		//var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
-		// var simulation = new TrafficSimulationWithCrossRoads();
+		// TrafficSimulationSingleRoadWithTrafficLightTwoCars simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
+		TrafficSimulationWithCrossRoads simulation = new TrafficSimulationWithCrossRoads();
 		simulation.setup();
 		RoadSimView view = new RoadSimView(simulation);
-		RoadSimStatistics stat = new RoadSimStatistics();
+		// RoadSimStatistics stat = new RoadSimStatistics();
 		view.display();
 		
-		simulation.addSimulationListener(stat);
+		// simulation.addSimulationListener(stat);
 		simulation.addSimulationListener(view);
 		// simulation.run(nSteps);
 	}

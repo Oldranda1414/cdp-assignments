@@ -10,4 +10,8 @@ public class ConstantSpeedState implements AgentState<RoadsEnv> {
         env.updateCar(id, 0);
     }
 
+    @Override
+    public String toString() {
+        return "constant speed";
+    }
 }
