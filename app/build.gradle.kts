@@ -11,7 +11,7 @@ import java.io.OutputStream
 
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
-    // application
+    application
 
     id("java") //ADDED FOR JPF
 }
@@ -73,10 +73,10 @@ val searchingPath = "/src/main/jpf/"
 // Output for all tasks
 val noOutput = ByteArrayOutputStream()
 
-// application {
-//     // Define the main class for the application.
-//     mainClass.set("org.example.App")
-// }
+application {
+    // Define the main class for the application.
+    mainClass.set("pcd.ass01.simtrafficexamplesconcurrent.part2.RunTrafficSimulation")
+}
 
 /**
  * This will create a task for each jpf file in the src/main/jpf folder

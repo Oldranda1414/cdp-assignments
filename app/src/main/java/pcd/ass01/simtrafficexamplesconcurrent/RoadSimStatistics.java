@@ -54,6 +54,12 @@ public class RoadSimStatistics implements SimulationListener {
 		if (speed > this.maxSpeed) {
 			this.maxSpeed = speed;
 		}
+
+		log(
+			"Average speed: " + this.getAverageSpeed()
+			+ ", Min speed: " + this.getMinSpeed()
+			+ ", Max speed: " + this.getMaxSpeed()
+		);
 	}
 	
 	public double getAverageSpeed() {
