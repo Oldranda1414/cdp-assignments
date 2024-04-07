@@ -37,7 +37,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 			throw new IllegalArgumentException("The value " + position + " is not valid. You must pass a position that is more than or equals to 0 and less than the road length.");
 		}
 		CarAgent car = new CarAgent(id, road, position, accelleration, decelleration, maxSpeed);
-		this.map.put(id, car);
+		super.put(id, car);
 		return car;
 	}
 
@@ -54,7 +54,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
 
 	public void updateCar(String id, int decision){
-		CarAgent car = this.map.get(id);
+		CarAgent car = super.get(id);
 		takeCarDecision(car, decision);
 		moveCar(car);
 	}
@@ -110,18 +110,18 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
 
 	public boolean canMove(String id, double position){
-		CarAgent car = this.map.get(id);
-		return !this.map.entrySet().stream()
+		CarAgent car = super.get(id);
+		return !super.entrySet().stream()
 			.filter(couple -> id != couple.getKey())
 			.map(couple -> couple.getValue())
 			.anyMatch(agent -> Math.abs(agent.getCurrentPosition() - position) < MIN_DIST_ALLOWED) && position < car.getRoad().getLen();
 	}
 
 	public Optional<Double> nearestCarInFrontDistance(String id){
-		CarAgent currentCar = this.map.get(id);
+		CarAgent currentCar = super.get(id);
 		double currentPosition = currentCar.getCurrentPosition();
 		Road currentRoad = currentCar.getRoad();
-		return this.map.values().stream()
+		return super.values().stream()
 			.filter(car -> {return car != currentCar && car.getRoad() == currentRoad;})
 			.map(car -> {return car.getCurrentPosition() + currentRoad.getLen();})
 			.map(carPos -> {return carPos - currentPosition;})
@@ -129,7 +129,7 @@ public class RoadsEnv extends AbstractEnvironment<CarAgent>{
 	}
  
 	public List<CarAgent> getAgentInfo() {
-		return new ArrayList<>(this.map.values());
+		return new ArrayList<>(super.values());
 	}
 
 	public List<Road> getRoads(){

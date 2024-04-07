@@ -74,8 +74,6 @@ public class RoadSimStatistics implements SimulationListener {
 		return this.maxSpeed;
 	}
 	
-	
-	@SuppressWarnings("unused")
 	private void log(String msg) {
 		System.out.println("[STAT] " + msg);
 	}

@@ -1,14 +1,13 @@
 package pcd.ass01.utils;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-// import java.util.concurrent.locks.Lock;
-// import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.Set;
 
 public class RWBuffer<I> implements MapBuffer<I> {
 
-    protected final Map<String, I> map = new SafeTreeMap<String, I>();
+    private final Map<String, I> map = new SafeTreeMap<String, I>();
     private final Object lock = new Object();
     private int readers = 0;
     private int writers = 0;
@@ -55,6 +54,10 @@ public class RWBuffer<I> implements MapBuffer<I> {
         boolean value = this.map.isEmpty();
         endRead();
         return value;
+    }
+
+    public Collection<I> values() {
+        return this.map.values();
     }
 
     private void startRead(){
