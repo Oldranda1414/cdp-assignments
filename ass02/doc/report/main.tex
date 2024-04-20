@@ -5,6 +5,33 @@
 \usepackage{url} %for proper url entries
 % \usepackage[bookmarks, colorlinks=false, pdfborder={0 0 0}, pdftitle={<pdf title here>}, pdfauthor={<author's name here>}, pdfsubject={<subject here>}, pdfkeywords={<keywords here>}]{hyperref} %for creating links in the pdf version and other additional pdf attributes, no effect on the printed document
 %\usepackage[final]{pdfpages} %for embedding another pdf, remove if not required
+%pseudocode listing packages and definitions
+\usepackage{color}
+\usepackage{listings}
+\usepackage{caption}
+
+\newcounter{nalg}[chapter] % defines algorithm counter for chapter-level
+\renewcommand{\thenalg}{\thechapter .\arabic{nalg}} %defines appearance of the algorithm counter
+\DeclareCaptionLabelFormat{algocaption}{Algorithm \thenalg} % defines a new caption label as Algorithm x.y
+
+\lstnewenvironment{algorithm}[1][] %defines the algorithm listing environment
+{   
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the caption setup for: it ises label format as the declared caption label above and makes label and caption text to be separated by a ':'
+    \lstset{ %this is the stype
+        mathescape=true,
+        frame=tB,
+        numbers=left, 
+        numberstyle=\tiny,
+        basicstyle=\scriptsize, 
+        keywordstyle=\color{black}\bfseries\em,
+        keywords={,input, output, return, datatype, function, in, if, else, foreach, while, begin, end, } %add the keywords you want, or load a language as Rubens explains in his comment above.
+        numbers=left,
+        xleftmargin=.04\textwidth,
+        #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+    }
+}
+{}
 
 \begin{document}
 \renewcommand\bibname{References} %Renames "Bibliography" to "References" on ref page
@@ -39,16 +66,81 @@ Leonardo Randacio
 
 \tableofcontents
 \listoffigures
-\listoftables
 
 \newpage
 \pagenumbering{arabic} %reset numbering to normal for the main content
 
 \chapter{Macropart 1}
 \chapter{Macropart 2}
-\section{Part 1}
-\section{Part 2}
-\section{Part 3}
+\section{Task Decomposition}
+The main task can be rappresented in pseudocode with a recursive function \texttt{getWordOccurrences(str URL, str WORD, int DEPTH)}
+
+The function identifies two tasks:
+\begin{itemize}
+    \item countTask
+    \item linkTask
+\end{itemize}
+The countTask finds all occurrences of the defined word in the website, while the linkTask finds all the links and for every link starts the
+ getWordOccurrences on the new url found. Both subtasks are expressed below:
+
+\newpage
+
+\begin{algorithm}[caption={countTask expressed in pseudocode}, label={alg1}]
+input: str SITE_CONTENTS, str WORD
+output: int
+begin
+    int COUNT $\gets$ 0
+    foreach CURRENT_WORD in SITE_CONTENTS
+        if (CURRENT_WORD == WORD)
+            COUNT $\gets$ COUNT + 1
+        endif
+    endforeach
+    return COUNT
+end       
+\end{algorithm}
+
+\begin{algorithm}[caption={linkTask expressed in pseudocode}, label={alg2}]
+input: str SITE_CONTENTS, str WORD, int DEPTH
+begin
+    if (DEPTH != 0)
+        foreach CURRENT_WORD in SITE_CONTENTS
+            if (is_url(CURRENT_WORD))
+                getWordOccurrences(CURRENT_WORD, WORD, DEPTH - 1)
+            endif
+        endforeach
+    endif
+end       
+\end{algorithm}
+\section{Event-loop}
+Source code: TODO ADD THE SOURCE CODE DIR
+The tasks are rappresented by events. The first function call creates an event that parses through the contents of the given website.
+ If a url is found and the depth value is not 0 a new event is created, that executes the function on the new website, with the depth value decreased by one.
+
+\section{Reactive}
+Source code: TODO ADD THE SOURCE CODE DIR
+TO BE DONE
+\section{Virtual Threads}
+Source code: TODO ADD THE SOURCE CODE DIR
+The function creates a virtual thread that executes the following pseudocode:
+
+\begin{algorithm}[label={alg3}]
+input: str URL, str WORD, int DEPTH
+begin
+    str SITE_CONTENTS $\gets$ get_site_contents(URL)
+    int COUNT $\gets$ 0
+    if (DEPTH != 0)
+        foreach CURRENT_WORD in SITE_CONTENTS
+            if (CURRENT_WORD == WORD)
+                COUNT $\gets$ COUNT + 1
+            endif
+            else if (is_url(CURRENT_WORD))
+                VT = create_new_vt(() -> 
+                    getWordOccurrences(CURRENT_WORD, WORD, DEPTH - 1))
+                join(VT)
+        endforeach
+    endif
+end       
+\end{algorithm}
 
 
 \bibliographystyle{plain}
