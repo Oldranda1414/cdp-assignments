@@ -1,0 +1,57 @@
+\documentclass[12pt, a4paper]{report}
+\usepackage[pdftex]{graphicx} %for embedding images
+\graphicspath{ {./img/} } %the path to the images
+\usepackage[,italian, english]{babel}
+\usepackage{url} %for proper url entries
+% \usepackage[bookmarks, colorlinks=false, pdfborder={0 0 0}, pdftitle={<pdf title here>}, pdfauthor={<author's name here>}, pdfsubject={<subject here>}, pdfkeywords={<keywords here>}]{hyperref} %for creating links in the pdf version and other additional pdf attributes, no effect on the printed document
+%\usepackage[final]{pdfpages} %for embedding another pdf, remove if not required
+
+\begin{document}
+\renewcommand\bibname{References} %Renames "Bibliography" to "References" on ref page
+
+
+\begin{titlepage}
+
+\begin{center}
+
+\Large \textbf {Programmazione Concorrente e Distribuita - Assigment 02}\\%\\[0.5in]
+\vspace{1em}%
+\vfill
+Andrea Biagini
+
+
+Filippo Gurioli
+
+
+Leonardo Randacio
+\vspace{1em}
+\vfill
+{\bf Università di Bologna \\ Scienze e Ingegneria Informatiche}\\[0.5in]
+
+       
+\vfill
+\today
+
+\end{center}
+
+\end{titlepage}
+
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\newpage
+\pagenumbering{arabic} %reset numbering to normal for the main content
+
+\chapter{Macropart 1}
+\chapter{Macropart 2}
+\section{Part 1}
+\section{Part 2}
+\section{Part 3}
+
+
+\bibliographystyle{plain}
+\bibliography{References}
+
+\end{document}
