@@ -1,13 +1,13 @@
-package simengine;
+package macropart1.simengine;
 
-import pcd.ass01.utils.RWBuffer;
+import macropart1.utils.RWTreeMonitor;
 
 /**
 *   
 * Base class to define the environment of the simulation
 *   
 */
-public abstract class AbstractEnvironment<I extends AbstractAgent> extends RWBuffer<I> {
+public abstract class AbstractEnvironment<I extends AbstractAgent> extends RWTreeMonitor<I> {
 
 	protected AbstractEnvironment() {
 		
