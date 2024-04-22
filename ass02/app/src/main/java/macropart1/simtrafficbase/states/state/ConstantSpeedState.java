@@ -1,8 +1,8 @@
-package pcd.ass01.simtrafficbaseconcurrent.states.state;
+package macropart1.simtrafficbase.states.state;
 
-import pcd.ass01.simengineconcurrent.AgentState;
-import pcd.ass01.simtrafficbaseconcurrent.environment.CarDecision;
-import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
+import macropart1.simengine.AgentState;
+import macropart1.simtrafficbase.environment.CarDecision;
+import macropart1.simtrafficbase.environment.RoadsEnv;
 
 public class ConstantSpeedState implements AgentState<RoadsEnv> {
 

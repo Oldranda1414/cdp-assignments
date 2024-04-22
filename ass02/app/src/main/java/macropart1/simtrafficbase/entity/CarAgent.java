@@ -1,7 +1,7 @@
-package pcd.ass01.simtrafficbaseconcurrent.entity;
+package macropart1.simtrafficbase.entity;
 
-import pcd.ass01.simengineconcurrent.*;
-import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
+import macropart1.simengine.*;
+import macropart1.simtrafficbase.environment.Road;
 
 /**
  * 
