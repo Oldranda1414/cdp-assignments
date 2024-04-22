@@ -1,7 +1,7 @@
-package pcd.ass01.simtrafficbaseconcurrent.states;
+package macropart1.simtrafficbase.states;
 
-import pcd.ass01.simengineconcurrent.AbstractStates;
-import pcd.ass01.simtrafficbaseconcurrent.environment.RoadsEnv;
+import macropart1.simengine.AbstractStates;
+import macropart1.simtrafficbase.environment.RoadsEnv;
 
 public class CarStates extends AbstractStates<RoadsEnv> {
     

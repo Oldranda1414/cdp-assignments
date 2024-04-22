@@ -1,6 +1,6 @@
-package pcd.ass01.simtrafficbaseconcurrent.environment;
+package macropart1.simtrafficbase.environment;
 
-import pcd.ass01.simtrafficbaseconcurrent.P2d;
+import macropart1.utils.P2d;
 
 public class Road {
 

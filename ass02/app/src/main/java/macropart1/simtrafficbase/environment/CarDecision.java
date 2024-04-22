@@ -1,4 +1,4 @@
-package pcd.ass01.simtrafficbaseconcurrent.environment;
+package macropart1.simtrafficbase.environment;
 
 public enum CarDecision {
     ACCELERATING,

@@ -1,6 +1,6 @@
-package pcd.ass01.simtrafficbaseconcurrent.entity;
+package macropart1.simtrafficbase.entity;
 
-import pcd.ass01.simtrafficbaseconcurrent.environment.Road;
+import macropart1.simtrafficbase.environment.Road;
 
 public interface RoadEntity {
     
