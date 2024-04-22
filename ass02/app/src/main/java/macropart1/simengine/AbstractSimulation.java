@@ -2,35 +2,37 @@ package macropart1.simengine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+
+import macropart1.executor.Master;
+import macropart1.executor.Task;
 
 /**
  * Base class for defining concrete simulations
  *  
  */
-public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends AbstractAgent>> extends Thread{
+public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends AbstractAgent>> {
 
-	private int numberOfAgents;
 	private AbstractEnvironment<? extends AbstractAgent> env;
 	private AbstractStates<T> agentStates;
+	private List<Task> senseDecideWorks;
+	private List<Task> actWorks;
 	private List<SimulationListener> listeners;
 	private int t0;
 	private int dt;
 	private long startWallTime;
 	private long endWallTime;
 	private long averageTimePerStep;
+	private Master master;
 	private boolean toBeInSyncWithWallTime;
 	private int nStepsPerSec;
 	private Semaphore startAndStop;
-	private ExecutorService executor;
 
-	protected AbstractSimulation(int numberOfAgents) {
-		this.numberOfAgents = numberOfAgents;
-		executor = Executors.newFixedThreadPool(this.ComputeBestNumOfThreads());
-		this.listeners = new ArrayList<SimulationListener>();
-		this.startAndStop = new Semaphore(0);
+	protected AbstractSimulation() {
+		listeners = new ArrayList<SimulationListener>();
+		senseDecideWorks = new ArrayList<Task>();
+		actWorks = new ArrayList<Task>();
+		startAndStop = new Semaphore(0);
 	}
 	
 	/**
@@ -47,11 +49,36 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	 * @param numSteps
 	 */
 	public void run(int numSteps) {
+		try {
+			this.resume();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		System.out.println("Simulation started");
 
 		startWallTime = System.currentTimeMillis();
 
 		long timePerStep = 0;
+		this.master = new Master(
+			ComputeBestNumOfThreads(), 
+			this.senseDecideWorks, 
+			this.actWorks, 
+			this.env, 
+			this.t0, 
+			this.dt, 
+			numSteps, 
+			this.listeners,
+			this.toBeInSyncWithWallTime,
+			this.nStepsPerSec,
+			this.startAndStop
+		);
+		
+		try {
+			master.start();
+			master.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		endWallTime = System.currentTimeMillis();
 		this.averageTimePerStep = timePerStep / numSteps;
@@ -59,11 +86,25 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		System.out.println("Simulation finished");
 	}
 
+	public void stop() throws InterruptedException {
+		startAndStop.acquire();
+	}
+
+	public void resume() throws InterruptedException {
+		startAndStop.release();
+	}
+
 	public long getSimulationDuration() {
+		if (this.master.isAlive()) {
+			return 0;
+		}
 		return endWallTime - startWallTime;
 	}
 	
 	public long getAverageTimePerCycle() {
+		if (this.master.isAlive()) {
+			return 0;
+		}
 		return averageTimePerStep;
 	}
 
@@ -92,17 +133,22 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		return this.agentStates;
 	}
 
+	protected void addAct(Task act) {
+		this.actWorks.add(act);
+	}
+
+	protected void addSenseDecide(Task senseDecide) {
+		this.senseDecideWorks.add(senseDecide);
+	}
+
 	protected void syncWithTime(int nCyclesPerSec){
 		this.toBeInSyncWithWallTime = true;
 		this.nStepsPerSec = nCyclesPerSec;
 	}
 
-	/*
-	 * If it would return less than 1, it returns 1 instead
-	 */
 	private int ComputeBestNumOfThreads() {
 		int cores = Runtime.getRuntime().availableProcessors();
-		int standardThreads = 2; //number of threads to be used for other processes (in this case I calculate 1 thread for this and 1 for the gui)
+		int standardThreads = 2; //number of threads to be used for other processes (in this case I calculate 1 thread for Master and 1 for the gui)
 		int availableThreads = cores - standardThreads;
 		return availableThreads;
 	}
