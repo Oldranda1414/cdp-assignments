@@ -26,6 +26,7 @@ dependencies {
     implementation("io.vertx:vertx-core:4.5.7")
     implementation("io.vertx:vertx-web:4.5.7")
     implementation("io.vertx:vertx-web-client:4.5.7")
+    implementation("org.jsoup:jsoup:1.14.3")
        
 }
 
@@ -42,6 +43,6 @@ application {
 }
 
 tasks.named<Test>("test") {
-    // Use JUnit Platform for unit tests.
+    // Use JUnit Platform for unit tests
     useJUnitPlatform()
 }
