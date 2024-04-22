@@ -63,8 +63,8 @@ gradle-app.setting
 chantilly.txt
 
 # Binary files
-*.class
-/bin
+**.class
+**/bin
 
 ## JPF Runner
 !jpf-runner/build/
