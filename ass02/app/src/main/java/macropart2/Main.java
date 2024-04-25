@@ -2,24 +2,25 @@ package macropart2;
 
 import java.util.Map;
 
+import macropart2.View.GUI;
 import macropart2.eventloop.WordCounterWithEventLoop;
 
 public class Main {
 
     public static void main(String[] args) {
-        var link = "https://www.google.com";
-        var word = "hello";
-        var depth = 3;
-        var wordCounter = new WordCounterWithEventLoop(link, word, depth); //TODO use the PrintStream constructor to log the occurrences while the word counter is running
+        // var link = "https://www.google.com";
+        // var word = "hello";
+        // var depth = 3;
+        var wordCounter = new WordCounterWithEventLoop(); //TODO use the PrintStream constructor to log the occurrences while the word counter is running
         //? we can actually pass 2 kinds of printStream, one for the logging and one for the results
-        wordCounter.resume();
-        wordCounter.join();
-        var occurrences = wordCounter.getWordOccurrences();
-        logOccurrences(word, occurrences);
-
-        //TODO: Implement the GUI
+        new GUI(wordCounter).display();
+        // wordCounter.start(link, word, depth);
+        // wordCounter.join();
+        // var occurrences = wordCounter.getWordOccurrences();
+        // logOccurrences(word, occurrences);
     }
 
+    @SuppressWarnings("unused")
     private static void logOccurrences(final String word, Map<String, Integer> wordOccurrences) {
         System.out.println("\nOccurrences:");
         for (var entry : wordOccurrences.entrySet()) {

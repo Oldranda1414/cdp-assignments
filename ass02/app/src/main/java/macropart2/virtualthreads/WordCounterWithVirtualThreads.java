@@ -35,5 +35,11 @@ public class WordCounterWithVirtualThreads implements WordCounter{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'join'");
     }
+
+    @Override
+    public void start(String url, String word, int depth) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'start'");
+    }
     
 }

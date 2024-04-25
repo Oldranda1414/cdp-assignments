@@ -4,24 +4,26 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import macropart2.WordCounter;
+import macropart2.WordCounterListener;
 
 public class WordCounterWithEventLoop implements WordCounter {
 
     private final Map<String, Integer> wordOccurrences = new HashMap<>();
     private final PrintStream outputStream;
     private final RunnableEventLoop eventLoop = new EventLoopImpl();
-    private boolean isStarted = false;
+    private final List<WordCounterListener> listeners = new ArrayList<>();
 
-    public WordCounterWithEventLoop(final PrintStream outputStream, final String url, final String word, final int depth) {
+    public WordCounterWithEventLoop(final PrintStream outputStream) {
         this.outputStream = outputStream;
-        enqueueOnEventLoop(eventLoop, url, word, depth);
     }
     
-    public WordCounterWithEventLoop(final String url, final String word, final int depth) {
-        this(System.out, url, word, depth);
+    public WordCounterWithEventLoop() {
+        this(System.out);
     }
 
     /**
@@ -33,18 +35,19 @@ public class WordCounterWithEventLoop implements WordCounter {
     }
 
     @Override
+    public void start(final String url, final String word, final int depth) {
+        enqueueOnEventLoop(eventLoop, url, word, depth);
+        eventLoop.run();
+    }
+
+    @Override
     public void pause() {
         eventLoop.stop();
     }
 
     @Override
     public void resume() {
-        if (!isStarted) {
-            isStarted = true;
-            eventLoop.run();
-        } else {
-            eventLoop.resume();
-        }
+        eventLoop.resume();
     }
 
     @Override
@@ -52,6 +55,7 @@ public class WordCounterWithEventLoop implements WordCounter {
         return eventLoop.isStopped();
     }
 
+    @Override
     public void join() {
         while (!eventLoop.isFinished()) {
             try {
@@ -60,6 +64,11 @@ public class WordCounterWithEventLoop implements WordCounter {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void addListener(final WordCounterListener listener) {
+        listeners.add(listener);
     }
     
     private void enqueueOnEventLoop(final EventLoop eventLoop, final String url, final String word, final int depth) {
@@ -93,9 +102,15 @@ public class WordCounterWithEventLoop implements WordCounter {
 
     private void searchWord(final Document doc, final String word, final EventLoop eventLoop, final int depth) {
         log("Searching in " + doc.baseUri(), depth);
-        if (doc.body().text().toLowerCase().contains(word.toLowerCase())) {
-            wordOccurrences.put(doc.baseUri(), wordOccurrences.getOrDefault(doc.baseUri(), 0) + 1);
+        var body = doc.body().text().toLowerCase();
+        int count = 0;
+        int index = body.indexOf(word.toLowerCase());
+        while (index != -1) {
+            count++;
+            index = body.indexOf(word.toLowerCase(), index + 1);
         }
+        final int finalCount = count;
+        this.listeners.forEach(l -> l.onNewWordCounted(doc.baseUri(), finalCount));
     }
 
     private void recursivelyGetWordOccurrences(final Document doc, final String word, final int depth, final EventLoop eventLoop) {

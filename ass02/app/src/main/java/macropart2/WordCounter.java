@@ -17,6 +17,14 @@ public interface WordCounter {
     Map<String, Integer> getWordOccurrences();
 
     /**
+     * Start the word counter.
+     * @param url The URL of the web page.
+     * @param word The word to search for.
+     * @param depth The depth of the search.
+     */
+    void start(String url, String word, int depth);
+
+    /**
      * Pause the word counter.
      */
     void pause();
@@ -36,4 +44,10 @@ public interface WordCounter {
      * Join the word counter.
      */
     void join();
+
+    /**
+     * Add a listener to the word counter.
+     * @param listener The listener to add.
+     */
+    void addListener(WordCounterListener listener);
 }
