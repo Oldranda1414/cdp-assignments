@@ -3,6 +3,7 @@ package macropart2.virtualthreads;
 import java.util.Map;
 
 import macropart2.WordCounter;
+import macropart2.WordCounterListener;
 
 public class WordCounterWithVirtualThreads implements WordCounter{
 
@@ -40,6 +41,12 @@ public class WordCounterWithVirtualThreads implements WordCounter{
     public void start(String url, String word, int depth) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'start'");
+    }
+
+    @Override
+    public void addListener(WordCounterListener listener) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addListener'");
     }
     
 }
