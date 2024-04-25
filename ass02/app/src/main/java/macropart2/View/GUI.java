@@ -39,30 +39,11 @@ public class GUI extends JFrame implements WordCounterListener {
         add(panel);
 
         button.addActionListener(e -> {
-            panel.removeAll();
-            var pauseResumeButton = new JButton("Pause");
-            panel.add(pauseResumeButton);
-            panel.add(this.finalResultLabel);
-            this.resultsTextArea.setEditable(false);
-            this.resultsTextArea.setLineWrap(true);
-            this.resultsTextArea.setWrapStyleWord(true);
-            JScrollPane scroll = new JScrollPane(this.resultsTextArea);
-            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-            panel.add(scroll);
-            pauseResumeButton.addActionListener(e2 -> {
-                if (this.wordCounter.isPaused()) {
-                    this.wordCounter.resume();
-                    pauseResumeButton.setText("Pause");
-                } else {
-                    this.wordCounter.pause();
-                    pauseResumeButton.setText("Resume");
-                }
-            });
-            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-            panel.revalidate();
-            panel.repaint();
-            this.wordCounter.addListener(this);
-            this.wordCounter.start(urlField.getText(), wordField.getText(), Integer.parseInt(depthField.getText()));
+            startWordCounter(panel, urlField, wordField, depthField);
+            new Thread(() -> {
+                this.wordCounter.join();
+                this.resultsTextArea.append("-------------RESEARCH FINISHED-------------\n");
+            }).start();
         });
     }
 
@@ -87,6 +68,33 @@ public class GUI extends JFrame implements WordCounterListener {
         ((AbstractDocument) textField.getDocument()).setDocumentFilter(new NumberOnlyFilter());
 
         return textField;
+    }
+
+    private void startWordCounter(final JPanel panel, final JTextField urlField, final JTextField wordField, final JTextField depthField) {
+        panel.removeAll();
+        var pauseResumeButton = new JButton("Pause");
+        panel.add(pauseResumeButton);
+        panel.add(this.finalResultLabel);
+        this.resultsTextArea.setEditable(false);
+        this.resultsTextArea.setLineWrap(true);
+        this.resultsTextArea.setWrapStyleWord(true);
+        JScrollPane scroll = new JScrollPane(this.resultsTextArea);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        panel.add(scroll);
+        pauseResumeButton.addActionListener(e2 -> {
+            if (this.wordCounter.isPaused()) {
+                this.wordCounter.resume();
+                pauseResumeButton.setText("Pause");
+            } else {
+                this.wordCounter.pause();
+                pauseResumeButton.setText("Resume");
+            }
+        });
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.revalidate();
+        panel.repaint();
+        this.wordCounter.addListener(this);
+        this.wordCounter.start(urlField.getText(), wordField.getText(), Integer.parseInt(depthField.getText()));
     }
 
     private class NumberOnlyFilter extends DocumentFilter {
