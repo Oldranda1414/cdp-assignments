@@ -11,7 +11,7 @@ import macropart2.WordCounter;
 public class WordCounterWithEventLoop implements WordCounter {
 
     private final Map<String, Integer> wordOccurrences = new HashMap<>();
-    private PrintStream outputStream;
+    private final PrintStream outputStream;
     private final RunnableEventLoop eventLoop = new EventLoopImpl();
     private boolean isStarted = false;
 
