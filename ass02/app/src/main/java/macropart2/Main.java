@@ -13,6 +13,8 @@ public class Main {
         var wordCounter = new WordCounterWithEventLoop(true);
         var occurrences = wordCounter.getWordOccurrences(link, word, depth);
         logOccurrences(word, occurrences);
+
+        //TODO: Implement the GUI
     }
 
     private static void logOccurrences(final String word, Map<String, Integer> wordOccurrences) {

@@ -3,10 +3,8 @@ package macropart2.eventloop;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
 import macropart2.WordCounter;
 
 public class WordCounterWithEventLoop implements WordCounter {
@@ -14,12 +12,12 @@ public class WordCounterWithEventLoop implements WordCounter {
     private final Map<String, Integer> wordOccurrences = new HashMap<>();
     private boolean isLogEnabled;
 
-    public WordCounterWithEventLoop() {
-        this.isLogEnabled = true;
-    }
-
     public WordCounterWithEventLoop(final boolean isLogEnabled) {
         this.isLogEnabled = isLogEnabled;
+    }
+    
+    public WordCounterWithEventLoop() {
+        this(true);
     }
 
     /**
