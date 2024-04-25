@@ -27,7 +27,8 @@ dependencies {
     implementation("io.vertx:vertx-web:4.5.7")
     implementation("io.vertx:vertx-web-client:4.5.7")
     implementation("org.jsoup:jsoup:1.14.3")
-       
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

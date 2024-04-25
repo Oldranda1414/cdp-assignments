@@ -8,9 +8,12 @@ public class EventLoopImpl implements RunnableEventLoop {
     private final Queue<Runnable> tasks = new LinkedList<>();
     private boolean isStopped = true;
     private boolean finished = false;
+    private boolean started = false;
 
     @Override
     public void run() {
+        if (this.started) throw new IllegalStateException("Event loop is already running.");
+        this.started = true;
         new Thread(() -> {
             while (!tasks.isEmpty()) {
                 while (isStopped) {
@@ -20,7 +23,7 @@ public class EventLoopImpl implements RunnableEventLoop {
                         e.printStackTrace();
                     }
                 }
-                tasks.poll().run();
+                this.tasks.poll().run();
             }
             this.finished = true;
         }).start();
@@ -34,19 +37,23 @@ public class EventLoopImpl implements RunnableEventLoop {
 
     @Override
     public void stop() {
+        if (!this.started) throw new IllegalStateException("Event loop is not running.");
+        if (this.finished) throw new IllegalStateException("Event loop is already finished.");
         if (this.isStopped) throw new IllegalStateException("Event loop is already stopped.");
         this.isStopped = true;
     }
 
     @Override
     public void resume() {
+        if (!this.started) throw new IllegalStateException("Event loop is not running.");
+        if (this.finished) throw new IllegalStateException("Event loop is already finished.");
         if (!this.isStopped) throw new IllegalStateException("Event loop is not stopped.");
         this.isStopped = false;
     }
 
     @Override
     public boolean isStopped() {
-        return this.isStopped;
+        return this.isFinished() || this.isStopped;
     }
 
     @Override
