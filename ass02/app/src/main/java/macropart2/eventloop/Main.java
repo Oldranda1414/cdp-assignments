@@ -22,20 +22,25 @@ public class Main {
     }
 
     private static void getWordOccurrences(final String url, final String word, final int depth, final EventLoop eventLoop) throws IOException {
-            if (depth == 0 || wordOccurrences.containsKey(url)) return;
-            var connection = Jsoup.connect(url);
-            try {
-                connection.execute();
-            } catch (Exception e) {
-                log("Skipping " + url, depth);
-                return;
-            }
-            wordOccurrences.put(url, 0);
-            var doc = connection.get();
+        if (!shouldExploreUrl(url, depth)) return;
+        wordOccurrences.put(url, 0);
+        var doc = Jsoup.connect(url).get();
 
         searchWord(doc, word, url, eventLoop, depth);
 
         recursivelyGetWordOccurrences(doc, word, depth, eventLoop);
+    }
+
+    private static boolean shouldExploreUrl(final String url, final int depth) {
+        if (depth == 0 || wordOccurrences.containsKey(url)) return false;
+        var connection = Jsoup.connect(url);
+        try {
+            connection.execute();
+        } catch (Exception e) {
+            log("Skipping " + url, depth);
+            return false;
+        }
+        return true;
     }
 
     private static void searchWord(final Document doc, final String word, final String url, final EventLoop eventLoop, final int depth) {
@@ -65,7 +70,7 @@ public class Main {
         });
     }
 
-    private static void log(final String message, int depth) {
+    private static void log(final String message, final int depth) {
         System.out.println(depth + " - [TASK]: " + message);
     }
 
