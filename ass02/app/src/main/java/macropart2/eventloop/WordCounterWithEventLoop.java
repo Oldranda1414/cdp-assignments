@@ -1,7 +1,6 @@
 package macropart2.eventloop;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
@@ -14,24 +13,21 @@ import macropart2.WordCounterListener;
 public class WordCounterWithEventLoop implements WordCounter {
 
     private final Map<String, Integer> wordOccurrences = new HashMap<>();
-    private final PrintStream outputStream;
+    private final boolean isLoggingEnabled;
     private final RunnableEventLoop eventLoop = new EventLoopImpl();
     private final List<WordCounterListener> listeners = new ArrayList<>();
 
-    public WordCounterWithEventLoop(final PrintStream outputStream) {
-        this.outputStream = outputStream;
+    public WordCounterWithEventLoop(final boolean isLoggingEnabled) {
+        this.isLoggingEnabled = isLoggingEnabled;
     }
     
     public WordCounterWithEventLoop() {
-        this(System.out);
+        this(false);
     }
 
-    /**
-     * This method returns the number of occurrences of a word in a given URL and its children URLs using an event-loop based approach.
-     */
     @Override
     public Map<String, Integer> getWordOccurrences() {
-        return new HashMap<>(wordOccurrences);
+        return new HashMap<>(this.wordOccurrences);
     }
 
     @Override
@@ -77,7 +73,7 @@ public class WordCounterWithEventLoop implements WordCounter {
 
     private void getWordOccurrencesWithEventLoop(final EventLoop eventLoop, final String url, final String word, final int depth) {
         if (!shouldExploreUrl(url, depth)) return;
-        wordOccurrences.put(url, 0);
+        this.wordOccurrences.put(url, 0);
         try {
             Document doc = Jsoup.connect(url).get();
             searchWord(doc, word, eventLoop, depth);
@@ -124,6 +120,8 @@ public class WordCounterWithEventLoop implements WordCounter {
     }
 
     private void log(final String message, final int depth) {
-        this.outputStream.println("[EVENT-LOOP | " + depth + "]: " + message);
+        if (this.isLoggingEnabled) {
+            System.out.println("[EVENT-LOOP | " + depth + "]: " + message);
+        }
     }
 }

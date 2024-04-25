@@ -11,8 +11,7 @@ public class Main {
         // var link = "https://www.google.com";
         // var word = "hello";
         // var depth = 3;
-        var wordCounter = new WordCounterWithEventLoop(); //TODO use the PrintStream constructor to log the occurrences while the word counter is running
-        //? we can actually pass 2 kinds of printStream, one for the logging and one for the results
+        var wordCounter = new WordCounterWithEventLoop();
         new GUI(wordCounter).display();
         // wordCounter.start(link, word, depth);
         // wordCounter.join();
