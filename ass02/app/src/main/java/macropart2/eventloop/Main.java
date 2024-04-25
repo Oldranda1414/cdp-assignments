@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
         RunnableEventLoop eventLoop = new EventLoopImpl();
-        var link = "https://www.google.com";
+        var link = "http://192.168.1.152/Filo/test1.php";
         var word = "hello";
         var depth = 3;
         enqueueOnEventLoop(eventLoop, link, word, depth);
@@ -22,35 +22,36 @@ public class Main {
     }
 
     private static void getWordOccurrences(final String url, final String word, final int depth, final EventLoop eventLoop) throws IOException {
-        if (depth == 0 || wordOccurrences.containsKey(url)) return;
-        Document doc;
-        try {
-            doc = Jsoup.connect(url).get();
-        } catch (Exception e) { // when the url is not available for any reason just ignore it
-            return;
-        }
+            if (depth == 0 || wordOccurrences.containsKey(url)) return;
+            var connection = Jsoup.connect(url);
+            try {
+                connection.execute();
+            } catch (Exception e) {
+                log("Skipping " + url, depth);
+                return;
+            }
+            wordOccurrences.put(url, 0);
+            var doc = connection.get();
+
         searchWord(doc, word, url, eventLoop, depth);
 
         recursivelyGetWordOccurrences(doc, word, depth, eventLoop);
     }
 
     private static void searchWord(final Document doc, final String word, final String url, final EventLoop eventLoop, final int depth) {
-        log("Seraching in " + url, depth);
-        for (var element : doc.getAllElements()) {
-            // eventLoop.enqueueTask(() -> {
-                if (element.text().contains(word)) {
-                wordOccurrences.put(url, wordOccurrences.getOrDefault(url, 0) + 1);
-            }
-            //});
+        log("Searching in " + url, depth);
+        if (doc.body().text().toLowerCase().contains(word.toLowerCase())) {
+            wordOccurrences.put(url, wordOccurrences.getOrDefault(url, 0) + 1);
         }
     }
     
     private static void recursivelyGetWordOccurrences(final Document doc, final String word, final int depth, final EventLoop eventLoop) {
         var links = doc.select("a");
-        log(doc.baseUri() + " has " + links.size() + " links", depth);
+        var newDepth = depth - 1;
+        if (newDepth == 0) return;
         for (var link : links) {
             var href = link.attr("href");
-            enqueueOnEventLoop(eventLoop, href, word, depth - 1);
+            enqueueOnEventLoop(eventLoop, href, word, newDepth);
         }
     }
 
@@ -69,9 +70,10 @@ public class Main {
     }
 
     private static void logOccurrences(final String word) {
-        System.out.println("Occurrences:");
+        System.out.println("\nOccurrences:");
         for (var entry : wordOccurrences.entrySet()) {
             System.out.println("In " + entry.getKey() + " were found " + entry.getValue() + " occurrences of the word " + word);
         }
+        System.out.println("Total occurrences: " + wordOccurrences.values().stream().mapToInt(Integer::intValue).sum());
     }
 }
