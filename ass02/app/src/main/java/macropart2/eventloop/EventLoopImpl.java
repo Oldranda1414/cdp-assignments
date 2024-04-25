@@ -45,4 +45,9 @@ public class EventLoopImpl implements RunnableEventLoop {
         if (!this.isStopped) throw new IllegalStateException("Event loop is not stopped.");
         this.isStopped = false;
     }
+
+    @Override
+    public boolean isStopped() {
+        return this.isStopped;
+    }
 }

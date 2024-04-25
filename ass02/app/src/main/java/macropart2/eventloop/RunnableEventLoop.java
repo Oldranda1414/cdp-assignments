@@ -16,6 +16,12 @@ public interface RunnableEventLoop extends EventLoop {
     void stop();
 
     /**
+     * Check if the event loop is stopped.
+     * @return true if the event loop is stopped, false otherwise.
+     */
+    boolean isStopped();
+
+    /**
      * Resume a stopped event loop.
      */
     void resume();
