@@ -6,32 +6,30 @@ import java.util.LinkedList;
 public class EventLoopImpl implements RunnableEventLoop {
     
     private final Queue<Runnable> tasks = new LinkedList<>();
-    private boolean isStopped = false;
+    private boolean isStopped = true;
+    private boolean finished = false;
 
     @Override
     public void run() {
-        log("Running event loop.");
-        while (!tasks.isEmpty()) {
-            while (isStopped) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        new Thread(() -> {
+            while (!tasks.isEmpty()) {
+                while (isStopped) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                tasks.poll().run();
             }
-            Runnable task = tasks.poll();
-            task.run();
-        }
-        log("Event loop finished.");
+            this.finished = true;
+        }).start();
+        this.isStopped = false;
     }
 
     @Override
     public void enqueueTask(final Runnable task) {
-        tasks.add(task);
-    }
-
-    private void log(final String message) {
-        System.out.println("[EVENTLOOP]: " + message);
+        this.tasks.add(task);
     }
 
     @Override
@@ -49,5 +47,10 @@ public class EventLoopImpl implements RunnableEventLoop {
     @Override
     public boolean isStopped() {
         return this.isStopped;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return this.finished;
     }
 }

@@ -10,8 +10,10 @@ public class Main {
         var link = "https://www.google.com";
         var word = "hello";
         var depth = 3;
-        var wordCounter = new WordCounterWithEventLoop(true);
-        var occurrences = wordCounter.getWordOccurrences(link, word, depth);
+        var wordCounter = new WordCounterWithEventLoop(link, word, depth);
+        wordCounter.resume();
+        wordCounter.join();
+        var occurrences = wordCounter.getWordOccurrences();
         logOccurrences(word, occurrences);
 
         //TODO: Implement the GUI

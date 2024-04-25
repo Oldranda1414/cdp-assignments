@@ -1,6 +1,7 @@
 package macropart2.eventloop;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import org.jsoup.Jsoup;
@@ -10,25 +11,55 @@ import macropart2.WordCounter;
 public class WordCounterWithEventLoop implements WordCounter {
 
     private final Map<String, Integer> wordOccurrences = new HashMap<>();
-    private boolean isLogEnabled;
+    private PrintStream outputStream;
+    private final RunnableEventLoop eventLoop = new EventLoopImpl();
+    private boolean isStarted = false;
 
-    public WordCounterWithEventLoop(final boolean isLogEnabled) {
-        this.isLogEnabled = isLogEnabled;
+    public WordCounterWithEventLoop(final PrintStream outputStream, final String url, final String word, final int depth) {
+        this.outputStream = outputStream;
+        enqueueOnEventLoop(eventLoop, url, word, depth);
     }
     
-    public WordCounterWithEventLoop() {
-        this(true);
+    public WordCounterWithEventLoop(final String url, final String word, final int depth) {
+        this(System.out, url, word, depth);
     }
 
     /**
      * This method returns the number of occurrences of a word in a given URL and its children URLs using an event-loop based approach.
      */
     @Override
-    public Map<String, Integer> getWordOccurrences(final String url, final String word, final int depth) {
-        final RunnableEventLoop eventLoop = new EventLoopImpl();
-        enqueueOnEventLoop(eventLoop, url, word, depth);
-        eventLoop.run();
-        return wordOccurrences;
+    public Map<String, Integer> getWordOccurrences() {
+        return new HashMap<>(wordOccurrences);
+    }
+
+    @Override
+    public void pause() {
+        eventLoop.stop();
+    }
+
+    @Override
+    public void resume() {
+        if (!isStarted) {
+            isStarted = true;
+            eventLoop.run();
+        } else {
+            eventLoop.resume();
+        }
+    }
+
+    @Override
+    public boolean isPaused() {
+        return eventLoop.isStopped();
+    }
+
+    public void join() {
+        while (!eventLoop.isFinished()) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     private void enqueueOnEventLoop(final EventLoop eventLoop, final String url, final String word, final int depth) {
@@ -78,9 +109,6 @@ public class WordCounterWithEventLoop implements WordCounter {
     }
 
     private void log(final String message, final int depth) {
-        
-        if (this.isLogEnabled) {
-            System.out.println(depth + " - [TASK]: " + message);
-        }
+        this.outputStream.println("[EVENT-LOOP | " + depth + "]: " + message);
     }
 }

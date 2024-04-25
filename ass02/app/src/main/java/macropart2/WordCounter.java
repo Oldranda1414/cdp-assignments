@@ -14,5 +14,26 @@ public interface WordCounter {
      * @param depth The depth of the search.
      * @return The number of occurrences of the word in the web page and its links.
      */
-    Map<String, Integer> getWordOccurrences(final String url, final String word, final int depth);
+    Map<String, Integer> getWordOccurrences();
+
+    /**
+     * Pause the word counter.
+     */
+    void pause();
+
+    /**
+     * True if the word counter is paused, false otherwise.
+     * @return True if the word counter is paused, false otherwise.
+     */
+    boolean isPaused();
+
+    /**
+     * Resume the word counter.
+     */
+    void resume();
+
+    /**
+     * Join the word counter.
+     */
+    void join();
 }
