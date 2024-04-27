@@ -67,10 +67,6 @@ public class WordCounterWithVirtualThreads implements WordCounter{
     public void addListener(WordCounterListener listener) {
         this.listenerList.add(listener);
     }
-
-    public void task(){
-        if()
-    }
     
 	@SuppressWarnings("unused")
     private static void log(String msg) {
