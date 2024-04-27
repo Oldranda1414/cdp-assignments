@@ -40,7 +40,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "org.example.App"
+    mainClass = "macropart2.Main"
 }
 
 tasks.named<Test>("test") {

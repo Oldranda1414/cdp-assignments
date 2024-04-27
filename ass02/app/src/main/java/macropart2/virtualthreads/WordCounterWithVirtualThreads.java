@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import macropart2.WordCounter;
 import macropart2.WordCounterListener;
+import macropart2.virtualthreads.utils.Flag;
 import macropart2.virtualthreads.utils.RWTreeMonitor;
 
 public class WordCounterWithVirtualThreads implements WordCounter{
@@ -16,7 +17,7 @@ public class WordCounterWithVirtualThreads implements WordCounter{
     private Thread mainThread;
     private boolean isLoggingEnabled;
     private final List<WordCounterListener> listenerList = new ArrayList<>();
-    private final Semaphore flag = new Semaphore(0);
+    private final Flag flag = new Flag(false);
 
     public WordCounterWithVirtualThreads (final boolean isLoggingEnabled){
         this.isLoggingEnabled = isLoggingEnabled;
@@ -33,7 +34,7 @@ public class WordCounterWithVirtualThreads implements WordCounter{
 
     @Override
     public void start(String url, String word, int depth) {
-        this.mainThread = Thread.ofVirtual().start(/*TODO ADD THIS TASK */);
+        this.mainThread = Thread.ofVirtual().start(new MyTask(url, word, depth, new RWTreeMonitor<>(this.isLoggingEnabled), this.listenerList, this.isLoggingEnabled));
     }
 
     @Override
@@ -44,8 +45,7 @@ public class WordCounterWithVirtualThreads implements WordCounter{
 
     @Override
     public boolean isPaused() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isPaused'");
+        return this.flag.get();
     }
 
     @Override
@@ -69,7 +69,9 @@ public class WordCounterWithVirtualThreads implements WordCounter{
     }
     
 	@SuppressWarnings("unused")
-    private static void log(String msg) {
-		System.out.println("[ word counter ] " + msg);
+    private void log(String msg) {
+        if(this.isLoggingEnabled){
+		    System.out.println("[ word counter ] " + msg);
+        }
 	}
 }
