@@ -24,7 +24,7 @@ public class GUI extends JFrame implements WordCounterListener {
         setLocationRelativeTo(null);
         var urlField = new JTextField(30);
         urlField.setText("https://www.google.com");
-        var depthField = getDepthField(3);
+        var depthField = getDepthField(2);
         var wordField = new JTextField(18);
         wordField.setText("google");
         var button = new JButton("Start");
@@ -63,7 +63,7 @@ public class GUI extends JFrame implements WordCounterListener {
 
     private JTextField getDepthField(final int defaultValue) {
         JTextField textField = new JTextField();
-        textField.setText("3");
+        textField.setText("2");
         textField.setColumns(5);
         ((AbstractDocument) textField.getDocument()).setDocumentFilter(new NumberOnlyFilter());
 
