@@ -12,6 +12,11 @@ public class RWTreeMonitor<K, V> implements Map<K, V>{
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock = lock.readLock();
     private final Lock writeLock = lock.writeLock();
+    private boolean isLogger;
+
+    public RWTreeMonitor(boolean isLogger){
+        this.isLogger = isLogger;
+    }
 
     @Override
     public V get(Object key) {
@@ -27,6 +32,7 @@ public class RWTreeMonitor<K, V> implements Map<K, V>{
     public V put(K key, V value) {
         writeLock.lock();
         try {
+            if(this.isLogger) log("putting: " + key + ", " + value);
             buffer.put(key, value);
             return value;
         } finally {
@@ -133,4 +139,9 @@ public class RWTreeMonitor<K, V> implements Map<K, V>{
             readLock.unlock();
         }
     }
+
+	@SuppressWarnings("unused")
+    private static void log(String msg) {
+		System.out.println("[ map ] " + msg);
+	}
 }
