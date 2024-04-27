@@ -2,10 +2,13 @@ package macropart2.virtualthreads;
 
 import java.util.Map;
 
+import macropart1.utils.RWTreeMonitor;
 import macropart2.WordCounter;
 import macropart2.WordCounterListener;
 
 public class WordCounterWithVirtualThreads implements WordCounter{
+
+    private final Map<String, Integer> wordOccurrences = new RWTreeMonitor<Integer>()
 
     @Override
     public Map<String, Integer> getWordOccurrences() {
