@@ -26,7 +26,7 @@ public class GUI extends JFrame implements WordCounterListener {
         urlField.setText("https://www.google.com");
         var depthField = getDepthField(3);
         var wordField = new JTextField(18);
-        wordField.setText("hello");
+        wordField.setText("google");
         var button = new JButton("Start");
         JPanel panel = new JPanel();
         panel.add(new JLabel("Enter an URL: "));
