@@ -79,6 +79,7 @@ public class MyTask implements Runnable{
     }
 
     private void updateMap(){
+        this.checkForCondition();
         this.map.put(this.url, this.count);
         this.listeners.forEach(l -> l.onNewWordCounted(this.url, this.count));
     }

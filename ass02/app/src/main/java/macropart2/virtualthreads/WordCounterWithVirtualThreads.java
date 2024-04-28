@@ -36,7 +36,7 @@ public class WordCounterWithVirtualThreads implements WordCounter{
 
     @Override
     public void start(String url, String word, int depth) {
-        this.mainThread = Thread.ofVirtual().start(new MyTask(url, word, depth, new RWTreeMonitor<>(this.isLoggingEnabled), this.listenerList, this.lockConditionPair, this.isLoggingEnabled));
+        this.mainThread = Thread.ofVirtual().start(new MyTask(url, word, depth, new RWTreeMonitor<>(this.isLoggingEnabled), this.listenerList, this.lockConditionPair, false));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class WordCounterWithVirtualThreads implements WordCounter{
 
     @Override
     public boolean isPaused() {
-        return this.flag.get();
+        return this.lockConditionPair.isPaused();
     }
 
     @Override
