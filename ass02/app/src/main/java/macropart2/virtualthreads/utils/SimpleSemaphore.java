@@ -3,30 +3,12 @@ package macropart2.virtualthreads.utils;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class LockConditionPair {
+public class SimpleSemaphore {
     private final ReentrantLock lock = new ReentrantLock();
     private final Condition condition = lock.newCondition();
     private boolean isGreen = true;
 
-    public ReentrantLock getLock() {
-        lock.lock();
-        try{
-            return this.lock;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public Condition getCond() {
-        lock.lock();
-        try{
-            return this.condition;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public boolean isPaused(){
+    public boolean isRed(){
         lock.lock();
         try{
             return !this.isGreen;
@@ -35,7 +17,7 @@ public class LockConditionPair {
         }
     }
 
-    public void waitForCondition() throws InterruptedException {
+    public void waitForGreen() throws InterruptedException {
         lock.lock();
         try {
             while (!isGreen) {
@@ -47,7 +29,7 @@ public class LockConditionPair {
         }
     }
 
-    public void pauseThreads(){
+    public void setToRed(){
         lock.lock();
         try {
             this.isGreen = false;
@@ -56,7 +38,7 @@ public class LockConditionPair {
         }
     }
 
-    public void notifyCondition() {
+    public void setToGreen() {
         lock.lock();
         try {
             this.isGreen = true;

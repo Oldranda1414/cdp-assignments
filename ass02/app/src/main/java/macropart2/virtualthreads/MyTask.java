@@ -7,7 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import macropart2.WordCounterListener;
-import macropart2.virtualthreads.utils.LockConditionPair;
+import macropart2.virtualthreads.utils.SimpleSemaphore;
 import macropart2.virtualthreads.utils.RWTreeMonitor;
 
 public class MyTask implements Runnable{
@@ -19,15 +19,15 @@ public class MyTask implements Runnable{
     private List<WordCounterListener> listeners;
     private int count = 0;
     private List<Thread> childThreads = new ArrayList<>();
-    private LockConditionPair lockConditionPair;
+    private SimpleSemaphore sem;
 
-    public MyTask(String url, String word, int depth, RWTreeMonitor<String, Integer> map, List<WordCounterListener> listeners, LockConditionPair lockConditionPair, boolean isLogger){
+    public MyTask(String url, String word, int depth, RWTreeMonitor<String, Integer> map, List<WordCounterListener> listeners, SimpleSemaphore lockConditionPair, boolean isLogger){
         this.url = url;
         this.word = word;
         this.depth = depth;
         this.map = map;
         this.listeners = listeners;
-        this.lockConditionPair = lockConditionPair;
+        this.sem = lockConditionPair;
         this.isLogger = isLogger;
     }
 
@@ -66,7 +66,7 @@ public class MyTask implements Runnable{
         for(var link : links){
             this.checkForCondition();
             String href = link.attr("href");
-            this.childThreads.add(Thread.ofVirtual().start(new MyTask(href, word, newDepth, this.map, listeners, this.lockConditionPair, this.isLogger)));
+            this.childThreads.add(Thread.ofVirtual().start(new MyTask(href, word, newDepth, this.map, listeners, this.sem, this.isLogger)));
         }
         for(var thread : this.childThreads){
             try{
@@ -87,7 +87,7 @@ public class MyTask implements Runnable{
     private void checkForCondition(){
         log("pausing");
         try{
-            this.lockConditionPair.waitForCondition();
+            this.sem.waitForGreen();
         }
         catch (Exception e){
             e.printStackTrace();
