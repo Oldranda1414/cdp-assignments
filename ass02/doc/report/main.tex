@@ -119,7 +119,7 @@ end
 \end{algorithm}
 
 \section{Implementation}
-To ease development a common view (located at \texttt{macropart2/view}) was created. The view interacts with a common interface: \texttt{WordCounter.java}.
+To ease development a common View (located at \texttt{macropart2/view}) was created. The View interacts with a common interface: \texttt{WordCounter.java}.
  The various solutions must implement the common interface.
 
 \subsection{Event-loop}
@@ -127,6 +127,28 @@ Source code: \texttt{macropart2/eventloop}
 
 The tasks are rappresented by events. The first function call creates an event that parses through the contents of the given website.
  If a url is found and the depth value is not 0 a new event is created, that executes the function on the new website, with the depth value decreased by one.
+
+ The function for each event is rappresented by the following pseudocode:
+
+\newpage
+
+\begin{algorithm}[label={alg3}]
+input: str URL, str WORD, int DEPTH
+begin
+    str SITE_CONTENTS $\gets$ get_site_contents(URL)
+    int COUNT $\gets$ 0
+    if (DEPTH != 0)
+        foreach CURRENT_WORD in SITE_CONTENTS
+            if (CURRENT_WORD == WORD)
+                COUNT $\gets$ COUNT + 1
+            endif
+            else if (is_url(CURRENT_WORD))
+                addToEventQueue(() -> 
+                    getWordOccurrences(CURRENT_WORD, WORD, DEPTH - 1))
+        endforeach
+    endif
+end       
+\end{algorithm}
 
 \subsection{Reactive}
 Source code: \texttt{macropart2/reactive}
@@ -139,7 +161,7 @@ The \texttt{WordCounter} implemention creates a virtual thread that executes the
 
 \newpage
 
-\begin{algorithm}[label={alg3}]
+\begin{algorithm}[label={alg5}]
 input: str URL, str WORD, int DEPTH
 begin
     str SITE_CONTENTS $\gets$ get_site_contents(URL)
@@ -158,13 +180,15 @@ begin
 end       
 \end{algorithm}
 
-A map monitor is created (\texttt{RWTreeMonitor.java}) to save the current results. To implement the pausing and resuming functions in the
+A map monitor is created (\texttt{RWTreeMonitor.java}) to save the current results.
+
+To implement the pausing and resuming functions in the
  \texttt{WordCounter} interface, the \texttt{SimpleSemaphore} class was created: it is a monitor that acts like a resettable barrier. If the
  semaphore is green no threads are blocked. If the semaphore is red all threads block until the semaphore turns green again. The \texttt{WordCounter}
- implementation sets the color of the semaphore depending on orders from the GUI
+ implementation sets the color of the semaphore depending on orders from the View.
 
 \section{Execution and Testing}
-The main class \texttt{macriopart2/Main.java} creates the desired implementation of \texttt{WordCounter}.
+The main class \texttt{macropart2/Main.java} creates the desired implementation of \texttt{WordCounter}.
 \bibliographystyle{plain}
 \bibliography{References}
 
