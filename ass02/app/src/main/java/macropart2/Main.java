@@ -4,6 +4,7 @@ import java.util.Map;
 
 import macropart2.View.GUI;
 import macropart2.eventloop.WordCounterWithEventLoop;
+import macropart2.virtualthreads.WordCounterWithVirtualThreads;
 
 public class Main {
 
@@ -11,7 +12,7 @@ public class Main {
         // var link = "https://www.google.com";
         // var word = "hello";
         // var depth = 3;
-        var wordCounter = new WordCounterWithEventLoop();
+        var wordCounter = new WordCounterWithVirtualThreads(true);
         new GUI(wordCounter).display();
         // wordCounter.start(link, word, depth);
         // wordCounter.join();

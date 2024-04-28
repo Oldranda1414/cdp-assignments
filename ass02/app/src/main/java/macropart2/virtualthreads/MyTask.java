@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import macropart2.WordCounterListener;
+import macropart2.virtualthreads.utils.LockConditionPair;
 import macropart2.virtualthreads.utils.RWTreeMonitor;
 
 public class MyTask implements Runnable{
@@ -18,18 +19,21 @@ public class MyTask implements Runnable{
     private List<WordCounterListener> listeners;
     private int count = 0;
     private List<Thread> childThreads = new ArrayList<>();
+    private LockConditionPair lockConditionPair;
 
-    public MyTask(String url, String word, int depth, RWTreeMonitor<String, Integer> map, List<WordCounterListener> listeners, boolean isLogger){
+    public MyTask(String url, String word, int depth, RWTreeMonitor<String, Integer> map, List<WordCounterListener> listeners, LockConditionPair lockConditionPair, boolean isLogger){
         this.url = url;
         this.word = word;
         this.depth = depth;
         this.map = map;
         this.listeners = listeners;
+        this.lockConditionPair = lockConditionPair;
         this.isLogger = isLogger;
     }
 
     @Override
     public void run() {
+        this.checkForCondition();
         if(this.map.containsKey(this.url)) return;
         try{
             Document doc = Jsoup.connect(url).get();
@@ -48,6 +52,7 @@ public class MyTask implements Runnable{
         var body = doc.body().text().toLowerCase();
         int index = body.indexOf(word.toLowerCase());
         while (index != -1) {
+            this.checkForCondition();
             this.count++;
             index = body.indexOf(word.toLowerCase(), index + 1);
         }
@@ -59,8 +64,9 @@ public class MyTask implements Runnable{
         var newDepth = depth - 1;
         if(newDepth == 0) return;
         for(var link : links){
+            this.checkForCondition();
             String href = link.attr("href");
-            this.childThreads.add(Thread.ofVirtual().start(new MyTask(href, word, newDepth, this.map, listeners, this.isLogger)));
+            this.childThreads.add(Thread.ofVirtual().start(new MyTask(href, word, newDepth, this.map, listeners, this.lockConditionPair, this.isLogger)));
         }
         for(var thread : this.childThreads){
             try{
@@ -76,11 +82,21 @@ public class MyTask implements Runnable{
         this.map.put(this.url, this.count);
         this.listeners.forEach(l -> l.onNewWordCounted(this.url, this.count));
     }
+
+    private void checkForCondition(){
+        log("pausing");
+        try{
+            this.lockConditionPair.waitForCondition();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        } 
+    }
     
 	@SuppressWarnings("unused")
     private void log(String msg) {
         if(this.isLogger){
-		    System.out.println("[ word counter ] " + msg);
+		    System.out.println("[ thread looking at " + this.url + " ] " + msg);
         }
 	}
     

@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import macropart2.WordCounter;
 import macropart2.WordCounterListener;
 import macropart2.virtualthreads.utils.Flag;
+import macropart2.virtualthreads.utils.LockConditionPair;
 import macropart2.virtualthreads.utils.RWTreeMonitor;
 
 public class WordCounterWithVirtualThreads implements WordCounter{
@@ -18,6 +19,7 @@ public class WordCounterWithVirtualThreads implements WordCounter{
     private boolean isLoggingEnabled;
     private final List<WordCounterListener> listenerList = new ArrayList<>();
     private final Flag flag = new Flag(false);
+    private final LockConditionPair lockConditionPair = new LockConditionPair();
 
     public WordCounterWithVirtualThreads (final boolean isLoggingEnabled){
         this.isLoggingEnabled = isLoggingEnabled;
@@ -34,13 +36,13 @@ public class WordCounterWithVirtualThreads implements WordCounter{
 
     @Override
     public void start(String url, String word, int depth) {
-        this.mainThread = Thread.ofVirtual().start(new MyTask(url, word, depth, new RWTreeMonitor<>(this.isLoggingEnabled), this.listenerList, this.isLoggingEnabled));
+        this.mainThread = Thread.ofVirtual().start(new MyTask(url, word, depth, new RWTreeMonitor<>(this.isLoggingEnabled), this.listenerList, this.lockConditionPair, this.isLoggingEnabled));
     }
 
     @Override
     public void pause() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isPaused'");
+        log("pausing threads");
+        this.lockConditionPair.pauseThreads();
     }
 
     @Override
@@ -50,8 +52,8 @@ public class WordCounterWithVirtualThreads implements WordCounter{
 
     @Override
     public void resume() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resume'");
+        log("resuming threads");
+        this.lockConditionPair.notifyCondition();
     }
 
     @Override
