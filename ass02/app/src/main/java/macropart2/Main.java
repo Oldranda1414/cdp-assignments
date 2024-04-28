@@ -9,15 +9,8 @@ import macropart2.virtualthreads.WordCounterWithVirtualThreads;
 public class Main {
 
     public static void main(String[] args) {
-        // var link = "https://www.google.com";
-        // var word = "hello";
-        // var depth = 3;
         var wordCounter = new WordCounterWithVirtualThreads(true);
         new GUI(wordCounter).display();
-        // wordCounter.start(link, word, depth);
-        // wordCounter.join();
-        // var occurrences = wordCounter.getWordOccurrences();
-        // logOccurrences(word, occurrences);
     }
 
     @SuppressWarnings("unused")
