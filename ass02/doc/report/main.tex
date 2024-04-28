@@ -190,8 +190,16 @@ To implement the pausing and resuming functions in the
 \section{Execution and Testing}
 The main class \texttt{macropart2/Main.java} creates the desired implementation of \texttt{WordCounter}.
 
-Testing - Event-loop\\
-Since the event-loop is single threaded it cannot achieve such a huge performance improvement. It still enhances readability and task decomposition.
+\subsection{Testing - Event-loop}
+The event-loop solution did not show big performance improvements. This was credited to the fact that the event-loop solution is single threaded.
+ Enhancements in readability and task decomposition are nonetheless obtained.
+%Since the event-loop is single threaded it cannot achieve such a huge performance improvement. It still enhances readability and task decomposition.
+\subsection{Testing - Reactive}
+TO BE DONE
+%TODO
+\subsection{Testing - Virtual Threads}
+The virtual thread solution proved to be the most efficient, preformance wise. The abstraction of the thread concept empowers the application to be executed
+ efficently indipendently from the underlying machine architecture.
 \bibliographystyle{plain}
 \bibliography{References}
 
