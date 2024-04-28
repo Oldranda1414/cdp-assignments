@@ -117,17 +117,25 @@ begin
     endif
 end       
 \end{algorithm}
-\section{Event-loop}
-Source code: TODO ADD THE SOURCE CODE DIR
+
+\section{Implementation}
+To ease development a common view (located at \texttt{macropart2/view}) was created. The view interacts with a common interface: \texttt{WordCounter.java}.
+ The various solutions must implement the common interface.
+
+\subsection{Event-loop}
+Source code: \texttt{macropart2/eventloop}
+
 The tasks are rappresented by events. The first function call creates an event that parses through the contents of the given website.
  If a url is found and the depth value is not 0 a new event is created, that executes the function on the new website, with the depth value decreased by one.
 
-\section{Reactive}
-Source code: TODO ADD THE SOURCE CODE DIR
+\subsection{Reactive}
+Source code: \texttt{macropart2/reactive}
+
 TO BE DONE
-\section{Virtual Threads}
-Source code: TODO ADD THE SOURCE CODE DIR
-The function creates a virtual thread that executes the following pseudocode:
+\subsection{Virtual Threads}
+Source code: \texttt{macropart2/virtualthreads}
+
+The \texttt{WordCounter} implemention creates a virtual thread that executes the following pseudocode:
 
 \newpage
 
@@ -151,7 +159,12 @@ end
 \end{algorithm}
 
 A map monitor is created (\texttt{RWTreeMonitor.java}) to save the current results. To implement the pausing and resuming functions in the
- \texttt{WordCounter} interface, the \texttt{SimpleSemaphore} class was created:
+ \texttt{WordCounter} interface, the \texttt{SimpleSemaphore} class was created: it is a monitor that acts like a resettable barrier. If the
+ semaphore is green no threads are blocked. If the semaphore is red all threads block until the semaphore turns green again. The \texttt{WordCounter}
+ implementation sets the color of the semaphore depending on orders from the GUI
+
+\section{Execution and Testing}
+The main class \texttt{macriopart2/Main.java} creates the desired implementation of \texttt{WordCounter}.
 \bibliographystyle{plain}
 \bibliography{References}
 
