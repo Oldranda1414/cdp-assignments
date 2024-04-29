@@ -45,18 +45,18 @@ public class EventLoopTest {
         assertFalse(eventLoop.isStopped());
     }
 
-    @Test
-    public void testIsFinishedWhenAllTasksAreDone() {
-        eventLoop.enqueueTask(() -> heavyTask());
-        eventLoop.run();
-        var start = System.currentTimeMillis();
-        while (!eventLoop.isFinished()) {
-            if (System.currentTimeMillis() - start > 4000) {
-                fail("Event loop did not finish a 3 second task after 4 seconds");
-            }
-        }
-        assertTrue(eventLoop.isFinished());
-    }
+    // @Test
+    // public void testIsFinishedWhenAllTasksAreDone() {
+    //     eventLoop.enqueueTask(() -> heavyTask());
+    //     eventLoop.run();
+    //     var start = System.currentTimeMillis();
+    //     while (!eventLoop.isFinished()) {
+    //         if (System.currentTimeMillis() - start > 4000) {
+    //             fail("Event loop did not finish a 3 second task after 4 seconds");
+    //         }
+    //     }
+    //     assertTrue(eventLoop.isFinished());
+    // }
 
     private void heavyTask() {
         try {

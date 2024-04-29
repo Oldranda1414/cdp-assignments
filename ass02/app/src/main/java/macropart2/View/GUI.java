@@ -12,7 +12,7 @@ import macropart2.WordCounterListener;
 public class GUI extends JFrame implements WordCounterListener {
 
     private final JTextArea resultsTextArea = new JTextArea();
-    private final JLabel finalResultLabel = new JLabel();
+    private final JLabel finalResultLabel = new JLabel("Total occurrences: 0");
     private int totalOccurrences = 0;
     private final WordCounter wordCounter;
 
@@ -23,10 +23,10 @@ public class GUI extends JFrame implements WordCounterListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         var urlField = new JTextField(30);
-        urlField.setText("https://www.google.com");
-        var depthField = getDepthField(2);
+        urlField.setText("http://abiagini.duckdns.org:8080");
+        var depthField = getDepthField(6);
         var wordField = new JTextField(18);
-        wordField.setText("google");
+        wordField.setText("page");
         var button = new JButton("Start");
         JPanel panel = new JPanel();
         panel.add(new JLabel("Enter an URL: "));
@@ -63,7 +63,7 @@ public class GUI extends JFrame implements WordCounterListener {
 
     private JTextField getDepthField(final int defaultValue) {
         JTextField textField = new JTextField();
-        textField.setText("2");
+        textField.setText(defaultValue + "");
         textField.setColumns(5);
         ((AbstractDocument) textField.getDocument()).setDocumentFilter(new NumberOnlyFilter());
 
@@ -81,6 +81,9 @@ public class GUI extends JFrame implements WordCounterListener {
         JScrollPane scroll = new JScrollPane(this.resultsTextArea);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(scroll);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.revalidate();
+        panel.repaint();
         pauseResumeButton.addActionListener(e2 -> {
             if (this.wordCounter.isPaused()) {
                 this.wordCounter.resume();
@@ -90,9 +93,6 @@ public class GUI extends JFrame implements WordCounterListener {
                 pauseResumeButton.setText("Resume");
             }
         });
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.revalidate();
-        panel.repaint();
         this.wordCounter.addListener(this);
         this.wordCounter.start(urlField.getText(), wordField.getText(), Integer.parseInt(depthField.getText()));
     }

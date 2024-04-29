@@ -2,7 +2,6 @@ package macropart2.virtualthreads;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 

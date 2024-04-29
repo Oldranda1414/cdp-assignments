@@ -14,9 +14,10 @@ public class EventLoopImpl implements RunnableEventLoop {
     public void run() {
         if (this.started) throw new IllegalStateException("Event loop is already running.");
         this.started = true;
+        this.isStopped = false;
         new Thread(() -> {
-            while (!tasks.isEmpty()) {
-                while (isStopped) {
+            while (!this.tasks.isEmpty()) {
+                while (this.isStopped) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -27,7 +28,6 @@ public class EventLoopImpl implements RunnableEventLoop {
             }
             this.finished = true;
         }).start();
-        this.isStopped = false;
     }
 
     @Override

@@ -1,12 +1,11 @@
 package macropart2.eventloop;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+
+import macropart2.JSoupHandler;
 import macropart2.WordCounter;
 import macropart2.WordCounterListener;
 
@@ -68,54 +67,31 @@ public class WordCounterWithEventLoop implements WordCounter {
     }
     
     private void enqueueOnEventLoop(final EventLoop eventLoop, final String url, final String word, final int depth) {
-        eventLoop.enqueueTask(() -> getWordOccurrencesWithEventLoop(eventLoop, url, word, depth));
+        eventLoop.enqueueTask(() -> {System.out.println(url); getWordOccurrencesWithEventLoop(eventLoop, url, word, depth);});
     }
 
     private void getWordOccurrencesWithEventLoop(final EventLoop eventLoop, final String url, final String word, final int depth) {
-        if (!shouldExploreUrl(url, depth)) return;
-        this.wordOccurrences.put(url, 0);
-        try {
-            Document doc = Jsoup.connect(url).get();
-            searchWord(doc, word, eventLoop, depth);
-            recursivelyGetWordOccurrences(doc, word, depth, eventLoop);
-        } catch (IOException e) {
-            //this catch should never be reached since I already checked if the url is reachable
-            e.printStackTrace();
-        }
+        if (!shouldExploreUrl(url, depth)) return; 
+        log("Exploring " + url, depth);
+        this.wordOccurrences.put(url, JSoupHandler.findWordOccurrences(url, word));
+        log("Found " + this.wordOccurrences.get(url) + " occurrences", depth);
+        updateListeners(url);
+        recursivelyGetWordOccurrences(url, word, depth, eventLoop);
+    }
+
+    private void updateListeners(final String url) {
+        this.listeners.forEach(l -> l.onNewWordCounted(url, this.wordOccurrences.get(url)));
     }
 
     private boolean shouldExploreUrl(final String url, final int depth) {
-        if (depth == 0 || wordOccurrences.containsKey(url)) return false;
-        try {
-            var connection = Jsoup.connect(url);
-            connection.execute();
-        } catch (Exception e) {
-            log("Skipping " + url, depth);
-            return false;
-        }
-        return true;
+        return depth != 0 && !wordOccurrences.containsKey(url);
     }
 
-    private void searchWord(final Document doc, final String word, final EventLoop eventLoop, final int depth) {
-        log("Searching in " + doc.baseUri(), depth);
-        var body = doc.body().text().toLowerCase();
-        int count = 0;
-        int index = body.indexOf(word.toLowerCase());
-        while (index != -1) {
-            count++;
-            index = body.indexOf(word.toLowerCase(), index + 1);
-        }
-        final int finalCount = count;
-        this.listeners.forEach(l -> l.onNewWordCounted(doc.baseUri(), finalCount));
-    }
-
-    private void recursivelyGetWordOccurrences(final Document doc, final String word, final int depth, final EventLoop eventLoop) {
-        var links = doc.select("a");
+    private void recursivelyGetWordOccurrences(final String url, final String word, final int depth, final EventLoop eventLoop) {
+        var links = JSoupHandler.getLinksFromUrl(url);
         var newDepth = depth - 1;
-        if (newDepth == 0) return;
         for (var link : links) {
-            var href = link.attr("href");
-            enqueueOnEventLoop(eventLoop, href, word, newDepth);
+            enqueueOnEventLoop(eventLoop, link, word, newDepth);
         }
     }
 

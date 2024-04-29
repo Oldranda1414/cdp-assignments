@@ -1,7 +1,5 @@
 package macropart2;
 
-import java.util.Map;
-
 import macropart2.View.GUI;
 import macropart2.eventloop.WordCounterWithEventLoop;
 import macropart2.virtualthreads.WordCounterWithVirtualThreads;
