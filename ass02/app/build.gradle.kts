@@ -29,6 +29,9 @@ dependencies {
     implementation("org.jsoup:jsoup:1.14.3")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+
+    /* module 2.2 -- RxJava */
+    implementation("io.reactivex.rxjava3:rxjava:3.1.8")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

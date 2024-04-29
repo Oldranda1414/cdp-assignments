@@ -1,4 +1,4 @@
-package macropart2.reactiveprogramming;
+package macropart2.reactive;
 
 import java.io.IOException;
 import java.util.ArrayList;

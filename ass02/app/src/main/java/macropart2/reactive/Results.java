@@ -1,4 +1,4 @@
-package macropart2.reactiveprogramming;
+package macropart2.reactive;
 
 public class Results {
     private int occurrencies;

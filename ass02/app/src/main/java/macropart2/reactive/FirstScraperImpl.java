@@ -1,4 +1,4 @@
-package macropart2.reactiveprogramming;
+package macropart2.reactive;
 
 import java.util.HashSet;
 import java.util.List;
@@ -6,11 +6,12 @@ import java.util.Set;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import macropart2.WordCounterListener;
 
-public class FirstScraperImpl implements Scraper, Listened {
-    private final String initialUrl;
-    private final int maxDepth;
-    private final Set<Listener> listeners;
+public class FirstScraperImpl implements Scraper {
+    private String initialUrl;
+    private int maxDepth;
+    private final Set<WordCounterListener> listeners;
 
     public FirstScraperImpl(final String initialUrl, final int maxDepth) {
         this.initialUrl = initialUrl;
@@ -79,14 +80,21 @@ public class FirstScraperImpl implements Scraper, Listened {
     }
 
     @Override
-    public void registerListener(Listener listener) {
+    public void registerListener(WordCounterListener listener) {
         this.listeners.add(listener);
     }
 
     @Override
-    public void unregisterListener(Listener listener) {
+    public void unregisterListener(WordCounterListener listener) {
         if (this.listeners.contains(listener)) {
             this.listeners.remove(listener);
         }
     }
+
+    @Override
+    public void scrape(String url, String word, int depth) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'scrape'");
+    }
+
 }
