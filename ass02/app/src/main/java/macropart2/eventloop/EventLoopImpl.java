@@ -2,22 +2,24 @@ package macropart2.eventloop;
 
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EventLoopImpl implements RunnableEventLoop {
     
     private final Queue<Runnable> tasks = new LinkedList<>();
-    private boolean isStopped = true;
-    private boolean finished = false;
+    private AtomicBoolean isStopped = new AtomicBoolean(true);
+    private AtomicBoolean finished = new AtomicBoolean(false);
     private boolean started = false;
 
     @Override
     public void run() {
         if (this.started) throw new IllegalStateException("Event loop is already running.");
         this.started = true;
-        this.isStopped = false;
+        this.isStopped.set(false);
+        this.finished.set(false);
         new Thread(() -> {
             while (!this.tasks.isEmpty()) {
-                while (this.isStopped) {
+                while (this.isStopped.get()) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -26,7 +28,8 @@ public class EventLoopImpl implements RunnableEventLoop {
                 }
                 this.tasks.poll().run();
             }
-            this.finished = true;
+            System.out.println("event loop finished");
+            this.finished.set(true);
         }).start();
     }
 
@@ -38,26 +41,26 @@ public class EventLoopImpl implements RunnableEventLoop {
     @Override
     public void stop() {
         if (!this.started) throw new IllegalStateException("Event loop is not running.");
-        if (this.finished) throw new IllegalStateException("Event loop is already finished.");
-        if (this.isStopped) throw new IllegalStateException("Event loop is already stopped.");
-        this.isStopped = true;
+        if (this.finished.get()) throw new IllegalStateException("Event loop is already finished.");
+        if (this.isStopped.get()) throw new IllegalStateException("Event loop is already stopped.");
+        this.isStopped.set(true);
     }
 
     @Override
     public void resume() {
         if (!this.started) throw new IllegalStateException("Event loop is not running.");
-        if (this.finished) throw new IllegalStateException("Event loop is already finished.");
-        if (!this.isStopped) throw new IllegalStateException("Event loop is not stopped.");
-        this.isStopped = false;
+        if (this.finished.get()) throw new IllegalStateException("Event loop is already finished.");
+        if (!this.isStopped.get()) throw new IllegalStateException("Event loop is not stopped.");
+        this.isStopped.set(false);
     }
 
     @Override
     public boolean isStopped() {
-        return this.isFinished() || this.isStopped;
+        return this.isFinished() || this.isStopped.get();
     }
 
     @Override
     public boolean isFinished() {
-        return this.finished;
+        return this.finished.get();
     }
 }
