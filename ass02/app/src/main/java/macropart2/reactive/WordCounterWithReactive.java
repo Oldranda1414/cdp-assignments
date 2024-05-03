@@ -1,18 +1,19 @@
 package macropart2.reactive;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import macropart2.WordCounter;
 import macropart2.WordCounterListener;
 
 public class WordCounterWithReactive implements WordCounter {
     private AtomicInteger counter = new AtomicInteger(0);
-    private Scraper scraper = new SecondScraperImpl(counter);
+    private AtomicBoolean paused = new AtomicBoolean(false);
+    private Scraper scraper = new SecondScraperImpl(counter, paused);
 
     @Override
     public Map<String, Integer> getWordOccurrences() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWordOccurrences'");
+        return this.scraper.getResults();
     }
 
     @Override
@@ -27,25 +28,24 @@ public class WordCounterWithReactive implements WordCounter {
 
     @Override
     public void pause() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pause'");
+        this.paused.set(true);
     }
 
     @Override
     public boolean isPaused() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isPaused'");
+        return this.paused.get();
     }
 
     @Override
     public void resume() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resume'");
+        this.paused.set(false);
     }
 
     @Override
     public void join() {
-        while (counter.get() > 0) {}
+        while (counter.get() > 0) {
+            Thread.onSpinWait();
+        }
     }
 
     @Override

@@ -2,11 +2,14 @@ package macropart2.reactive;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import macropart2.JSoupHandler;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import macropart2.JSoupHandler;
 import macropart2.WordCounterListener;
 
 public class SecondScraperImpl implements Scraper {
@@ -15,29 +18,33 @@ public class SecondScraperImpl implements Scraper {
     private String wordToFind;
     private final Set<WordCounterListener> listeners;
     private final Set<String> visitedUrls;
-    private Results results;
     private AtomicInteger counter;
+    private AtomicBoolean paused;
+    private Map<String, Integer> results;
 
     public SecondScraperImpl(
         String initialUrl,
         int maxDepth,
         String wordToFind,
-        AtomicInteger counter
+        AtomicInteger threadsCounter,
+        AtomicBoolean paused
     ) {
-        this(counter);
+        this(threadsCounter, paused);
         this.initialUrl = initialUrl;
         this.maxDepth = maxDepth;
         this.wordToFind = wordToFind;
-        this.counter = counter;
+        this.counter = threadsCounter;
     }
 
     public SecondScraperImpl(
-        AtomicInteger counter
+        AtomicInteger counter,
+        AtomicBoolean paused
     ) {
         this.counter = counter;
+        this.paused = paused;
         this.listeners = new HashSet<>();
         this.visitedUrls = new HashSet<>();
-        this.results = new Results();
+        this.results = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -52,43 +59,63 @@ public class SecondScraperImpl implements Scraper {
         }
     }
 
-    private void updateListeners(final String currentUrl, final int currentOccurrencies) {
-        this.listeners.forEach(t -> t.onNewWordCounted(currentUrl, currentOccurrencies));
+    private void updateListeners(
+        final String currentUrl,
+        final int currentOccurrencies
+    ) {
+        this.listeners.forEach(t ->
+            t.onNewWordCounted(currentUrl, currentOccurrencies)
+        );
     }
 
     private void createNewObserver(final String url, final int depth) {
         Observable.create(emitter -> {
-            this.counter.incrementAndGet();
-            log("Scraping url " + url + " on depth " + depth);
+                this.counter.incrementAndGet();
+                log("Scraping url " + url + " on depth " + depth);
 
-            // Getting links in current page
-            var links = getLinksFromUrl(url);
+                // Getting links in current page
+                var links = getLinksFromUrl(url);
 
-            // Notifying observer (pasing each link found)
-            links.forEach(emitter::onNext);
+                // Notifying observer (pasing each link found)
+                links.forEach(emitter::onNext);
 
-            // Searching word in current page
-            int currentOccurrencies = JSoupHandler.findWordOccurrences(url, this.wordToFind);
-            this.results.addOccurrencies(currentOccurrencies);
-            log(url + ": " + currentOccurrencies + " occurrencies found. Total: " + this.results.getOccurrencies());
-            this.updateListeners(url, currentOccurrencies);
+                // Searching word in current page
+                int currentOccurrencies = JSoupHandler
+                    .findWordOccurrences(url, this.wordToFind);
 
-            // Completing action
-            emitter.onComplete();
-            this.counter.decrementAndGet();
-        }).subscribeOn(Schedulers.io())
-        .subscribe(subUrl -> {
-            if (depth + 1 > this.maxDepth) {
-                log("Reached max depth, stopping");
-            } else {
-                if (this.visitedUrls.contains(subUrl)) {
-                    log("Encountered url that has been already visited");
+                // Updating results
+                this.pause();
+                this.results.put(url, currentOccurrencies);
+                int totalOccurrencies = this.results.values().stream()
+                    .reduce(0, Integer::sum);
+                log(url + ": "
+                    + currentOccurrencies + " occurrencies found. "
+                    + "Total: " + totalOccurrencies
+                );
+                this.updateListeners(url, currentOccurrencies);
+
+                // Completing action
+                emitter.onComplete();
+                this.counter.decrementAndGet();
+            }).subscribeOn(Schedulers.io())
+            .subscribe(subUrl -> {
+                if (depth + 1 > this.maxDepth) {
+                    log("Reached max depth, stopping");
                 } else {
-                    this.visitedUrls.add((String) subUrl);
-                    createNewObserver((String) subUrl, depth + 1);
+                    if (this.visitedUrls.contains(subUrl)) {
+                        log("Encountered url that has been already visited");
+                    } else {
+                        this.visitedUrls.add((String) subUrl);
+                        this.pause();
+                        createNewObserver((String) subUrl, depth + 1);
+                    }
                 }
-            }
-        });
+            });
+    }
+
+
+    private void pause() {
+        while (this.paused.get()) { Thread.onSpinWait(); }
     }
 
     private List<String> getLinksFromUrl(final String url) {
@@ -101,6 +128,9 @@ public class SecondScraperImpl implements Scraper {
 
     @Override
     public void scrape() {
+        if (this.initialUrl == "" || this.wordToFind == "") {
+            throw new IllegalStateException("Parameters not set");
+        }
         this.createNewObserver(this.initialUrl, 0);
     }
 
@@ -113,7 +143,7 @@ public class SecondScraperImpl implements Scraper {
     }
 
     @Override
-    public Results getResults() {
+    public Map<String, Integer> getResults() {
         return this.results;
     }
 

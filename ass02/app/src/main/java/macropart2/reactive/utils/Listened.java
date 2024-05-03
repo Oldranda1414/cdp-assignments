@@ -1,4 +1,4 @@
-package macropart2.reactive;
+package macropart2.reactive.utils;
 
 import macropart2.WordCounterListener;
 
