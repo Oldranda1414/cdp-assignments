@@ -84,7 +84,7 @@ public class SecondScraperImpl implements Scraper {
                     .findWordOccurrences(url, this.wordToFind);
 
                 // Updating results
-                this.pause();
+                this.pauseIfPaused();
                 this.results.put(url, currentOccurrencies);
                 int totalOccurrencies = this.results.values().stream()
                     .reduce(0, Integer::sum);
@@ -106,7 +106,7 @@ public class SecondScraperImpl implements Scraper {
                         log("Encountered url that has been already visited");
                     } else {
                         this.visitedUrls.add((String) subUrl);
-                        this.pause();
+                        this.pauseIfPaused();
                         createNewObserver((String) subUrl, depth + 1);
                     }
                 }
@@ -114,7 +114,7 @@ public class SecondScraperImpl implements Scraper {
     }
 
 
-    private void pause() {
+    private void pauseIfPaused() {
         while (this.paused.get()) { Thread.onSpinWait(); }
     }
 
