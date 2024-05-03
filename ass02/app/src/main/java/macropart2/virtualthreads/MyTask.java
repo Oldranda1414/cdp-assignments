@@ -5,6 +5,7 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import macropart2.JSoupHandler;
 import macropart2.WordCounterListener;
 import macropart2.virtualthreads.utils.SimpleSemaphore;
 import macropart2.virtualthreads.utils.RWTreeMonitor;
@@ -28,6 +29,7 @@ public class MyTask implements Runnable{
         this.listeners = listeners;
         this.sem = lockConditionPair;
         this.isLogger = isLogger;
+        log("created thread for depth" + this.depth);
     }
 
     @Override
@@ -35,37 +37,42 @@ public class MyTask implements Runnable{
         this.checkForCondition();
         if(this.map.containsKey(this.url)) return;
         try{
-            Document doc = Jsoup.connect(url).get();
+            //Document doc = Jsoup.connect(url).get();
             log("searching for word occurences");
-            this.searchWord(doc);
+            this.searchWord();
             log("searching for links");
-            this.searchLinks(doc);
+            this.searchLinks();
         }
         catch (Exception e){
             log("skipping: " + url);
         }
     }
 
-    private void searchWord(Document doc){
+    private void searchWord(){
         log("searching in " + this.url);
+        /* 
         var body = doc.body().text().toLowerCase();
         int index = body.indexOf(word.toLowerCase());
         while (index != -1) {
             this.checkForCondition();
             this.count++;
             index = body.indexOf(word.toLowerCase(), index + 1);
-        }
+        }*/
+        this.count = JSoupHandler.findWordOccurrences(this.url, this.word);
+        this.checkForCondition();
         this.updateMap();
     }
 
-    private void searchLinks(Document doc){
-        var links = doc.select("a");
+    private void searchLinks(){
         var newDepth = depth - 1;
+        log("creating threads with new depth of: " + newDepth);
         if(newDepth == 0) return;
+        var links = JSoupHandler.getLinksFromUrl(this.url);
+        log("links obtained" + links);
         for(var link : links){
             this.checkForCondition();
-            String href = link.attr("href");
-            this.childThreads.add(Thread.ofVirtual().start(new MyTask(href, word, newDepth, this.map, listeners, this.sem, this.isLogger)));
+            log("creating a thread looking into: " + link);
+            this.childThreads.add(Thread.ofVirtual().start(new MyTask(link, word, newDepth, this.map, listeners, this.sem, this.isLogger)));
         }
         for(var thread : this.childThreads){
             try{

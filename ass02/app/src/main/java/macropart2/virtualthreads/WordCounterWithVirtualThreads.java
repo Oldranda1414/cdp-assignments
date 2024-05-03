@@ -32,7 +32,7 @@ public class WordCounterWithVirtualThreads implements WordCounter{
 
     @Override
     public void start(String url, String word, int depth) {
-        this.mainThread = Thread.ofVirtual().start(new MyTask(url, word, depth, new RWTreeMonitor<>(this.isLoggingEnabled), this.listenerList, this.sem, false));
+        this.mainThread = Thread.ofVirtual().start(new MyTask(url, word, depth, new RWTreeMonitor<>(this.isLoggingEnabled), this.listenerList, this.sem, this.isLoggingEnabled));
     }
 
     @Override
