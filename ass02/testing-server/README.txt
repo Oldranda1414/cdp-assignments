@@ -1,2 +1,8 @@
-Per lanciare il server usare il comando `python server.py`. Il server contiene 42 occorrenze della parola "page" (le ho contate a mano) senza considerare il case e considerando solo le parole intere (o almeno, questo è il funzionamento di JSoupHandler).
+Dependecies for the server are:
+    Python3 with packages:
+        flask
+        waitress
+
+To launch the server execute the command `python server.py` on the cli.
+Starting the assignment from the GUI with url "localhost:8080", word "page" and depth "6" should give a result of 42 occurrences.
 
