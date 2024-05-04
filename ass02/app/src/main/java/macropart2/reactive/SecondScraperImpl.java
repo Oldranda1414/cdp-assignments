@@ -74,14 +74,14 @@ public class SecondScraperImpl implements Scraper {
                 log("Scraping url " + url + " on depth " + depth);
 
                 // Getting links in current page
-                var links = getLinksFromUrl(url);
+                var links = this.getLinksFromUrl(url);
 
                 // Notifying observer (pasing each link found)
                 links.forEach(emitter::onNext);
 
                 // Searching word in current page
-                int currentOccurrencies = JSoupHandler
-                    .findWordOccurrences(url, this.wordToFind);
+                int currentOccurrencies = this
+                    .findWordOccurrences(url);
 
                 // Updating results
                 this.pauseIfPaused();
@@ -110,7 +110,8 @@ public class SecondScraperImpl implements Scraper {
                         createNewObserver((String) subUrl, depth + 1);
                     }
                 }
-            });
+            }
+        );
     }
 
 
@@ -120,6 +121,10 @@ public class SecondScraperImpl implements Scraper {
 
     private List<String> getLinksFromUrl(final String url) {
         return JSoupHandler.getLinksFromUrl(url);
+    }
+
+    private int findWordOccurrences(final String url) {
+        return JSoupHandler.findWordOccurrences(url, this.wordToFind);
     }
 
     private void log(final String s) {
