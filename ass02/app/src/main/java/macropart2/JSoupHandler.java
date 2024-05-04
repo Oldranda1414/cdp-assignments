@@ -19,8 +19,8 @@ public class JSoupHandler {
                 String linkUrl = link.attr("abs:href");
                 links.add(linkUrl);
             }
-        } catch (IOException e) {
-            // System.err.println("[LINKS] Errore durante la connessione all'URL: " + e.getMessage());
+        } catch (IOException | IllegalArgumentException e) {
+            // Unreachable or invalid url, passing
         }
         return links;
     }
@@ -37,8 +37,8 @@ public class JSoupHandler {
                     count++;
                 }
             }
-        } catch (IOException e) {
-            // System.err.println("[OCCUR] Errore durante la connessione all'URL: " + e.getMessage());
+        } catch (IOException | IllegalArgumentException e) {
+            // Unreachable or invalid url, passing
         }
         return count;
     }

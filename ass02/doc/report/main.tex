@@ -127,7 +127,7 @@ To crawl the web the JSoup java library is used. To simplify it's usage a handle
 \subsection{Event-loop}
 Source code: \texttt{macropart2/eventloop}
 
-The tasks are rappresented by events. The first function call creates an event that parses through the contents of the given website.
+The tasks are represented by events. The first function call creates an event that parses through the contents of the given website.
  If a url is found and the depth value is not 0 a new event is created, that executes the function on the new website, with the depth value decreased by one.
 
  The function for each event is rappresented by the following pseudocode:
@@ -155,7 +155,58 @@ end
 \subsection{Reactive}
 Source code: \texttt{macropart2/reactive}
 
-TO BE DONE
+An \texttt{Observable} object (from RxJava library) is created  for the given url.
+After defining its behavior and setting the thread in which it will be executed, the observable is started, specifying an observer that implements the \texttt{onNext()} method.
+The observable performs these actions in order:
+\begin{itemize}
+    \item It gets every link present in the page corresponding to the give url;
+    \item It calls the \texttt{onNext()} function passing the sub-urls found;
+    \item It counts the given word occurrencies in the given url.
+\end{itemize}
+Every time the observer is called using its \texttt{onNext()} method, it checks if the depth has reached its max value or if the given sub-url has been already explored; otherwise, it starts a new observer identical to the previous, but starting from the given sub-url.
+At this point, the process continues recursively.
+
+The following pseudocode explains the system execution:
+
+\begin{algorithm}[label={alg4}]
+url $\gets$ <initialUrl>
+word $\gets$ <wordToFind>
+totalOccurrencies $\gets$ 0
+
+procedure createObserver(url):
+    begin
+        observable $\gets$ 
+            begin
+                sub-urls $\gets$ getSubUrls(url)
+                foreach sub-url in sub-urls
+                    observer.onNext(sub-url)
+                endforeach
+                occ $\gets$ getOccurrencies(url, word)
+                totalOccurrencies $\gets$ totalOccurrencies + occ
+            end
+        
+        observer $\gets$
+            procedure onNext(sub-url)
+                begin
+                    if !maxDepthReached() $\wedge$ !urlAlreadyVisited(sub-url):
+                        createObserver(sub-url)
+                end
+
+        observable.addObserver(observer)
+        observable.start()
+    end
+\end{algorithm}
+
+To implement the pause/resume feature an AtomicBoolean is used.
+This variant of thread-safe boolean is set to true from the GUI to pause the process, so threads wait for it to become false again.
+When the boolean is set back to false, threads stop waiting and proceed with their jobs.
+Multiple waits have been put in the observable's code, before new observables creation and before results update.
+
+A join feature is available, so that the GUI can wait until every thread has finished its job.
+To implement this feature an AtomicInteger is used.
+Similarly to AtomicBoolean, AtomicInteger is basically a thread-safe integer. It is incremented upon the creation of a new observable, and decremented upon the completion of an observable.
+When the system starts, the GUI thread must wait some time to let the first thread start, otherwise the integer would be already 0, meaning that the process is finished.
+
 \subsection{Virtual Threads}
 Source code: \texttt{macropart2/virtualthreads}
 
@@ -198,9 +249,10 @@ The deliverable contains files for launching a server on port 8080 to test vario
 The event-loop solution did not show big performance improvements. This was credited to the fact that the event-loop solution is single threaded.
  Enhancements in readability and task decomposition are nonetheless obtained.
 %Since the event-loop is single threaded it cannot achieve such a huge performance improvement. It still enhances readability and task decomposition.
+
 \subsection{Testing - Reactive}
-TO BE DONE
-%TODO
+In terms of performance, the reactive version of the system is better than the event-loop based one, due to the fact that it uses a large number of threads, one for every url found.
+
 \subsection{Testing - Virtual Threads}
 The virtual thread solution proved to be the most efficient, preformance wise. The abstraction of the thread concept empowers the application to be executed
  efficently indipendently from the underlying machine architecture.
