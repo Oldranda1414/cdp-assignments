@@ -2,19 +2,17 @@ package macropart2.eventloop;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
 import java.util.ArrayList;
 import java.util.List;
-
-import macropart2.WordCounter;
+import macropart2.AbstractWordCounter;
 import macropart2.WordCounterListener;
 import macropart2.utils.JSoupHandler;
 
-public class WordCounterWithEventLoop implements WordCounter {
+public class WordCounterWithEventLoop extends AbstractWordCounter {
 
     private final Map<String, Integer> wordOccurrences = new HashMap<>();
     private final boolean isLoggingEnabled;
-    private final RunnableEventLoop eventLoop = new EventLoopImpl();
+    private final RunnableEventLoop eventLoop = new EventLoopImpl(this.sem, this.cond);
     private final List<WordCounterListener> listeners = new ArrayList<>();
 
     public WordCounterWithEventLoop(final boolean isLoggingEnabled) {
@@ -31,37 +29,10 @@ public class WordCounterWithEventLoop implements WordCounter {
     }
 
     @Override
-    public void start(final String url, final String word, final int depth) {
+    protected void startTemplate(final String url, final String word, final int depth) {
         enqueueOnEventLoop(eventLoop, url, word, depth);
         eventLoop.run();
     }
-
-    @Override
-    public void pause() {
-        eventLoop.stop();
-    }
-
-    @Override
-    public void resume() {
-        eventLoop.resume();
-    }
-
-    @Override
-    public boolean isPaused() {
-        return eventLoop.isStopped();
-    }
-
-    /* 
-    @Override
-    public void join() {
-        while (!eventLoop.isFinished()) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
     @Override
     public void addListener(final WordCounterListener listener) {
@@ -101,11 +72,5 @@ public class WordCounterWithEventLoop implements WordCounter {
         if (this.isLoggingEnabled) {
             System.out.println("[EVENT-LOOP | " + depth + "]: " + message);
         }
-    }
-
-    @Override
-    public Condition getFinishedCondition() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'join'");
     }
 }
