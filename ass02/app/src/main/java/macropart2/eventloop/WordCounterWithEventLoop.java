@@ -67,7 +67,7 @@ public class WordCounterWithEventLoop implements WordCounter {
     }
     
     private void enqueueOnEventLoop(final EventLoop eventLoop, final String url, final String word, final int depth) {
-        eventLoop.enqueueTask(() -> {System.out.println(url); getWordOccurrencesWithEventLoop(eventLoop, url, word, depth);});
+        eventLoop.enqueueTask(() -> getWordOccurrencesWithEventLoop(eventLoop, url, word, depth));
     }
 
     private void getWordOccurrencesWithEventLoop(final EventLoop eventLoop, final String url, final String word, final int depth) {
