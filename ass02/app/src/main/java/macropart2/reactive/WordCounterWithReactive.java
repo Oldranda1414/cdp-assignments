@@ -14,6 +14,10 @@ public class WordCounterWithReactive extends AbstractWordCounter {
     private AtomicBoolean paused = new AtomicBoolean(false);
     private Scraper scraper = new SecondScraperImpl(counter, paused);
 
+    public WordCounterWithReactive(){
+        super(null);
+    }
+
     public Map<String, Integer> getWordOccurrences() {
         return this.scraper.getResults();
     }

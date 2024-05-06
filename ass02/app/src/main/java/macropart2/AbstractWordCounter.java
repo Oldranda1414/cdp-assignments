@@ -33,6 +33,7 @@ public abstract class AbstractWordCounter implements WordCounter {
 
     @Override
     public void pause() {
+        log("trying to pause");
         checkStarted();
         this.sem.setToRed();
     }
@@ -65,4 +66,8 @@ public abstract class AbstractWordCounter implements WordCounter {
     }
 
     abstract protected void startTemplate(String url, String word, int depth);
+
+    private void log(String msg) {
+		System.out.println("[abstract]" + msg);
+	}
 }
