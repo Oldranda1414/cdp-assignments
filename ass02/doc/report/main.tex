@@ -119,8 +119,18 @@ end
 \end{algorithm}
 
 \section{Implementation}
-To ease development a common View (located at \texttt{macropart2/view}) was created. The View interacts with a common interface: \texttt{WordCounter.java}.
- The various solutions must implement the common interface.
+To ease development a common View (located at \texttt{macropart2/view}) was created.
+
+The View interacts with a common interface: \texttt{WordCounter.java}.
+ 
+The interface is implemented by an abstract class: \texttt{AbstractWordCounter.java}. 
+
+The three solutions extend the abstract class: \texttt{WordCounterWith[solution]} where [solution] is the type of concurrent solution used.
+
+To implement the pausing and resuming functions in the
+ \texttt{WordCounter} interface, the \texttt{SimpleSemaphore} class was created: it is a monitor that acts like a resettable barrier. If the
+ semaphore is green no threads are blocked. If the semaphore is red all threads block until the semaphore turns green again. 
+ The abstract class sets the color of the semaphore depending on orders from the View.
 
 To crawl the web the JSoup java library is used. To simplify it's usage a handler (\texttt{JSoupHandler}) is created, which is used by the various solutions.
 
@@ -234,11 +244,6 @@ end
 \end{algorithm}
 
 A map monitor is created (\texttt{RWTreeMonitor.java}) to save the current results.
-
-To implement the pausing and resuming functions in the
- \texttt{WordCounter} interface, the \texttt{SimpleSemaphore} class was created: it is a monitor that acts like a resettable barrier. If the
- semaphore is green no threads are blocked. If the semaphore is red all threads block until the semaphore turns green again. The \texttt{WordCounter}
- implementation sets the color of the semaphore depending on orders from the View.
 
 \section{Execution and Testing}
 The main class \texttt{macropart2/Main.java} creates the desired implementation of \texttt{WordCounter}.
