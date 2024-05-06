@@ -1,6 +1,7 @@
 package macropart2;
 
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
 
 /**
  * A word counter that can count the occurrences of a word in a web page.
@@ -43,7 +44,7 @@ public interface WordCounter {
     /**
      * Join the word counter.
      */
-    void join();
+    Condition join();
 
     /**
      * Add a listener to the word counter.

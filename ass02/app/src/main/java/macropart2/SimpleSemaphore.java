@@ -1,4 +1,4 @@
-package macropart2.virtualthreads.utils;
+package macropart2;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -32,6 +32,9 @@ public class SimpleSemaphore {
     public void setToRed(){
         lock.lock();
         try {
+            if(!this.isGreen){
+                throw new IllegalStateException("setToGreen was called when semaphore was already green");
+            }
             this.isGreen = false;
         } finally {
             lock.unlock();
@@ -41,6 +44,9 @@ public class SimpleSemaphore {
     public void setToGreen() {
         lock.lock();
         try {
+            if(this.isGreen){
+                throw new IllegalStateException("setToGreen was called when semaphore was already green");
+            }
             this.isGreen = true;
             condition.signalAll(); // Notify all waiting threads that condition is met
         } finally {

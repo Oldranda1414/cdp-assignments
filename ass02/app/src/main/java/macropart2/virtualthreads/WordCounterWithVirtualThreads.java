@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import macropart2.SimpleSemaphore;
 import macropart2.WordCounter;
 import macropart2.WordCounterListener;
-import macropart2.virtualthreads.utils.SimpleSemaphore;
 import macropart2.virtualthreads.utils.RWTreeMonitor;
 
 public class WordCounterWithVirtualThreads implements WordCounter{

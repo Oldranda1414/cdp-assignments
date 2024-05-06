@@ -9,8 +9,8 @@ public class Main {
 
     public static void main(String[] args) {
         // var wordCounter = new WordCounterWithEventLoop();
-        var wordCounter = new WordCounterWithReactive();
-        // var wordCounter = new WordCounterWithVirtualThreads();
+        //var wordCounter = new WordCounterWithReactive();
+        var wordCounter = new WordCounterWithVirtualThreads();
         new GUI(wordCounter).display();
     }
 

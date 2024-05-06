@@ -6,8 +6,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import macropart2.JSoupHandler;
+import macropart2.SimpleSemaphore;
 import macropart2.WordCounterListener;
-import macropart2.virtualthreads.utils.SimpleSemaphore;
 import macropart2.virtualthreads.utils.RWTreeMonitor;
 
 public class MyTask implements Runnable{
