@@ -19,13 +19,13 @@ public class MyTask implements Runnable{
     private List<Thread> childThreads = new ArrayList<>();
     private SimpleSemaphore sem;
 
-    public MyTask(String url, String word, int depth, Map<String, Integer> map, List<WordCounterListener> listeners, SimpleSemaphore lockConditionPair, boolean isLogger){
+    public MyTask(String url, String word, int depth, Map<String, Integer> map, List<WordCounterListener> listeners, SimpleSemaphore sem, boolean isLogger){
         this.url = url;
         this.word = word;
         this.depth = depth;
         this.map = map;
         this.listeners = listeners;
-        this.sem = lockConditionPair;
+        this.sem = sem;
         this.isLogger = isLogger;
         //log("created thread for depth" + this.depth);
     }
