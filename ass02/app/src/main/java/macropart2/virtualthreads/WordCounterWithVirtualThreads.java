@@ -22,7 +22,7 @@ public class WordCounterWithVirtualThreads extends AbstractWordCounter{
     }
 
     public WordCounterWithVirtualThreads (){
-        this.isLoggingEnabled = false;
+        this(false);
     }
 
     @Override
