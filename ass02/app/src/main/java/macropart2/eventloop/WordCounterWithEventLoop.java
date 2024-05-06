@@ -1,31 +1,22 @@
 package macropart2.eventloop;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 import macropart2.AbstractWordCounter;
 import macropart2.WordCounterListener;
 import macropart2.utils.JSoupHandler;
 
 public class WordCounterWithEventLoop extends AbstractWordCounter {
 
-    private final Map<String, Integer> wordOccurrences = new HashMap<>();
     private final boolean isLoggingEnabled;
     private final RunnableEventLoop eventLoop = new EventLoopImpl(this.sem, this.cond);
-    private final List<WordCounterListener> listeners = new ArrayList<>();
-
+    
     public WordCounterWithEventLoop(final boolean isLoggingEnabled) {
+        super(new HashMap<>());
         this.isLoggingEnabled = isLoggingEnabled;
     }
     
     public WordCounterWithEventLoop() {
         this(false);
-    }
-
-    @Override
-    public Map<String, Integer> getWordOccurrences() {
-        return new HashMap<>(this.wordOccurrences);
     }
 
     @Override
@@ -46,18 +37,18 @@ public class WordCounterWithEventLoop extends AbstractWordCounter {
     private void getWordOccurrencesWithEventLoop(final EventLoop eventLoop, final String url, final String word, final int depth) {
         if (!shouldExploreUrl(url, depth)) return; 
         log("Exploring " + url, depth);
-        this.wordOccurrences.put(url, JSoupHandler.findWordOccurrences(url, word));
-        log("Found " + this.wordOccurrences.get(url) + " occurrences", depth);
+        super.wordOccurrences.put(url, JSoupHandler.findWordOccurrences(url, word));
+        log("Found " + super.wordOccurrences.get(url) + " occurrences", depth);
         updateListeners(url);
         recursivelyGetWordOccurrences(url, word, depth, eventLoop);
     }
 
     private void updateListeners(final String url) {
-        this.listeners.forEach(l -> l.onNewWordCounted(url, this.wordOccurrences.get(url)));
+        this.listeners.forEach(l -> l.onNewWordCounted(url, super.wordOccurrences.get(url)));
     }
 
     private boolean shouldExploreUrl(final String url, final int depth) {
-        return depth != 0 && !wordOccurrences.containsKey(url);
+        return depth != 0 && !super.wordOccurrences.containsKey(url);
     }
 
     private void recursivelyGetWordOccurrences(final String url, final String word, final int depth, final EventLoop eventLoop) {
