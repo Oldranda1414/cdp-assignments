@@ -14,7 +14,7 @@ public abstract class AbstractWordCounter implements WordCounter{
     @Override
     public void start(String url, String word, int depth){
         this.isStarted = true;
-        this.innerStart(url, word, depth);
+        this.startTemplate(url, word, depth);
     }
 
     @Override
@@ -45,5 +45,5 @@ public abstract class AbstractWordCounter implements WordCounter{
         }
     }
 
-    abstract protected void innerStart(String url, String word, int depth);
+    abstract protected void startTemplate(String url, String word, int depth);
 }
