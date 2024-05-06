@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import macropart2.WordCounterListener;
 import macropart2.utils.JSoupHandler;
+import macropart2.utils.SimpleSemaphore;
 
 public class SecondScraperImpl implements Scraper {
     private String initialUrl;
@@ -19,17 +19,17 @@ public class SecondScraperImpl implements Scraper {
     private final Set<WordCounterListener> listeners;
     private final Set<String> visitedUrls;
     private AtomicInteger counter;
-    private AtomicBoolean paused;
     private Map<String, Integer> results;
+    private SimpleSemaphore sem;
 
     public SecondScraperImpl(
         String initialUrl,
         int maxDepth,
         String wordToFind,
         AtomicInteger threadsCounter,
-        AtomicBoolean paused
+        SimpleSemaphore sem
     ) {
-        this(threadsCounter, paused);
+        this(threadsCounter, sem);
         this.initialUrl = initialUrl;
         this.maxDepth = maxDepth;
         this.wordToFind = wordToFind;
@@ -38,10 +38,10 @@ public class SecondScraperImpl implements Scraper {
 
     public SecondScraperImpl(
         AtomicInteger counter,
-        AtomicBoolean paused
+        SimpleSemaphore sem
     ) {
         this.counter = counter;
-        this.paused = paused;
+        this.sem = sem;
         this.listeners = new HashSet<>();
         this.visitedUrls = new HashSet<>();
         this.results = new ConcurrentHashMap<>();
@@ -116,7 +116,12 @@ public class SecondScraperImpl implements Scraper {
 
 
     private void pauseIfPaused() {
-        while (this.paused.get()) { Thread.onSpinWait(); }
+        // while (this.paused.get()) { Thread.onSpinWait(); }
+        try {
+            this.sem.waitForGreen();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<String> getLinksFromUrl(final String url) {
@@ -128,7 +133,13 @@ public class SecondScraperImpl implements Scraper {
     }
 
     private void log(final String s) {
-        // System.out.println("[" + Thread.currentThread().getName() + "] " + s);
+        boolean logging = false;
+        if (logging) {
+            System.out.println(
+                "[" + Thread.currentThread().getName() + "] "
+                + s
+            );
+        }
     }
 
     @Override
