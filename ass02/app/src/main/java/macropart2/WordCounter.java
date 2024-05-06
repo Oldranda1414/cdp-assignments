@@ -44,7 +44,7 @@ public interface WordCounter {
     /**
      * Join the word counter.
      */
-    Condition join();
+    Condition getFinishedCondition();
 
     /**
      * Add a listener to the word counter.

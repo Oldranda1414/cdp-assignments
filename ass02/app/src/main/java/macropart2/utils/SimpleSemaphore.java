@@ -1,4 +1,4 @@
-package macropart2;
+package macropart2.utils;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;

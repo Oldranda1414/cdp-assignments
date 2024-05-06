@@ -1,4 +1,4 @@
-package macropart2;
+package macropart2.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;

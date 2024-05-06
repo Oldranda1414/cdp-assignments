@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import macropart2.SimpleSemaphore;
-import macropart2.WordCounter;
+import macropart2.AbstractWordCounter;
 import macropart2.WordCounterListener;
+import macropart2.utils.SimpleSemaphore;
 import macropart2.virtualthreads.utils.RWTreeMonitor;
 
-public class WordCounterWithVirtualThreads implements WordCounter{
+public class WordCounterWithVirtualThreads extends AbstractWordCounter{
 
-    private final Map<String, Integer> wordOccurrences = new RWTreeMonitor<String, Integer>(true);
+    private final Map<String, Integer> wordOccurrences = new RWTreeMonitor<String, Integer>(false);
     private Thread mainThread;
     private boolean isLoggingEnabled;
     private final List<WordCounterListener> listenerList = new ArrayList<>();
@@ -31,34 +31,17 @@ public class WordCounterWithVirtualThreads implements WordCounter{
     }
 
     @Override
-    public void start(String url, String word, int depth) {
+    protected void innerStart(String url, String word, int depth) {
         this.mainThread = Thread.ofVirtual().start(new MyTask(url, word, depth, new RWTreeMonitor<>(this.isLoggingEnabled), this.listenerList, this.sem, this.isLoggingEnabled));
-    }
 
-    @Override
-    public void pause() {
-        log("pausing threads");
-        this.sem.setToRed();
-    }
-
-    @Override
-    public boolean isPaused() {
-        return this.sem.isRed();
-    }
-
-    @Override
-    public void resume() {
-        log("resuming threads");
-        this.sem.setToGreen();
-    }
-
-    @Override
-    public void join() {
-        try {
-            this.mainThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Thread.ofVirtual().start(() -> {
+            try {
+                this.mainThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.cond.signalAll();
+        });
     }
 
     @Override

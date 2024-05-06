@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import macropart2.JSoupHandler;
 import macropart2.WordCounterListener;
+import macropart2.utils.JSoupHandler;
 
 public class SecondScraperImpl implements Scraper {
     private String initialUrl;

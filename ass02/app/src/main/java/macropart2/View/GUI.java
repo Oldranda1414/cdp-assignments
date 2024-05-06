@@ -41,8 +41,12 @@ public class GUI extends JFrame implements WordCounterListener {
         button.addActionListener(e -> {
             startWordCounter(panel, urlField, wordField, depthField);
             new Thread(() -> {
-                this.wordCounter.join();
-                this.resultsTextArea.append("-------------RESEARCH FINISHED-------------\n");
+                try {
+                    this.wordCounter.getFinishedCondition().await();
+                    this.resultsTextArea.append("-------------RESEARCH FINISHED-------------\n");
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
             }).start();
         });
     }

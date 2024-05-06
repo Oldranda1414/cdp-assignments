@@ -2,12 +2,13 @@ package macropart2.eventloop;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
 import java.util.ArrayList;
 import java.util.List;
 
-import macropart2.JSoupHandler;
 import macropart2.WordCounter;
 import macropart2.WordCounterListener;
+import macropart2.utils.JSoupHandler;
 
 public class WordCounterWithEventLoop implements WordCounter {
 
@@ -50,6 +51,7 @@ public class WordCounterWithEventLoop implements WordCounter {
         return eventLoop.isStopped();
     }
 
+    /* 
     @Override
     public void join() {
         while (!eventLoop.isFinished()) {
@@ -59,7 +61,7 @@ public class WordCounterWithEventLoop implements WordCounter {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     @Override
     public void addListener(final WordCounterListener listener) {
@@ -99,5 +101,11 @@ public class WordCounterWithEventLoop implements WordCounter {
         if (this.isLoggingEnabled) {
             System.out.println("[EVENT-LOOP | " + depth + "]: " + message);
         }
+    }
+
+    @Override
+    public Condition getFinishedCondition() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'join'");
     }
 }

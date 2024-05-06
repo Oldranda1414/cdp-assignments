@@ -1,12 +1,14 @@
 package macropart2;
 
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+
+import macropart2.utils.MyCondition;
+import macropart2.utils.SimpleSemaphore;
 
 public abstract class AbstractWordCounter implements WordCounter{
 
     protected SimpleSemaphore sem = new SimpleSemaphore();
-    protected Condition cond = new ReentrantLock().newCondition();
+    protected MyCondition cond = new MyCondition();
     private boolean isStarted = false;
 
     @Override
@@ -33,7 +35,7 @@ public abstract class AbstractWordCounter implements WordCounter{
     }
 
     @Override
-    public Condition join() {
+    public Condition getFinishedCondition() {
         return this.cond;
     }
 

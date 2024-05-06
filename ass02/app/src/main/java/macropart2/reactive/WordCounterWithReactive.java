@@ -3,6 +3,8 @@ package macropart2.reactive;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+
 import macropart2.WordCounter;
 import macropart2.WordCounterListener;
 
@@ -41,16 +43,22 @@ public class WordCounterWithReactive implements WordCounter {
         this.paused.set(false);
     }
 
-    @Override
-    public void join() {
-        while (counter.get() > 0) {
-            Thread.onSpinWait();
-        }
-    }
+    // @Override
+    // public void join() {
+    //     while (counter.get() > 0) {
+    //         Thread.onSpinWait();
+    //     }
+    // }
 
     @Override
     public void addListener(WordCounterListener listener) {
         this.scraper.registerListener(listener);
+    }
+
+    @Override
+    public Condition getFinishedCondition() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'join'");
     }
     
 }
