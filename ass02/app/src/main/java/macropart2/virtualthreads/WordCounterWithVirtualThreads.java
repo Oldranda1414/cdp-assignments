@@ -31,7 +31,7 @@ public class WordCounterWithVirtualThreads extends AbstractWordCounter{
     }
 
     @Override
-    protected void innerStart(String url, String word, int depth) {
+    protected void startTemplate(String url, String word, int depth) {
         this.mainThread = Thread.ofVirtual().start(new MyTask(url, word, depth, new RWTreeMonitor<>(this.isLoggingEnabled), this.listenerList, this.sem, this.isLoggingEnabled));
 
         Thread.ofVirtual().start(() -> {
