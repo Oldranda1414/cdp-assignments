@@ -18,7 +18,6 @@ public class SecondScraperImpl implements Scraper {
     private int maxDepth;
     private String wordToFind;
     private final Set<WordCounterListener> listeners;
-    private final Set<String> visitedUrls;
     private AtomicInteger counter;
     private Map<String, Integer> results;
     private SimpleSemaphore sem;
@@ -44,7 +43,6 @@ public class SecondScraperImpl implements Scraper {
         this.counter = counter;
         this.sem = sem;
         this.listeners = new HashSet<>();
-        this.visitedUrls = new ConcurrentSkipListSet<>();
         this.results = new ConcurrentHashMap<>();
     }
 
@@ -104,10 +102,12 @@ public class SecondScraperImpl implements Scraper {
                 if (depth + 1 > this.maxDepth - 1) {
                     log("Reached max depth, stopping");
                 } else {
-                    if (this.visitedUrls.contains(subUrl)) {
+                    // if (this.visitedUrls.contains(subUrl)) {
+                    if (this.results.keySet().contains(subUrl)) {
                         log("Encountered url that has been already visited");
                     } else {
-                        this.visitedUrls.add((String) subUrl);
+                        // this.visitedUrls.add((String) subUrl);
+                        this.results.put((String) subUrl, 0);
                         createNewObserver((String) subUrl, depth + 1);
                     }
                 }
