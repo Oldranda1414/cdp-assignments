@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -43,7 +44,7 @@ public class SecondScraperImpl implements Scraper {
         this.counter = counter;
         this.sem = sem;
         this.listeners = new HashSet<>();
-        this.visitedUrls = new HashSet<>();
+        this.visitedUrls = new ConcurrentSkipListSet<>();
         this.results = new ConcurrentHashMap<>();
     }
 
@@ -71,6 +72,7 @@ public class SecondScraperImpl implements Scraper {
     private void createNewObserver(final String url, final int depth) {
         Observable.create(emitter -> {
                 this.counter.incrementAndGet();
+                this.pauseIfPaused();
                 log("Scraping url " + url + " on depth " + depth);
 
                 // Getting links in current page
@@ -99,14 +101,13 @@ public class SecondScraperImpl implements Scraper {
                 this.counter.decrementAndGet();
             }).subscribeOn(Schedulers.io())
             .subscribe(subUrl -> {
-                if (depth + 1 > this.maxDepth) {
+                if (depth + 1 > this.maxDepth - 1) {
                     log("Reached max depth, stopping");
                 } else {
                     if (this.visitedUrls.contains(subUrl)) {
                         log("Encountered url that has been already visited");
                     } else {
                         this.visitedUrls.add((String) subUrl);
-                        this.pauseIfPaused();
                         createNewObserver((String) subUrl, depth + 1);
                     }
                 }
