@@ -1,0 +1,262 @@
+\documentclass[12pt, a4paper]{report}
+\usepackage[pdftex]{graphicx} %for embedding images
+\graphicspath{ {./img/} } %the path to the images
+\usepackage[,italian, english]{babel}
+\usepackage{url} %for proper url entries
+% \usepackage[bookmarks, colorlinks=false, pdfborder={0 0 0}, pdftitle={<pdf title here>}, pdfauthor={<author's name here>}, pdfsubject={<subject here>}, pdfkeywords={<keywords here>}]{hyperref} %for creating links in the pdf version and other additional pdf attributes, no effect on the printed document
+%\usepackage[final]{pdfpages} %for embedding another pdf, remove if not required
+%pseudocode listing packages and definitions
+\usepackage{color}
+\usepackage{listings}
+\usepackage{caption}
+
+\newcounter{nalg}[chapter] % defines algorithm counter for chapter-level
+\renewcommand{\thenalg}{\thechapter .\arabic{nalg}} %defines appearance of the algorithm counter
+\DeclareCaptionLabelFormat{algocaption}{Algorithm \thenalg} % defines a new caption label as Algorithm x.y
+
+\lstnewenvironment{algorithm}[1][] %defines the algorithm listing environment
+{   
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the caption setup for: it ises label format as the declared caption label above and makes label and caption text to be separated by a ':'
+    \lstset{ %this is the stype
+        mathescape=true,
+        frame=tB,
+        numbers=left, 
+        numberstyle=\tiny,
+        basicstyle=\scriptsize, 
+        keywordstyle=\color{black}\bfseries\em,
+        keywords={,input, output, return, datatype, function, in, if, else, foreach, while, begin, end, } %add the keywords you want, or load a language as Rubens explains in his comment above.
+        numbers=left,
+        xleftmargin=.04\textwidth,
+        #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+    }
+}
+{}
+
+\begin{document}
+\renewcommand\bibname{References} %Renames "Bibliography" to "References" on ref page
+
+
+\begin{titlepage}
+
+\begin{center}
+
+\Large \textbf {Programmazione Concorrente e Distribuita - Assigment 02}\\%\\[0.5in]
+\vspace{1em}%
+\vfill
+Andrea Biagini
+
+
+Filippo Gurioli
+
+
+Leonardo Randacio
+\vspace{1em}
+\vfill
+{\bf Università di Bologna \\ Scienze e Ingegneria Informatiche}\\[0.5in]
+
+       
+\vfill
+\today
+
+\end{center}
+
+\end{titlepage}
+
+
+\tableofcontents
+
+\newpage
+\pagenumbering{arabic} %reset numbering to normal for the main content
+
+\chapter{Macropart 2}
+\section{Task Decomposition}
+The main task can be rappresented in pseudocode with a recursive function \texttt{getWordOccurrences(str URL, str WORD, int DEPTH)}
+
+The function identifies two tasks:
+\begin{itemize}
+    \item countTask
+    \item linkTask
+\end{itemize}
+The countTask finds all occurrences of the defined word in the website, while the linkTask finds all the links and for every link starts the
+ getWordOccurrences on the new url found. Both subtasks are expressed below:
+
+\newpage
+
+\begin{algorithm}[caption={countTask expressed in pseudocode}, label={alg1}]
+input: str SITE_CONTENTS, str WORD
+output: int
+begin
+    int COUNT $\gets$ 0
+    foreach CURRENT_WORD in SITE_CONTENTS
+        if (CURRENT_WORD == WORD)
+            COUNT $\gets$ COUNT + 1
+        endif
+    endforeach
+    return COUNT
+end       
+\end{algorithm}
+
+\begin{algorithm}[caption={linkTask expressed in pseudocode}, label={alg2}]
+input: str SITE_CONTENTS, str WORD, int DEPTH
+begin
+    if (DEPTH != 0)
+        foreach CURRENT_WORD in SITE_CONTENTS
+            if (is_url(CURRENT_WORD))
+                getWordOccurrences(CURRENT_WORD, WORD, DEPTH - 1)
+            endif
+        endforeach
+    endif
+end       
+\end{algorithm}
+
+\section{Implementation}
+To ease development a common View (located at \texttt{part2/view}) was created.
+
+The View interacts with a common interface: \texttt{WordCounter.java}.
+ 
+The interface is implemented by an abstract class: \texttt{AbstractWordCounter.java}. 
+
+The three solutions extend the abstract class: \texttt{WordCounterWith[solution]} where [solution] is the type of concurrent solution used.
+
+To implement the pausing and resuming functions in the
+ \texttt{WordCounter} interface, the \texttt{SimpleSemaphore} class was created: it is a monitor that acts like a resettable barrier. If the
+ semaphore is green no threads are blocked. If the semaphore is red all threads block until the semaphore turns green again. 
+ The abstract class sets the color of the semaphore depending on orders from the View.
+
+To crawl the web the JSoup java library is used. To simplify it's usage a handler (\texttt{JSoupHandler}) is created, which is used by the various solutions.
+
+\subsection{Event-loop}
+Source code: \texttt{part2/eventloop}
+
+The tasks are represented by events. The first function call creates an event that parses through the contents of the given website.
+ If a url is found and the depth value is not 0 a new event is created, that executes the function on the new website, with the depth value decreased by one.
+
+ The function for each event is rappresented by the following pseudocode:
+
+\newpage
+
+\begin{algorithm}[label={alg3}]
+input: str URL, str WORD, int DEPTH
+begin
+    str SITE_CONTENTS $\gets$ get_site_contents(URL)
+    int COUNT $\gets$ 0
+    if (DEPTH != 0)
+        foreach CURRENT_WORD in SITE_CONTENTS
+            if (CURRENT_WORD == WORD)
+                COUNT $\gets$ COUNT + 1
+            endif
+            else if (is_url(CURRENT_WORD))
+                addToEventQueue(() -> 
+                    getWordOccurrences(CURRENT_WORD, WORD, DEPTH - 1))
+        endforeach
+    endif
+end       
+\end{algorithm}
+
+\subsection{Reactive}
+Source code: \texttt{part2/reactive}
+
+An \texttt{Observable} object (from RxJava library) is created  for the given url.
+After defining its behavior and setting the thread in which it will be executed, the observable is started, specifying an observer that implements the \texttt{onNext()} method.
+The observable performs these actions in order:
+\begin{itemize}
+    \item It gets every link present in the page corresponding to the give url;
+    \item It calls the \texttt{onNext()} function passing the sub-urls found;
+    \item It counts the given word occurrencies in the given url.
+\end{itemize}
+Every time the observer is called using its \texttt{onNext()} method, it checks if the depth has reached its max value or if the given sub-url has been already explored; otherwise, it starts a new observer identical to the previous, but starting from the given sub-url.
+At this point, the process continues recursively.
+
+The following pseudocode explains the system execution:
+
+\begin{algorithm}[label={alg4}]
+url $\gets$ <initialUrl>
+word $\gets$ <wordToFind>
+totalOccurrencies $\gets$ 0
+
+procedure createObserver(url):
+    begin
+        observable $\gets$ 
+            begin
+                sub-urls $\gets$ getSubUrls(url)
+                foreach sub-url in sub-urls
+                    observer.onNext(sub-url)
+                endforeach
+                occ $\gets$ getOccurrencies(url, word)
+                totalOccurrencies $\gets$ totalOccurrencies + occ
+            end
+        
+        observer $\gets$
+            procedure onNext(sub-url)
+                begin
+                    if !maxDepthReached() $\wedge$ !urlAlreadyVisited(sub-url):
+                        createObserver(sub-url)
+                end
+
+        observable.addObserver(observer)
+        observable.start()
+    end
+\end{algorithm}
+
+To implement the pause/resume feature an AtomicBoolean is used.
+This variant of thread-safe boolean is set to true from the GUI to pause the process, so threads wait for it to become false again.
+When the boolean is set back to false, threads stop waiting and proceed with their jobs.
+Multiple waits have been put in the observable's code, before new observables creation and before results update.
+
+A join feature is available, so that the GUI can wait until every thread has finished its job.
+To implement this feature an AtomicInteger is used.
+Similarly to AtomicBoolean, AtomicInteger is basically a thread-safe integer. It is incremented upon the creation of a new observable, and decremented upon the completion of an observable.
+When the system starts, the GUI thread must wait some time to let the first thread start, otherwise the integer would be already 0, meaning that the process is finished.
+
+\subsection{Virtual Threads}
+Source code: \texttt{part2/virtualthreads}
+
+The \texttt{WordCounter} implemention creates a virtual thread that executes the following pseudocode:
+
+\newpage
+
+\begin{algorithm}[label={alg5}]
+input: str URL, str WORD, int DEPTH
+begin
+    str SITE_CONTENTS $\gets$ get_site_contents(URL)
+    int COUNT $\gets$ 0
+    if (DEPTH != 0)
+        foreach CURRENT_WORD in SITE_CONTENTS
+            if (CURRENT_WORD == WORD)
+                COUNT $\gets$ COUNT + 1
+            endif
+            else if (is_url(CURRENT_WORD))
+                VT = create_new_vt(() -> 
+                    getWordOccurrences(CURRENT_WORD, WORD, DEPTH - 1))
+                join(VT)
+        endforeach
+    endif
+end       
+\end{algorithm}
+
+A map monitor is created (\texttt{RWTreeMonitor.java}) to save the current results.
+
+\section{Execution and Testing}
+The main class \texttt{part2/Main.java} creates the desired implementation of \texttt{WordCounter}.
+
+The deliverable contains files for launching a server on port 8080 to test various versions. Instructions to launch the server are contained in
+ \texttt{testing-server/README.txt}
+
+To run the main class from the CLI the command \texttt{"gradle run"} can be used.
+
+\subsection{Testing - Event-loop}
+The event-loop solution did not show big performance improvements. This was credited to the fact that the event-loop solution is single threaded.
+ Enhancements in readability and task decomposition are nonetheless obtained.
+%Since the event-loop is single threaded it cannot achieve such a huge performance improvement. It still enhances readability and task decomposition.
+
+\subsection{Testing - Reactive}
+In terms of performance, the reactive version of the system is better than the event-loop based one, due to the fact that it uses a large number of threads, one for every url found.
+
+\subsection{Testing - Virtual Threads}
+The virtual thread solution proved to be the most efficient, performance wise. The abstraction of the thread concept empowers the application to be executed
+ efficently indipendently from the underlying machine architecture.
+\bibliographystyle{plain}
+\bibliography{References}
+
+\end{document}
