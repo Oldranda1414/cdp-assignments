@@ -1,11 +1,18 @@
 import { BaseView } from "../BaseView.js";
 
+const CREATE_NEW_GAME_STR = 'create new game';
+
 class PreLobbyView extends BaseView {
     
+
     _initialize() {
         this._log("This view is " + this.viewId);
         userID.innerHTML = this.viewId;
-        this.setupSudoku();
+        this.showGamesList();
+    }
+
+    _subscribeAll() {
+        this.subscribe(this.viewId, "game-created", this.handleJoinCreateGame);
     }
 
     setupSudoku() {
@@ -17,20 +24,25 @@ class PreLobbyView extends BaseView {
             cell.addEventListener('keypress', this.handleKeyPress);
             sudokuContainer.appendChild(cell);
         }
-        sudokuContainer.hidden = true;
+        sudokuContainer.style.display = 'none';
     }
 
     showSudoku() {
-        sudokuContainer.hidden = false;
+        sudokuContainer.style.display = 'grid';
     }
 
-    handleInput() {
-        const cell = e.target;
-        const value = cell.textContent;
-        // Allow only numbers 1-9
-        if (!/^[1-9]$/.test(value)) {
-            cell.textContent = '';
-        }
+    showGamesList() {
+        const list = document.createElement('ul');
+        this.model.gamesList.forEach(game => this.addListItem(game, list));
+        this.addListItem(CREATE_NEW_GAME_STR, list);
+        gamesListContainer.appendChild(list);
+    }
+
+    addListItem(game, list) {
+        const item = document.createElement('li');
+        item.textContent = game;
+        item.addEventListener('click', () => this.handleJoinCreateGame(game));
+        list.appendChild(item);
     }
 
     handleKeyPress(e) {
@@ -41,6 +53,15 @@ class PreLobbyView extends BaseView {
             cell.textContent = key;
             cell.blur();
         } else e.preventDefault();
+    }
+
+    handleJoinCreateGame(game) {
+        if (game == CREATE_NEW_GAME_STR) {
+            this.publish(this.model.id, "create-game", this.viewId);
+        } else {
+            //join game
+            this._log("Joining game " + game);
+        }
     }
 
     _gameOver() {
