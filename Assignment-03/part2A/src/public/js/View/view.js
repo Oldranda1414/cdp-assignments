@@ -1,6 +1,7 @@
 import { BaseView } from "../BaseView.js";
+import { GameView } from "./GameView.js";
 
-const CREATE_NEW_GAME_STR = 'create new game';
+const CREATE_NEW_GAME_STR = 'Create new game';
 
 class PreLobbyView extends BaseView {
     
@@ -15,44 +16,16 @@ class PreLobbyView extends BaseView {
         this.subscribe(this.viewId, "game-created", this.handleJoinCreateGame);
     }
 
-    setupSudoku() {
-        for (let i = 0; i < 81; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'sudokuCell';
-            cell.contentEditable = true;
-            cell.setAttribute('data-index', i);
-            cell.addEventListener('keypress', this.handleKeyPress);
-            sudokuContainer.appendChild(cell);
-        }
-        sudokuContainer.style.display = 'none';
-    }
-
-    showSudoku() {
-        sudokuContainer.style.display = 'grid';
-    }
-
     showGamesList() {
-        const list = document.createElement('ul');
-        this.model.gamesList.forEach(game => this.addListItem(game, list));
+        const list = this._addObjectToHTML('ul', "", gamesListContainer);
+        this.model.gamesList.forEach(game => this.addListItem(game.id, list));
         this.addListItem(CREATE_NEW_GAME_STR, list);
-        gamesListContainer.appendChild(list);
     }
 
     addListItem(game, list) {
-        const item = document.createElement('li');
+        const item = this._addObjectToHTML('li', "", list);
         item.textContent = game;
         item.addEventListener('click', () => this.handleJoinCreateGame(game));
-        list.appendChild(item);
-    }
-
-    handleKeyPress(e) {
-        const key = e.key;
-        const cell = e.target;
-        // Prevent default behavior if the key is not a number between 1 and 9
-        if (/^[1-9]$/.test(key) && key !== '0') {
-            cell.textContent = key;
-            cell.blur();
-        } else e.preventDefault();
     }
 
     handleJoinCreateGame(game) {
@@ -61,6 +34,8 @@ class PreLobbyView extends BaseView {
         } else {
             //join game
             this._log("Joining game " + game);
+            new GameView({model: this.model.gamesList[this.model.gamesList.findIndex(g => g.id === game)], parent: this});
+            this.detach();
         }
     }
 

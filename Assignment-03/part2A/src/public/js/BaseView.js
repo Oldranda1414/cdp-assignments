@@ -5,6 +5,11 @@ class BaseView extends Croquet.View {
      */
     children = [];
 
+    /**
+     * All objects created by this view must be placed here.
+     */
+    viewObjects = [];
+
     constructor(data) {
         if (data.hasOwnProperty("model")) {
             super(data.model);
@@ -26,7 +31,7 @@ class BaseView extends Croquet.View {
     }
 
     _subscribeAll() {}
-    
+
     _initialize() {}
 
     _update() {}
@@ -36,9 +41,18 @@ class BaseView extends Croquet.View {
     _gameOver() {}
 
     detach(skipForwarding = false) {
+        for (let obj of this.viewObjects) obj.remove();
         super.detach();
         if (!skipForwarding) this.children.forEach(c => c.detach()); //the if is used to forward only if is croquet who calls detach
         this._log("detach");
+    }
+
+    _addObjectToHTML(tag, id, parent) {
+        var obj = document.createElement(tag);
+        obj.id = id;
+        parent.appendChild(obj);
+        this.viewObjects.push(obj);
+        return obj;
     }
 
     _log(message) {

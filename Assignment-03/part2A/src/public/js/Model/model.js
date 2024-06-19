@@ -33,7 +33,7 @@ class PreLobbyModel extends BaseModel {
      * @param {any} viewId the id of the outgoing view.
      */
     viewDrop(viewId){
-        this.users.splice(this.users.indexOf(viewId),1);
+        this.users.splice(this.users.indexOf(viewId), 1);
     }
 
     createGame(userId) {
@@ -44,12 +44,7 @@ class PreLobbyModel extends BaseModel {
     }
 
     _gameOver() {
-        this._log("Game over: restarting game model");
-        this.future(1000).restart(); //safe time to be sure that all models have been destroyed
-    }
-
-    restart() {
-        this.gameModel = GameModel.create({parent: this});
+        this._log("Game over");
     }
 }
 
