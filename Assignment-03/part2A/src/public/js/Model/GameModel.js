@@ -6,8 +6,6 @@ class GameModel extends BaseModel {
     }
 
     _initialize() { 
-        this._log("Parent id is " + this.parent.id);
-        this._log("This game id is " + this.id);
     }
 
     _gameOver() {

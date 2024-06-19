@@ -4,17 +4,13 @@ import { GameModel } from "./GameModel.js";
 class PreLobbyModel extends BaseModel {
     
     users = [];
-    gameModel = null;
     gamesList = [];
+    gameModel = null;
 
     _subscribeAll() {
         this.subscribe(this.sessionId, "view-join", this.viewJoin);
         this.subscribe(this.sessionId, "view-exit", this.viewDrop);
         this.subscribe(this.id, "create-game", this.createGame);
-    }
-
-    _initialize() {
-        this._log("This session id is " + this.sessionId); 
     }
 
     /**
@@ -23,9 +19,6 @@ class PreLobbyModel extends BaseModel {
      */
     viewJoin(viewId) {
         this.users.push(viewId);
-        if (this.gameModel === null) {
-            this.gameModel = GameModel.create({parent: this});
-        }
     }
 
     /**

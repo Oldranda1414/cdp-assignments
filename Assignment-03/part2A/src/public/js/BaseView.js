@@ -27,7 +27,10 @@ class BaseView extends Croquet.View {
     _gameOver() {}
 
     detach() {
-        for (let obj of this.viewObjects) obj.remove();
+        for (let obj of this.viewObjects) {
+            obj.remove();
+        }
+        this.viewObjects = [];
         this.publish(this.viewId, "view-dropped", this);
         this._log("detach");
         super.detach();

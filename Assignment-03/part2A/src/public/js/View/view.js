@@ -3,11 +3,9 @@ import { GameView } from "./GameView.js";
 
 const CREATE_NEW_GAME_STR = 'Create new game';
 
-class PreLobbyView extends BaseView {
-    
+class PreLobbyView extends BaseView {r
 
     _initialize() {
-        this._log("This view is " + this.viewId);
         userID.innerHTML = this.viewId;
         this.showGamesList();
     }
@@ -33,12 +31,12 @@ class PreLobbyView extends BaseView {
             this.publish(this.model.id, "create-game", this.viewId);
         } else {
             this._log("Joining game " + game);
-            new GameView({model: this.model.gamesList.find(g => g.id === game)});
+            new GameView({ model: this.model.gamesList.find(g => g.id === game) });
+            for (let item of gamesListContainer.children) {
+                item.removeEventListener('click', this.handleJoinCreateGame);
+            }
             this.detach();
         }
-    }
-
-    _gameOver() {
     }
 }
 

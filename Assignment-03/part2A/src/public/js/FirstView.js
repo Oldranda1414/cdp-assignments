@@ -15,16 +15,14 @@ class FirstView extends Croquet.View {
         super(data);
         this.subscribe(this.viewId, "view-created", this.viewCreated);
         this.subscribe(this.viewId, "view-dropped", this.viewDropped);
-        new PreLobbyView({model: data});
+        new PreLobbyView({model: data });
     }
 
     viewCreated(view) {
-        console.log("view created");
         this.children.push(view);
     }
 
     viewDropped(view) {
-        console.log("view dropped");
         this.children.splice(this.children.indexOf(view), 1);
     }
 
