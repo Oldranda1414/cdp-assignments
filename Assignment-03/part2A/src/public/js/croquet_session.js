@@ -3,7 +3,7 @@
 // Croquet Corporation 
 // 2021
 
-import { PreLobbyView } from "./View/view.js";
+import { FirstView } from "./FirstView.js";
 import { PreLobbyModel } from "./Model/model.js";
 
 Croquet.Session.join({
@@ -12,5 +12,5 @@ Croquet.Session.join({
     name: "unnamed",
     password: "secret",
     model: PreLobbyModel,
-    view: PreLobbyView
+    view: FirstView
 });
