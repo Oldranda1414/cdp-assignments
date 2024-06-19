@@ -1,7 +1,7 @@
 import { BaseModel } from "../BaseModel.js";
 import { GameModel } from "./GameModel.js";
 
-class RootModel extends BaseModel {
+class PreLobbyModel extends BaseModel {
     
     _subscribeAll() {
         this.subscribe(this.sessionId, "view-join", this.viewJoin);
@@ -43,6 +43,6 @@ class RootModel extends BaseModel {
     }
 }
 
-RootModel.register("RootModel");
+PreLobbyModel.register("PreLobbyModel");
 
-export { RootModel };
+export { PreLobbyModel };
