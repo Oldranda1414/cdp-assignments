@@ -7,6 +7,7 @@ class GameView extends BaseView {
     _initialize() {
         this._log("This view is " + this.viewId);
         gameID.textContent = this.model.id;
+        gameID.style.display = 'flex';
         this.setupSudoku();
         this.showBackButton();
     }
@@ -25,8 +26,7 @@ class GameView extends BaseView {
     }
 
     showBackButton() {
-        const backButton = document.getElementById('backButton');
-        backButton.addEventListener('click', this._gameOver);
+        backButton.addEventListener('click', () => this._gameOver());
         backButton.style.display = 'flex';
     }
 
@@ -41,7 +41,8 @@ class GameView extends BaseView {
     }
 
     _gameOver() {
-        gameID.textContent = '';
+        gameID.style.display = 'none';
+        backButton.style.display = 'none';
         new PreLobbyView(this.model.parent);
         this.detach();
     }
