@@ -18,7 +18,6 @@ class BaseView extends Croquet.View {
             super(data);
             this.model = data;
         }
-        this.parent = data.parent;
         this._log("Created. Model associated: " + this.model.id.substring(this.model.id.length - 2));
         this.subscribe(this.sessionId, "game-over", this._gameOver);
         this._subscribeAll();   //Croquet subscription method

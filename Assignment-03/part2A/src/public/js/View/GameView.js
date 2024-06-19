@@ -1,11 +1,14 @@
 import { BaseView } from "../BaseView.js";
+import { PreLobbyView } from "./view.js";
 
 class GameView extends BaseView {
     
 
     _initialize() {
         this._log("This view is " + this.viewId);
+        gameID.textContent = this.model.id;
         this.setupSudoku();
+        this.showBackButton();
     }
 
     _subscribeAll() {
@@ -13,18 +16,18 @@ class GameView extends BaseView {
 
     setupSudoku() {
         for (let i = 0; i < 81; i++) {
-            const cell = document.createElement('div');
+            const cell = this._addObjectToHTML('div', '', sudokuContainer);
             cell.className = 'sudokuCell';
             cell.contentEditable = true;
             cell.setAttribute('data-index', i);
             cell.addEventListener('keypress', this.handleKeyPress);
-            sudokuContainer.appendChild(cell);
         }
-        sudokuContainer.style.display = 'none';
     }
 
-    showSudoku() {
-        sudokuContainer.style.display = 'grid';
+    showBackButton() {
+        const backButton = document.getElementById('backButton');
+        backButton.addEventListener('click', this._gameOver);
+        backButton.style.display = 'flex';
     }
 
     handleKeyPress(e) {
@@ -38,6 +41,9 @@ class GameView extends BaseView {
     }
 
     _gameOver() {
+        gameID.textContent = '';
+        new PreLobbyView(this.model.parent);
+        this.detach();
     }
 }
 
