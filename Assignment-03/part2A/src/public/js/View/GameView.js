@@ -8,15 +8,6 @@ class GameView extends BaseView {
         gameID.style.display = 'flex';
         this.showSudoku();
         this.showBackButton();
-        this.kindaUpdate();
-    }
-
-    kindaUpdate() {
-        console.log(this);
-        this.future(500).kindaUpdate();
-    }
-
-    _subscribeAll() {
     }
 
     showSudoku() {
@@ -30,13 +21,9 @@ class GameView extends BaseView {
     }
 
     showBackButton() {
-        if (backButton.getAttribute('listener') !== 'true') backButton.addEventListener(
-            'click', 
-            () => {
-                this._gameOver();
-                backButton.setAttribute('listener', 'true');
-        });
-        backButton.style.display = 'flex';
+        const backButton = this._addObjectToHTML('button', 'backButton', backButtonContainer);
+        backButton.textContent = 'Back';
+        backButton.addEventListener('click', () => this._gameOver());
     }
 
     handleKeyPress(e) {
