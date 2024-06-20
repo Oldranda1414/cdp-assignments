@@ -9,9 +9,9 @@ class GameModel extends BaseModel {
 
 
     _initialize(data) {
+        this.difficulty = data.difficulty;
         this.value = data.value;
         this.solution = data.solution;
-        this.difficulty = data.difficulty;
     }
 
     _subscribeAll() {
