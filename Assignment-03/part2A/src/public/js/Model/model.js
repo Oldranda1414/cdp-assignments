@@ -5,7 +5,15 @@ class PreLobbyModel extends BaseModel {
 
     users = [];
     gamesList = [];
-    gameModel = null;
+
+    _initialize() {
+        this._continuousLog();
+    }
+
+    _continuousLog() {
+        console.log(this.gamesList);
+        this.future(1000)._continuousLog();
+    }
 
     _subscribeAll() {
         this.subscribe(this.sessionId, "view-join", this.viewJoin);
@@ -29,14 +37,10 @@ class PreLobbyModel extends BaseModel {
         this.users.splice(this.users.indexOf(viewId), 1);
     }
 
-    createGame(userId) {
+    createGame(creator) {
         const game = GameModel.create({ parent: this });
         this.gamesList.push(game);
-        this.publish(userId, "game-created", game.id);
-    }
-
-    _gameOver() {
-        this._log("Game over");
+        this.publish(this.id, "game-created", { game: game.id, creator: creator });
     }
 }
 

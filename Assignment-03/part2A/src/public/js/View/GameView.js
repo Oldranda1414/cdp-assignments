@@ -1,18 +1,24 @@
 import { BaseView } from "../BaseView.js";
 import { PreLobbyView } from "./view.js";
 
+const LOADING_STR = 'Loading...';
+
 class GameView extends BaseView {
 
     _initialize() {
         gameID.textContent = this.model.id;
         gameID.style.display = 'flex';
         this.showBackButton();
-        sudokuContainer.textContent = 'Loading...';
-        this.publish(this.model.id, "waiting-sudoku");
+        sudokuContainer.textContent = LOADING_STR;
+        this.awaitSudokuData();
     }
 
-    _subscribeAll() {
-        this.subscribe(this.model.id, "sudoku-ready", this.showSudoku);
+    awaitSudokuData() {
+        if (this.model.value.length === 0) {
+            this.future(500).awaitSudokuData();
+        } else {
+            this.showSudoku();
+        }
     }
 
     showSudoku() {
@@ -52,7 +58,7 @@ class GameView extends BaseView {
 
     _gameOver() {
         gameID.style.display = 'none';
-        if (sudokuContainer.textContent) sudokuContainer.textContent = '';
+        if (sudokuContainer.textContent === LOADING_STR) sudokuContainer.textContent = '';
         new PreLobbyView({ model: this.model.parent });
         this.detach();
     }

@@ -8,19 +8,9 @@ class GameModel extends BaseModel {
 
     _initialize() {
         this.setupSudokuData();
-        this.awaitSudokuSetup();
     }
 
     _subscribeAll() {
-        this.subscribe(this.id, "waiting-sudoku", this.awaitSudokuSetup);
-    }
-
-    awaitSudokuSetup() {
-        if (this.value.length === 0) {
-            this.future(500).awaitSudokuSetup();
-        } else {
-            this.publish(this.id, "sudoku-ready");
-        }
     }
 
     setupSudokuData() {
