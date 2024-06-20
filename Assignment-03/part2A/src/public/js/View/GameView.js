@@ -15,6 +15,7 @@ class GameView extends BaseView {
     _subscribeAll() {
         this.subscribe(this.model.id, 'cell-focused', this.handleCellFocus);
         this.subscribe(this.model.id, 'cell-blurred', this.handleCellBlur);
+        this.subscribe(this.model.id, 'cell-valued', this.handleCellValue);
     }
 
     getRandomColor() {
@@ -42,7 +43,14 @@ class GameView extends BaseView {
         const cellData = this.model.value[i % 9][Math.floor(i / 9)];
         if (cellData === 0) {
             cell.contentEditable = true;
-            cell.addEventListener('keypress', this.handleKeyPress);
+            cell.addEventListener('keydown', (e) => {
+                e.preventDefault();
+                const key = e.key;
+                const cell = e.target;
+                if (/^[1-9]$/.test(key)) {
+                    this.publish(this.model.id, 'cell-value', { index: cell.getAttribute('data-index'), value: key })
+                }
+            });
             cell.addEventListener('mousedown', (e) => {
                 e.preventDefault(); 
                 this.publish(this.model.id, 'cell-focus', { user: this.viewId, index: i });
@@ -62,13 +70,10 @@ class GameView extends BaseView {
         backButton.addEventListener('click', () => this._gameOver());
     }
 
-    handleKeyPress(e) {
-        const key = e.key;
-        const cell = e.target;
-        if (/^[1-9]$/.test(key) && key !== '0') {
-            cell.textContent = key;
-            cell.blur();
-        } else e.preventDefault();
+    handleCellValue(index) {
+        const cell = document.querySelector(`[data-index="${index}"]`);
+        cell.textContent = this.model.value[index % 9][Math.floor(index / 9)];
+        if (cell === document.activeElement) cell.blur();
     }
 
     handleCellFocus(data) {

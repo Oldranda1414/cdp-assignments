@@ -17,6 +17,7 @@ class GameModel extends BaseModel {
     _subscribeAll() {
         this.subscribe(this.id, 'cell-focus', this.handleCellFocus);
         this.subscribe(this.id, 'cell-blur', this.handleCellBlur);
+        this.subscribe(this.id, 'cell-value', this.handleCellValue);
     }
 
     handleCellFocus(data) {
@@ -31,6 +32,13 @@ class GameModel extends BaseModel {
             this.publish(this.id, 'cell-blurred', this.userPointers.filter(p => p.user === user)[0].index);
             this.userPointers.splice(this.userPointers.findIndex(pointer => pointer.user === user), 1);
         }
+    }
+
+    handleCellValue(data) {
+        const x = data.index % 9;
+        const y = Math.floor(data.index / 9);
+        this.value[x][y] = data.value;
+        this.publish(this.id, 'cell-valued', data.index);
     }
 }
 
