@@ -39,6 +39,10 @@ class GameModel extends BaseModel {
         const y = Math.floor(data.index / 9);
         this.value[x][y] = data.value;
         this.publish(this.id, 'cell-valued', data.index);
+        if (this.value.toString() === this.solution.toString()) {
+            this.publish(this.sessionId, 'game-over', this.id);
+            this.destroy();
+        }
     }
 }
 

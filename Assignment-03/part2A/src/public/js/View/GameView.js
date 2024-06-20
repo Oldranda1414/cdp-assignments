@@ -27,6 +27,10 @@ class GameView extends BaseView {
             this.future(500).awaitSudokuData();
         } else {
             this.showSudoku();
+            gameDifficulty.textContent = this.model.difficulty;
+            gameDifficulty.style.display = 'flex';
+            console.log("solution: ");
+            console.log(this.model.solution);
         }
     }
 
@@ -67,7 +71,7 @@ class GameView extends BaseView {
     showBackButton() {
         const backButton = this._addObjectToHTML('button', 'backButton', backButtonContainer);
         backButton.textContent = 'Back';
-        backButton.addEventListener('click', () => this._gameOver());
+        backButton.addEventListener('click', () => this._gameOver(this.model.id, false));
     }
 
     handleCellValue(index) {
@@ -88,8 +92,20 @@ class GameView extends BaseView {
         cell.style.outline = 'none';
     }
 
-    _gameOver() {
+    _gameOver(game, wait = true) {
+        if (game === this.model.id) {
+            if (wait) {
+                gameID.textContent = 'Game Over! - Victory!';
+                this.future(1000).changeScene();
+            } else {
+                this.changeScene();
+            }
+        }
+    }
+
+    changeScene() {
         gameID.style.display = 'none';
+        gameDifficulty.style.display = 'none';
         new PreLobbyView({ model: this.model.parent });
         this.detach();
     }

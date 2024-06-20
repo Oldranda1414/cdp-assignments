@@ -24,7 +24,7 @@ class BaseView extends Croquet.View {
 
     _initialize() {}
 
-    _gameOver() {}
+    _gameOver(data) {}
 
     detach() {
         for (let obj of this.viewObjects) {

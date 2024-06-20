@@ -47,6 +47,15 @@ class PreLobbyView extends BaseView {
             this.addListItem(game);
         }
     }
+
+    _gameOver(game) {
+        for (let elem of this.list.children) {
+            if (elem.textContent === game) {
+                this.list.removeChild(elem);
+                break;
+            }
+        }
+    }
 }
 
 export { PreLobbyView };

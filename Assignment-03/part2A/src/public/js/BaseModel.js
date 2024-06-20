@@ -23,10 +23,7 @@ class BaseModel extends Croquet.Model {
         console.log(this.constructor.name.toUpperCase() + " | " + this.id.substring(this.id.length - 2) + ": " + message);
     }
 
-    _gameOver() {
-        this._log("Destroy");
-        this.future(100).destroy(); //! needed to make the call asynchronous
-    }
+    _gameOver(data) {}
 
 }
 

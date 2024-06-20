@@ -52,6 +52,10 @@ class PreLobbyModel extends BaseModel {
             return this.getNewSudoku();
         }
     }
+
+    _gameOver(game) {
+        this.gamesList.splice(this.gamesList.indexOf(game), 1);
+    }
 }
 
 PreLobbyModel.register("PreLobbyModel");
