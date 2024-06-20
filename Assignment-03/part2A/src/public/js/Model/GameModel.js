@@ -5,6 +5,8 @@ class GameModel extends BaseModel {
     value = [];
     solution = [];
     difficulty;
+    userPointers = [];
+
 
     _initialize(data) {
         this.value = data.value;
@@ -13,6 +15,22 @@ class GameModel extends BaseModel {
     }
 
     _subscribeAll() {
+        this.subscribe(this.id, 'cell-focus', this.handleCellFocus);
+        this.subscribe(this.id, 'cell-blur', this.handleCellBlur);
+    }
+
+    handleCellFocus(data) {
+        if (!this.userPointers.map(p => p.index).includes(data.index)) {
+            this.userPointers.push({ index: data.index, user: data.user });
+            this.publish(this.id, 'cell-focused', data);
+        }
+    }
+
+    handleCellBlur(user) {
+        if (this.userPointers.map(p => p.user).includes(user)) {
+            this.publish(this.id, 'cell-blurred', this.userPointers.filter(p => p.user === user)[0].index);
+            this.userPointers.splice(this.userPointers.findIndex(pointer => pointer.user === user), 1);
+        }
     }
 }
 

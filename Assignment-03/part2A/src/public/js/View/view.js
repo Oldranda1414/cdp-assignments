@@ -28,6 +28,7 @@ class PreLobbyView extends BaseView {
 
     async handleJoinCreateGame(game) {
         if (game == CREATE_NEW_GAME_STR) {
+            gamesListContainer.textContent = 'Creating game...';
             const newGrid = await this.model.getNewSudoku();
             this.publish(this.model.id, "create-game", { creator: this.viewId, ...newGrid });
         } else {
@@ -39,6 +40,7 @@ class PreLobbyView extends BaseView {
         const game = data.game;
         const creator = data.creator;
         if (creator === this.viewId) {
+            gamesListContainer.textContent = '';
             new GameView({ model: this.model.gamesList.find(g => g.id === game) });
             this.detach();
         } else {

@@ -1,16 +1,24 @@
 import { BaseView } from "../BaseView.js";
 import { PreLobbyView } from "./view.js";
 
-const LOADING_STR = 'Loading...';
-
 class GameView extends BaseView {
 
     _initialize() {
+        this.userColor = '#0000FF';
+        this.otherUserColor = '#FF0000';
         gameID.textContent = this.model.id;
         gameID.style.display = 'flex';
         this.showBackButton();
-        sudokuContainer.textContent = LOADING_STR;
         this.awaitSudokuData();
+    }
+
+    _subscribeAll() {
+        this.subscribe(this.model.id, 'cell-focused', this.handleCellFocus);
+        this.subscribe(this.model.id, 'cell-blurred', this.handleCellBlur);
+    }
+
+    getRandomColor() {
+        return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
     }
 
     awaitSudokuData() {
@@ -22,7 +30,6 @@ class GameView extends BaseView {
     }
 
     showSudoku() {
-        sudokuContainer.textContent = '';
         for (let i = 0; i < 81; i++) {
             const cell = this._addObjectToHTML('div', '', sudokuContainer);
             cell.className = 'sudokuCell';
@@ -36,6 +43,8 @@ class GameView extends BaseView {
         if (cellData === 0) {
             cell.contentEditable = true;
             cell.addEventListener('keypress', this.handleKeyPress);
+            cell.addEventListener('click', () => this.publish(this.model.id, 'cell-focus', { user: this.viewId, index: i }));
+            cell.addEventListener('blur', () => this.publish(this.model.id, 'cell-blur', this.viewId));
         } else {
             cell.textContent = cellData;
         }
@@ -56,9 +65,18 @@ class GameView extends BaseView {
         } else e.preventDefault();
     }
 
+    handleCellFocus(data) {
+        const cell = document.querySelector(`[data-index="${data.index}"]`);
+        cell.style.outline = `2px solid ${data.user === this.viewId ? this.userColor : this.otherUserColor}`;
+    }
+
+    handleCellBlur(index) {
+        const cell = document.querySelector(`[data-index="${index}"]`);
+        cell.style.outline = 'none';
+    }
+
     _gameOver() {
         gameID.style.display = 'none';
-        if (sudokuContainer.textContent === LOADING_STR) sudokuContainer.textContent = '';
         new PreLobbyView({ model: this.model.parent });
         this.detach();
     }

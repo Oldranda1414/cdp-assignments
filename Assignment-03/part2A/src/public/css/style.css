@@ -52,7 +52,3 @@ body {
     cursor: pointer;
     user-select: none;
 }
-
-.sudokuCell:focus {
-    outline: 2px solid #00f;
-}
