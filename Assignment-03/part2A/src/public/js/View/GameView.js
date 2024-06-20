@@ -29,7 +29,7 @@ class GameView extends BaseView {
             this.showSudoku();
             gameDifficulty.textContent = this.model.difficulty;
             gameDifficulty.style.display = 'flex';
-            console.log("solution: ");
+            this._log("solution");
             console.log(this.model.solution);
         }
     }

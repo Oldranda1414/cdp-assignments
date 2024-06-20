@@ -13,7 +13,6 @@ class BaseView extends Croquet.View {
             super(data);
             this.model = data;
         }
-        this._log("Created. Model associated: " + this.model.id.substring(this.model.id.length - 2));
         this.subscribe(this.sessionId, "game-over", this._gameOver);
         this._subscribeAll();   //Croquet subscription method
         this._initialize(data); //Variables init method
@@ -32,7 +31,6 @@ class BaseView extends Croquet.View {
         }
         this.viewObjects = [];
         this.publish(this.viewId, "view-dropped", this);
-        this._log("detach");
         super.detach();
     }
 
