@@ -83,7 +83,7 @@ class GameView extends BaseView {
 
     handleCellFocus(data) {
         const cell = document.querySelector(`[data-index="${data.index}"]`);
-        cell.focus();
+        if (data.user === this.viewId) cell.focus();
         cell.style.outline = `2px solid ${data.user === this.viewId ? this.userColor : this.otherUserColor}`;
     }
 
