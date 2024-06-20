@@ -6,17 +6,31 @@ class GameView extends BaseView {
     _initialize() {
         gameID.textContent = this.model.id;
         gameID.style.display = 'flex';
-        this.showSudoku();
         this.showBackButton();
+        sudokuContainer.textContent = 'Loading...';
+    }
+
+    _subscribeAll() {
+        this.subscribe(this.model.id, "sudoku-ready", this.showSudoku);
     }
 
     showSudoku() {
+        sudokuContainer.textContent = '';
         for (let i = 0; i < 81; i++) {
             const cell = this._addObjectToHTML('div', '', sudokuContainer);
             cell.className = 'sudokuCell';
-            cell.contentEditable = true;
             cell.setAttribute('data-index', i);
+            this.setupCell(cell, i);
+        }
+    }
+
+    setupCell(cell, i) {
+        const cellData = this.model.value[i % 9][Math.floor(i / 9)];
+        if (cellData === 0) {
+            cell.contentEditable = true;
             cell.addEventListener('keypress', this.handleKeyPress);
+        } else {
+            cell.textContent = cellData;
         }
     }
 
@@ -29,7 +43,6 @@ class GameView extends BaseView {
     handleKeyPress(e) {
         const key = e.key;
         const cell = e.target;
-        // Prevent default behavior if the key is not a number between 1 and 9
         if (/^[1-9]$/.test(key) && key !== '0') {
             cell.textContent = key;
             cell.blur();

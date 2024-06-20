@@ -2,7 +2,7 @@ import { BaseModel } from "../BaseModel.js";
 import { GameModel } from "./GameModel.js";
 
 class PreLobbyModel extends BaseModel {
-    
+
     users = [];
     gamesList = [];
     gameModel = null;
@@ -25,13 +25,12 @@ class PreLobbyModel extends BaseModel {
      * Handle the view left event.
      * @param {any} viewId the id of the outgoing view.
      */
-    viewDrop(viewId){
+    viewDrop(viewId) {
         this.users.splice(this.users.indexOf(viewId), 1);
     }
 
     createGame(userId) {
-        const game = GameModel.create({parent: this});
-        this._log("created new game: " + game.id);
+        const game = GameModel.create({ parent: this });
         this.gamesList.push(game);
         this.publish(userId, "game-created", game.id);
     }

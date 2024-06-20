@@ -30,7 +30,6 @@ class PreLobbyView extends BaseView {r
         if (game == CREATE_NEW_GAME_STR) {
             this.publish(this.model.id, "create-game", this.viewId);
         } else {
-            this._log("Joining game " + game);
             new GameView({ model: this.model.gamesList.find(g => g.id === game) });
             for (let item of gamesListContainer.children) {
                 item.removeEventListener('click', this.handleJoinCreateGame);
