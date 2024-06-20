@@ -7,6 +7,7 @@
 class BaseModel extends Croquet.Model {
 
     init(data) {
+        this._log("init");
         this.parent = data?.parent;
         this.subscribe(this.sessionId, "game-over", this._gameOver);
         this._subscribeAll();
