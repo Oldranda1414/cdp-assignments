@@ -20,19 +20,19 @@ class PreLobbyView extends BaseView {
         this.addListItem(CREATE_NEW_GAME_STR);
     }
 
-    addListItem(game) {
+    addListItem(gameId) {
         const item = this._addObjectToHTML('li', "", this.list);
-        item.textContent = game;
-        item.addEventListener('click', async () => await this.handleJoinCreateGame(game));
+        item.textContent = gameId;
+        item.addEventListener('click', async () => await this.handleJoinCreateGame(gameId));
     }
 
-    async handleJoinCreateGame(game) {
-        if (game == CREATE_NEW_GAME_STR) {
+    async handleJoinCreateGame(gameId) {
+        if (gameId == CREATE_NEW_GAME_STR) {
             gamesListContainer.textContent = 'Creating game...';
             const newGrid = await this.model.getNewSudoku();
             this.publish(this.model.id, "create-game", { creator: this.viewId, ...newGrid });
         } else {
-            this.gameCreationHandler({ game: game, creator: this.viewId });
+            this.gameCreationHandler({ game: gameId, creator: this.viewId });
         }
     }
 

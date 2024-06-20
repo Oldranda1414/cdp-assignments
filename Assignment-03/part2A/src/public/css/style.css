@@ -65,3 +65,87 @@ body {
     cursor: pointer;
     user-select: none;
 }
+
+.sudokuCell:nth-child(3n) {
+    border-right: 2px solid #000;
+}
+
+.sudokuCell:nth-child(3n + 1) {
+    border-left: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 8) {
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 7) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 6) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 5) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 4) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 3) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 2) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 1) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 1) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 2) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 3) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 4) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 5) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 6) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 7) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 8) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 9) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:hover {
+    background-color: #f4f4f4;
+}
