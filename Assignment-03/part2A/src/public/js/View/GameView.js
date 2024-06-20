@@ -65,6 +65,7 @@ class GameView extends BaseView {
             });
         } else {
             cell.textContent = cellData;
+            cell.style.backgroundColor = '#f0f0f0';
         }
     }
 
