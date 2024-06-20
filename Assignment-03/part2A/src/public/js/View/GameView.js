@@ -43,8 +43,14 @@ class GameView extends BaseView {
         if (cellData === 0) {
             cell.contentEditable = true;
             cell.addEventListener('keypress', this.handleKeyPress);
-            cell.addEventListener('click', () => this.publish(this.model.id, 'cell-focus', { user: this.viewId, index: i }));
-            cell.addEventListener('blur', () => this.publish(this.model.id, 'cell-blur', this.viewId));
+            cell.addEventListener('mousedown', (e) => {
+                e.preventDefault(); 
+                this.publish(this.model.id, 'cell-focus', { user: this.viewId, index: i });
+            });
+            cell.addEventListener('blur', (e) => {
+                e.preventDefault(); 
+                this.publish(this.model.id, 'cell-blur', this.viewId);
+            });
         } else {
             cell.textContent = cellData;
         }
@@ -67,11 +73,13 @@ class GameView extends BaseView {
 
     handleCellFocus(data) {
         const cell = document.querySelector(`[data-index="${data.index}"]`);
+        cell.focus();
         cell.style.outline = `2px solid ${data.user === this.viewId ? this.userColor : this.otherUserColor}`;
     }
 
     handleCellBlur(index) {
         const cell = document.querySelector(`[data-index="${index}"]`);
+        cell.blur();
         cell.style.outline = 'none';
     }
 
