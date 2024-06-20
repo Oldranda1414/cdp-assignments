@@ -7,7 +7,7 @@ import { FirstView } from "./FirstView.js";
 import { PreLobbyModel } from "./Model/model.js";
 
 Croquet.Session.join({
-    apiKey: '1HE1txmpJCe5Cp8Pzd3Dpmq4a9gu6PqKhar4tcHtq',
+    apiKey: '16F1feJe0PFsp1D4y5b1AbKjf5OhcJfmKc3hgxxkO',
     appId: 'it.unibo.studio.filippo.gurioli.microverse',
     name: "unnamed",
     password: "secret",
