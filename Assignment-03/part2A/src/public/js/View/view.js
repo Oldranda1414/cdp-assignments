@@ -3,7 +3,7 @@ import { GameView } from "./GameView.js";
 
 const CREATE_NEW_GAME_STR = 'Create new game';
 
-class PreLobbyView extends BaseView {r
+class PreLobbyView extends BaseView {
 
     _initialize() {
         userID.innerHTML = this.viewId;
@@ -31,9 +31,6 @@ class PreLobbyView extends BaseView {r
             this.publish(this.model.id, "create-game", this.viewId);
         } else {
             new GameView({ model: this.model.gamesList.find(g => g.id === game) });
-            for (let item of gamesListContainer.children) {
-                item.removeEventListener('click', this.handleJoinCreateGame);
-            }
             this.detach();
         }
     }

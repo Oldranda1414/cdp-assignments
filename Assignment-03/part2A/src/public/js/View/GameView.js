@@ -8,6 +8,7 @@ class GameView extends BaseView {
         gameID.style.display = 'flex';
         this.showBackButton();
         sudokuContainer.textContent = 'Loading...';
+        this.publish(this.model.id, "waiting-sudoku");
     }
 
     _subscribeAll() {
@@ -51,11 +52,8 @@ class GameView extends BaseView {
 
     _gameOver() {
         gameID.style.display = 'none';
-        backButton.style.display = 'none';
+        if (sudokuContainer.textContent) sudokuContainer.textContent = '';
         new PreLobbyView({ model: this.model.parent });
-        for (let cell of sudokuContainer.children) {
-            cell.removeEventListener('keypress', this.handleKeyPress);
-        }
         this.detach();
     }
 }
