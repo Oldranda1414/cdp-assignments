@@ -97,7 +97,7 @@ class GameView extends BaseView {
         if (game === this.model.id) {
             if (wait) {
                 gameID.textContent = 'Game Over! - Victory!';
-                this.future(1000).changeScene();
+                this.future(5000).changeScene();
             } else {
                 this.changeScene();
             }
