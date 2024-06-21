@@ -49,8 +49,15 @@ The oracle and the players should be rappresented by separate threads (goroutine
  and they share information through syncronous messages. The oracle sends a message to all the players when it is possible to submit a guess, starting the
  new round. The players indipendently send a guess to the oracle. The oracle processes the player guesses in order of arrival. If a player does not guess
  the number correctly, the oracle sends a hint ("higher" or "lower"). If a player guesses the number correctly the oracle ends the game by sending a victory
- message to the winner and a notification to the other players
+ message to the winner and a notification to the other players.
+
+The program must take two inputs:
+\begin{itemize}
+    \item N = the number of players
+    \item M = the max range of the number to be guessed
+\end{itemize}
 \chapter{Design}
+    The 
 \chapter{Implementation}
 \chapter{Execution and Evaluation}
 \chapter{Conclusions}
