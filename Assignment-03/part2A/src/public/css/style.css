@@ -7,7 +7,6 @@ body {
     background-color: #f4f4f4;
 }
 
-
 #userID {
     position: absolute;
     top: 10px;
@@ -38,6 +37,19 @@ body {
     position: absolute;
     top: 90px;
     left: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#backButton {
+    position: absolute;
+    top: 10px;
+    left: 1850px;
     font-size: 18px;
     font-weight: bold;
     color: #000;

@@ -1,15 +1,18 @@
 import { BaseView } from "../BaseView.js";
 import { PreLobbyView } from "./view.js";
 
+/**
+ * View class for the sudoku game.
+ */
 class GameView extends BaseView {
 
     _initialize() {
-        this.userColor = '#0000FF';
-        this.otherUserColor = '#FF0000';
-        gameID.textContent = this.model.id;
-        gameID.style.display = 'flex';
+        this.setupUserColors();
+        this.showGameInfos();
         this.showBackButton();
-        this.awaitSudokuData();
+        this.showSudoku();
+        this._log("solution");
+        console.log(this.model.solution);
     }
 
     _subscribeAll() {
@@ -18,22 +21,43 @@ class GameView extends BaseView {
         this.subscribe(this.model.id, 'cell-valued', this.handleCellValue);
     }
 
+    /**
+     * Sets the user cursor color and the other user cursor color.
+     */
+    setupUserColors() {
+        this.userColor = '#0000FF';
+        this.otherUserColor = '#FF0000';
+    }
+
+    /**
+     * @returns a random color
+     */
     getRandomColor() {
         return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
     }
 
-    awaitSudokuData() {
-        if (this.model.value.length === 0) {
-            this.future(500).awaitSudokuData();
-        } else {
-            this.showSudoku();
-            gameDifficulty.textContent = this.model.difficulty;
-            gameDifficulty.style.display = 'flex';
-            this._log("solution");
-            console.log(this.model.solution);
-        }
+    /**
+     * Shows the game id and the difficulty.
+     */
+    showGameInfos() {
+        gameID.textContent = this.model.id;
+        gameID.style.display = 'flex';
+        gameDifficulty.textContent = this.model.difficulty;
+        gameDifficulty.style.display = 'flex';
     }
 
+    /**
+     * Shows the back button.
+     */
+    showBackButton() {
+        const backButton = this._addObjectToHTML('button', 'backButton', backButtonContainer);
+        backButton.textContent = 'Back';
+        backButton.addEventListener('click', () => this._gameOver(this.model.id, false));
+    }
+
+    /**
+     * Shows the sudoku.
+     */
     showSudoku() {
         for (let i = 0; i < 81; i++) {
             const cell = this._addObjectToHTML('div', '', sudokuContainer);
@@ -43,6 +67,11 @@ class GameView extends BaseView {
         }
     }
 
+    /**
+     * Sets up a cell of the sudoku. It is editable if the value is 0.
+     * @param {*} cell the cell
+     * @param {*} i the index of the cell
+     */
     setupCell(cell, i) {
         const cellData = this.model.value[i % 9][Math.floor(i / 9)];
         if (cellData === 0) {
@@ -69,28 +98,34 @@ class GameView extends BaseView {
         }
     }
 
-    showBackButton() {
-        const backButton = this._addObjectToHTML('button', 'backButton', backButtonContainer);
-        backButton.textContent = 'Back';
-        backButton.addEventListener('click', () => this._gameOver(this.model.id, false));
-    }
-
-    handleCellValue(index) {
-        const cell = document.querySelector(`[data-index="${index}"]`);
-        cell.textContent = this.model.value[index % 9][Math.floor(index / 9)];
-        if (cell === document.activeElement) cell.blur();
-    }
-
+    /**
+     * It's the handler for the 'cell-focused' event. It sets the focus on the cell.
+     * @param {*} data index and user
+     */
     handleCellFocus(data) {
         const cell = document.querySelector(`[data-index="${data.index}"]`);
         if (data.user === this.viewId) cell.focus();
         cell.style.outline = `2px solid ${data.user === this.viewId ? this.userColor : this.otherUserColor}`;
     }
 
+    /**
+     * It's the handler for the 'cell-blurred' event. It removes the focus from the cell.
+     * @param {*} index index of the cell
+     */
     handleCellBlur(index) {
         const cell = document.querySelector(`[data-index="${index}"]`);
         cell.blur();
         cell.style.outline = 'none';
+    }
+
+    /**
+     * It's the handler for the 'cell-valued' event. It sets the value of the cell and removes the focus.
+     * @param {*} index index of the cell
+     */
+    handleCellValue(index) {
+        const cell = document.querySelector(`[data-index="${index}"]`);
+        cell.textContent = this.model.value[index % 9][Math.floor(index / 9)];
+        if (cell === document.activeElement) cell.blur();
     }
 
     _gameOver(game, wait = true) {
@@ -104,6 +139,9 @@ class GameView extends BaseView {
         }
     }
 
+    /**
+     * Changes the scene to the pre-lobby view.
+     */
     changeScene() {
         gameID.style.display = 'none';
         gameDifficulty.style.display = 'none';

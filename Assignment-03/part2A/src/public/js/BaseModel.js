@@ -1,11 +1,12 @@
 /**
- * Custom base class that will be extended from all models in this project. It provides a basic API to support debugging.
- * Derived classes have to define 2 methods: _initialize where they have to put all fields initializations and _subscribeAll
- * where they have to put all Croquet subscriptions. It's also possible to override the _gameOver method to define a custom
- * behaviour when the game is over.
+ * Custom base class that will be extended from all models in this project. It provides a basic API to support debugging and some useful methods.
  */
 class BaseModel extends Croquet.Model {
 
+    /**
+     * Automatically called by Croquet when the model is instantiated. It initializes the model.
+     * @param {*} data 
+     */
     init(data) {
         this._log("init");
         this.parent = data?.parent;
@@ -15,16 +16,28 @@ class BaseModel extends Croquet.Model {
         super.init();
     }
 
+    /**
+     * The method that should be overridden to subscribe to all the events.
+     */
     _subscribeAll() {}
 
+    /**
+     * The method that should be overridden to initialize the model.
+     */
     _initialize() {}
 
+    /**
+     * The method that should be overridden to handle the game over event.
+     */
+    _gameOver() {}
+
+    /**
+     * Classic logger for debugging.
+     * @param {*} message the message to log
+     */
     _log(message) {
         console.log(this.constructor.name.toUpperCase() + " | " + this.id.substring(this.id.length - 2) + ": " + message);
     }
-
-    _gameOver(data) {}
-
 }
 
 export { BaseModel };

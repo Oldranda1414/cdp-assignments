@@ -1,30 +1,40 @@
+/**
+ * The base view class. This class must be extended by all views in this project. It provides a basic API to support debugging and some useful methods.
+ */
 class BaseView extends Croquet.View {
 
     /**
-     * All objects created by this view must be placed here.
+     * All objects created by this view are placed here.
      */
     viewObjects = [];
 
     constructor(data) {
-        if (data.hasOwnProperty("model")) {
-            super(data.model);
-            this.model = data.model;
-        } else { //the first view initialized by croquet has only the ref to the model.
-            super(data);
-            this.model = data;
-        }
+        super(data.model);
+        this.model = data.model;
         this.subscribe(this.sessionId, "game-over", this._gameOver);
-        this._subscribeAll();   //Croquet subscription method
-        this._initialize(data); //Variables init method
+        this._subscribeAll();
+        this._initialize(data);
         this.publish(this.viewId, "view-created", this);
     }
 
+    /**
+     * The method that should be overridden to subscribe to all the events.
+     */
     _subscribeAll() {}
 
+    /**
+     * The method that should be overridden to initialize the view.
+     */
     _initialize() {}
 
-    _gameOver(data) {}
+    /**
+     * The method that should be overridden to handle the game over event.
+     */
+    _gameOver() {}
 
+    /**
+     * Automatically called by Croquet when the view is destroyed. It removes all the objects created by this view.
+     */
     detach() {
         for (let obj of this.viewObjects) {
             obj.remove();
@@ -34,6 +44,13 @@ class BaseView extends Croquet.View {
         super.detach();
     }
 
+    /**
+     * A method to add elements to the HTML. This method ensures that those elements are removed when the view is destroyed.
+     * @param {*} tag the element tag
+     * @param {*} id the element id
+     * @param {*} parent the parent element
+     * @returns the element created
+     */
     _addObjectToHTML(tag, id, parent) {
         var obj = document.createElement(tag);
         obj.id = id;
@@ -42,6 +59,10 @@ class BaseView extends Croquet.View {
         return obj;
     }
 
+    /**
+     * Classic logger for debugging.
+     * @param {*} message the message to log
+     */
     _log(message) {
         console.log(this.constructor.name.toUpperCase() + ": " + message);
     }

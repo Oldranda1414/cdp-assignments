@@ -3,6 +3,9 @@ import { GameView } from "./GameView.js";
 
 const CREATE_NEW_GAME_STR = 'Create new game';
 
+/**
+ * View class for the pre-lobby view.
+ */
 class PreLobbyView extends BaseView {
 
     _initialize() {
@@ -14,19 +17,26 @@ class PreLobbyView extends BaseView {
         this.subscribe(this.model.id, "game-created", this.gameCreationHandler);
     }
 
+    /**
+     * Shows the list of games.
+     */
     showGamesList() {
         this.list = this._addObjectToHTML('ul', "", gamesListContainer);
         this.model.gamesList.forEach(game => this.addListItem(game.id));
         this.addListItem(CREATE_NEW_GAME_STR);
     }
 
+    /**
+     * Adds a list item to the games list.
+     * @param {*} gameId the game id
+     */
     addListItem(gameId) {
         const item = this._addObjectToHTML('li', "", this.list);
         item.textContent = gameId;
-        item.addEventListener('click', async () => await this.handleJoinCreateGame(gameId));
+        item.addEventListener('click', async () => await this.#handleJoinCreateGame(gameId));
     }
 
-    async handleJoinCreateGame(gameId) {
+    async #handleJoinCreateGame(gameId) {
         if (gameId == CREATE_NEW_GAME_STR) {
             gamesListContainer.textContent = 'Creating game...';
             const newGrid = await this.model.getNewSudoku();
@@ -36,6 +46,10 @@ class PreLobbyView extends BaseView {
         }
     }
 
+    /**
+     * Handles the creation of a game as response to the 'game-created' event.
+     * @param {*} data the game and the creator
+     */
     gameCreationHandler(data) {
         const game = data.game;
         const creator = data.creator;

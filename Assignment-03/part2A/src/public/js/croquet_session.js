@@ -1,8 +1,3 @@
-// Croquet Tutorial 1
-// Hello World 
-// Croquet Corporation 
-// 2021
-
 import { FirstView } from "./FirstView.js";
 import { PreLobbyModel } from "./Model/model.js";
 
