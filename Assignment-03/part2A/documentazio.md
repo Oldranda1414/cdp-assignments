@@ -54,6 +54,21 @@ Ognuna di queste 3 azioni è gestita con 2 eventi:
 
 Come funziona:
 Quando l'utente clicca su una cella lancia l'evento 'cell-focus'
-1. Il model associato riceve l'evento e aggiorna la lista dei puntatori degli utenti
-2. Sempre il model quindi rilancia un evento 'cell-focused'
-3.  
+1. Tutti i model ricevono l'evento e aggiornano la lista dei puntatori degli utenti
+2. Sempre i model quindi rilanciano un evento 'cell-focused'
+3. Le view quindi 
+    3.1. se lo user id è il loro focusano la casella
+    3.2. se no fanno solo vedere che qualcun altro è lì
+
+Quando l'utente clicca "fuori" (ovvero toglie il focus) lancia l'evento 'cell-blur'
+1. Tutti i model ricevono l'evento e aggiornano la lista dei puntatori degli utenti
+2. Sempre i model quindi rilanciano un evento 'cell-blurred'
+3. Le view quindi tolgono il focus da quella cella
+
+Quando l'utente digita un numero su una cella in focus lancia l'evento 'cell-value'
+1. Tutti i model ricevono l'evento e aggiornano la griglia del sudoku
+2. Sempre i model quindi rilanciano un evento 'cell-valued'
+3. Sempre i model se lo stato corrente della griglia è uguale alla soluzione lancia un evento 'game-over' e si distruggono
+4. Le view quindi inseriscono il valore nella griglia
+5. Sempre le view, se ricevono 'game-over', si distruggono e ricreano la view di prelobby
+! - anche la prelobby ascolta 'game-over' e nel caso elimina l'elemento corrispondente dalla lista
