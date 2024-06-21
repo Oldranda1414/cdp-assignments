@@ -59,6 +59,18 @@ body {
     border-radius: 5px;
 }
 
+#victoryLabel {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 365px;
+    text-align: center;
+}
+
 #sudokuContainer {
     display: grid;
     grid-template-columns: repeat(9, 40px);

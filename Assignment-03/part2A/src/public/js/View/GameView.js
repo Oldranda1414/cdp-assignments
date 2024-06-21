@@ -131,7 +131,8 @@ class GameView extends BaseView {
     _gameOver(game, wait = true) {
         if (game === this.model.id) {
             if (wait) {
-                gameID.textContent = 'Game Over! - Victory!';
+                const victoryLabel = this._addObjectToHTML('div', 'victoryLabel', sudokuContainer);
+                victoryLabel.textContent = 'Game Over! - Victory!';
                 this.future(5000).changeScene();
             } else {
                 this.changeScene();

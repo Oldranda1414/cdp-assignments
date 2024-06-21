@@ -36,8 +36,24 @@ Quando l'utente clicca su una partita...
 Quando l'utente clicca 'new game'...
 1. Computa il nuovo sudoku (volevo farlo fare al model ma non avrebbe funzionato perchè Croquet non funziona così)
 2. Lancia l'evento 'create-game' sottoscritto unicamente dal model di prelobby a cui passa il sudoku appena calcolato e lo user Id
-3. Alla ricezione di 'create-game' il model di PreLobby crea una nuova istanza di GameModel con i valori ricevuti e aggiunge questa istanza alla lista dei Game
-4. Sempre il PreLobbyModel lancia quindi un evento 'game-created' in cui passa l'id del nuovo Game e l'utente che lo ha creato
-5. Tutte le view sono in ascolto dell'evento 'game-created' e  
+3. Alla ricezione di 'create-game' i model di PreLobby creano una nuova istanza di GameModel con i valori ricevuti e aggiungono questa istanza alla lista dei Game
+4. Sempre i PreLobbyModel lanciano quindi un evento 'game-created' in cui passa l'id del nuovo Game e l'utente che lo ha creato
+5. le view sono in ascolto dell'evento 'game-created' e  
     5.1. se si tratta del creatore entra direttamente in partita
     5.2. se no aggiunge un elemento alla lista
+
+Una volta all'interno di un Game ci sono 3 principali azioni:
+- focus
+- blur
+- inserimento di un valore
+
+Ognuna di queste 3 azioni è gestita con 2 eventi:
+- 'cell-focus' / 'cell-focused'
+- 'cell-blur' / 'cell-blurred'
+- 'cell-value' / 'cell-valued'
+
+Come funziona:
+Quando l'utente clicca su una cella lancia l'evento 'cell-focus'
+1. Il model associato riceve l'evento e aggiorna la lista dei puntatori degli utenti
+2. Sempre il model quindi rilancia un evento 'cell-focused'
+3.  
