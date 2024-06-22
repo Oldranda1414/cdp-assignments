@@ -45,7 +45,7 @@ func main() {
 	done := make(chan bool)
 	
 	//starting the oracle goroutine
-	go Oracle(done)
+	go Oracle(done, comunication)
 
 	//wait for oracle routine to finish
 	<-done
