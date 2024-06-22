@@ -43,9 +43,20 @@ func main() {
 
 	//creating a channel to syncronize with oracle routine
 	done := make(chan bool)
+
+	//create the channel for the oracle
+	oracleChannel := make(chan string)
+
+	// create the list of player channels
+    playerChannels := make([]chan string, numberOfPlayers)
+    
+    // Initialize each player channel
+    for i := range playerChannels {
+        playerChannels[i] = make(chan string)
+    }
 	
 	//starting the oracle goroutine
-	go Oracle(done, comunication)
+	go Oracle(done, oracleChannel, playerChannels)
 
 	//wait for oracle routine to finish
 	<-done

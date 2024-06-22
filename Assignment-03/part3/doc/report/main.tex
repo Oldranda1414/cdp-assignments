@@ -120,10 +120,11 @@ The oracle channel receives messages in the form of:
 \end{lstlisting}
 Where \verb|<playerNumber>| is a number associated to the player and \verb|<guess>| is the player attempt at guessing the secret number.
 
-The player channels receive messages in two different forms:
+The player channels receive messages in three different forms:
 \begin{lstlisting}
     "wrong : <hint>"
     "gameover : <playerStatus>"
+    "roundStart"
 \end{lstlisting}
 Where \verb|<hint>| is the hint from the oracle and can assume the value of \verb|higher| or \verb|lower| 
  and \verb|<playerStatus>| communicates to the player if they are the winner or not and can assume the value of \verb|winner| or \verb|loser|.
