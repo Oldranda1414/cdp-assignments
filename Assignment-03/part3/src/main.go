@@ -12,14 +12,31 @@ func main() {
     var numberOfPlayers int
     var maxValueForExtractedNumber int
 
+
     fmt.Println("Welcome to Guess the Number")
 
-	//obtaining the user values
-    fmt.Print("Enter the number of players: ")
-    numberOfPlayers = takeIntegerInput()
+	if len(os.Args) < 3 {
+		//obtaining the user values
+		fmt.Print("Enter the number of players: ")
+		numberOfPlayers = takeIntegerInput()
 
-    fmt.Print("Enter the max value for the extracted number: ")
-    maxValueForExtractedNumber = takeIntegerInput()
+		fmt.Print("Enter the max value for the extracted number: ")
+		maxValueForExtractedNumber = takeIntegerInput()
+	} else {
+		var err error
+
+		numberOfPlayers, err = strconv.Atoi(os.Args[1])
+		if err != nil {
+			fmt.Println("Error occured with the first cli argument:", err)
+			return
+		}
+
+		maxValueForExtractedNumber, err = strconv.Atoi(os.Args[2])
+		if err != nil {
+			fmt.Println("Error occured with the second cli argument:", err)
+			return
+		}
+	}
 
     fmt.Println("The number of players is :", numberOfPlayers)
     fmt.Println("The range of the extracted number is: 0 -", maxValueForExtractedNumber)
@@ -56,4 +73,7 @@ func takeIntegerInput() int {
         fmt.Println("Invalid input. Please enter a valid integer.")
     }
     return result
+}
+
+func convertStringToInteger(str string) {
 }
