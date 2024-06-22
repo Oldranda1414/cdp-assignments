@@ -74,6 +74,3 @@ func takeIntegerInput() int {
     }
     return result
 }
-
-func convertStringToInteger(str string) {
-}
