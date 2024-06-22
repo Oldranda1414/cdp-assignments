@@ -6,7 +6,6 @@ import (
     "os"
     "strconv"
     "strings"
-	"time"
 )
 
 func main() {
@@ -24,12 +23,15 @@ func main() {
 
     fmt.Println("The number of players is :", numberOfPlayers)
     fmt.Println("The range of the extracted number is: 0 -", maxValueForExtractedNumber)
+
+	//creating a channel to syncronize with oracle routine
+	done := make(chan bool)
 	
 	//starting the oracle goroutine
-	go Oracle()
+	go Oracle(done)
 
-	//sleep added to execute the oracle routine before main terminates
-	time.Sleep(1 * time.Second)
+	//wait for oracle routine to finish
+	<-done
 
 }
 

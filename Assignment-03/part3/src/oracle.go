@@ -4,6 +4,7 @@ import (
     "fmt"
 )
 
-func Oracle() {
+func Oracle(done chan bool) {
     fmt.Println("Oracle function is running")
+    done <- true
 }
