@@ -77,12 +77,14 @@ The oracle and the players will communicate by sending messages. The beheviour o
     \centering
     \includegraphics{oracleSD.png}
     \caption{state diagram of the oracle}
+    \label{fig:oracleSD}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics{playerSD.png}
     \caption{state diagram of a player}
+    \label{fig:playerSD}
 \end{figure}
 
 \section{Communication organization}
@@ -100,7 +102,7 @@ Although using multiple channels involves a bigger overhead and reasource consum
 The channels are treated as one way communication channels, where the entity the channel is associated to (oracle or player) is listening on the channel for messages.
  This means that if an entity wishes to communicate to a given other entity it can send messages on that entity's associated channel.
 
-Since the players do not need to communicate with each other they do not need to have access to other player's channels, improving incapsulation //TODO CONTROLLARE COSA DIRE PER BENE QUI
+Since the players do not need to communicate with each other they have no need to have access to other player's channels, improving incapsulation //TODO CONTROLLARE COSA DIRE PER BENE QUI
 \chapter{Implementation}
 The oracle and players threads are implemented as goroutines. The goroutines communicate via channels.
 
@@ -110,6 +112,14 @@ The oracle go routine function is defined in the oracle.go file. The players go 
 
 As defined in the Design chapter all the go routines have a single channel accosiated with them and each go routine listens only on their channel for messages from
  other go routines. This means that there are N + 1 channels, where N is the number of players.
+
+The go routine functions for the oracle and the players where both implemented with a switch-case controll structure, highlighting the states
+ rappresented in \ref{fig:oracleSD} and \ref{fig:playerSD}
+
+This implementation takes into account an edge case where the oracle notifies the players that the game is over while a player has still not sent it's guess
+ for the current round. Since the player considered would start listening to the it's channel after sending the message, it could send a possible guess
+ before acknowledging that the game is over. Although this does not violate the requirements, it should be acknowledged that the player's go routines
+ could terminate after the oracle routine and after the actual end of the game.
 
 \section{Communication protocol}
 Given the simple abstraction of channels a communication protocol must by defined. All the channels transport string type messages.
@@ -132,21 +142,29 @@ Where \verb|<hint>| is the hint from the oracle and can assume the value of \ver
 \chapter{Usage}
 The program can be run from the command line using the command:
 \begin{lstlisting}
-    $ go run main.go oracle.go player.go
+    $ go run main.go oracle.go player.go oracleStates.go playerStates.go
 \end{lstlisting}
 The user will then be prompted to input the number of players and the max value for the number to be guessed.
 
 The program can also be given the input values through cli arguments:
 \begin{lstlisting}
-    $ go run main.go oracle.go player.go <nPlayers> <maxValue>
+    $ go run main.go oracle.go player.go oracleStates.go playerStates.go <nPlayers> <maxValue>
 \end{lstlisting}
 Where \verb|<nPlayers>| is the number of players.
 
 Where \verb|<maxValue>| is the max value for the number to be guessed.
 
+The program can also be run using either methods by running the given bash script:
+\begin{lstlisting}
+    $ ./runGame
+\end{lstlisting}
+\begin{lstlisting}
+    $ ./runGame <nPlayers> <maxValue>
+\end{lstlisting}
+
 \chapter{Conclusions}
 The go routine and channel constructs of the go language give supply an easy to use architecture for message oriented concurrency. Aided by the efficent Implementation
- of the go language, these simple yet powerfull abstractions allow to easaly define complex beheviours in an intuitive and readable manner.
+ of the go language, these simple yet powerfull abstractions allow to easily define complex beheviours in an intuitive and readable manner.
 
 \bibliographystyle{plain}
 \bibliography{References}

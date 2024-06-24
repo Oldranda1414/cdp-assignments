@@ -54,9 +54,11 @@ func main() {
     for i := range playerChannels {
         playerChannels[i] = make(chan string)
     }
+
+    //TODO CREATE GO ROUTINES FOR THE PLAYERS
 	
 	//starting the oracle goroutine
-	go Oracle(done, oracleChannel, playerChannels)
+	go Oracle(done, oracleChannel, playerChannels, maxValueForExtractedNumber)
 
 	//wait for oracle routine to finish
 	<-done
