@@ -9,3 +9,7 @@ const (
 	awatingRoundStart PlayerState = iota
 	awaitingVerdict
 )
+
+func (s PlayerState) String() string {
+    return [...]string{"awaitingRoundStart", "awaitingVerdict"}[s]
+}

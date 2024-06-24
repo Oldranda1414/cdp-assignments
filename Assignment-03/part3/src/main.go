@@ -10,7 +10,7 @@ import (
 
 func main() {
     var numberOfPlayers int
-    var maxValueForExtractedNumber int
+    var maxValueForSecretNumber int
 
 
     fmt.Println("Welcome to Guess the Number")
@@ -21,7 +21,7 @@ func main() {
 		numberOfPlayers = takeIntegerInput()
 
 		fmt.Print("Enter the max value for the extracted number: ")
-		maxValueForExtractedNumber = takeIntegerInput()
+		maxValueForSecretNumber = takeIntegerInput()
 	} else {
 		var err error
 
@@ -31,7 +31,7 @@ func main() {
 			return
 		}
 
-		maxValueForExtractedNumber, err = strconv.Atoi(os.Args[2])
+		maxValueForSecretNumber, err = strconv.Atoi(os.Args[2])
 		if err != nil {
 			fmt.Println("Error occured with the second cli argument:", err)
 			return
@@ -39,7 +39,7 @@ func main() {
 	}
 
     fmt.Println("The number of players is :", numberOfPlayers)
-    fmt.Println("The range of the extracted number is: 0 -", maxValueForExtractedNumber)
+    fmt.Println("The range of the extracted number is: 0 -", maxValueForSecretNumber)
 
 	//creating a channel to syncronize with oracle routine
 	done := make(chan bool)
@@ -50,15 +50,15 @@ func main() {
 	// create the list of player channels
     playerChannels := make([]chan string, numberOfPlayers)
     
-    // Initialize each player channel
+    // Initialize each player and player channel
     for i := range playerChannels {
         playerChannels[i] = make(chan string)
+        playerId := i + 1
+        go Player(playerChannels[i], oracleChannel, playerId, maxValueForSecretNumber)
     }
-
-    //TODO CREATE GO ROUTINES FOR THE PLAYERS
 	
 	//starting the oracle goroutine
-	go Oracle(done, oracleChannel, playerChannels, maxValueForExtractedNumber)
+	go Oracle(done, oracleChannel, playerChannels, maxValueForSecretNumber)
 
 	//wait for oracle routine to finish
 	<-done

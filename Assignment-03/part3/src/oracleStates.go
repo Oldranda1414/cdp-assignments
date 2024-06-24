@@ -11,3 +11,7 @@ const (
 	playerGivenHint
 	gameEnd
 )
+
+func (s OracleState) String() string {
+    return [...]string{"roundStart", "awaitingPlayerGuess", "playerGivenHint", "gameEnd"}[s]
+}
