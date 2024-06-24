@@ -116,13 +116,8 @@ As defined in the Design chapter all the go routines have a single channel accos
 The go routine functions for the oracle and the players where both implemented with a switch-case controll structure, highlighting the states
  rappresented in \ref{fig:oracleSD} and \ref{fig:playerSD}
 
-This implementation takes into account an edge case where the oracle notifies the players that the game is over while a player has still not sent it's guess
- for the current round. Since the player considered would start listening to the it's channel after sending the message, it could send a possible guess
- before acknowledging that the game is over. Although this does not violate the requirements, it should be acknowledged that the player's go routines
- could terminate after the oracle routine and after the actual end of the game.
-
-Given that a message might be sent on a channel when no routine is listening on that channel, to prevent deadlocks and message loss, the channels have
- been initialized as buffered channels
+To prevent the main process from ending untill all the go routines have ended, a \emph{done channel} is passed to every go routine. The main awaits a message
+ from every go routine on each \emph{done channel} to be sure that every go routine has terminated.
 
 \section{Communication protocol}
 Given the simple abstraction of channels a communication protocol must by defined. All the channels transport string type messages.
@@ -141,6 +136,11 @@ The player channels receive messages in three different forms:
 \end{lstlisting}
 Where \verb|<hint>| is the hint from the oracle and can assume the value of \verb|higher| or \verb|lower| 
  and \verb|<playerStatus>| communicates to the player if they are the winner or not and can assume the value of \verb|winner| or \verb|loser|.
+
+\section{Deadlock preventions}
+
+Given that a message might be sent on a channel when no routine is listening on that channel, to prevent deadlocks and message loss, the channels have
+ been initialized as buffered channels.
 
 \chapter{Usage}
 The program can be run from the command line using the command:
