@@ -4,7 +4,7 @@ import (
     "fmt"
 )
 
-func Player(playerChannel chan string, oracleChannel chan string, playerId int, maxValueForSecretNumber int) {
+func Player(playerChannel chan string, oracleChannel chan string, playerId int, maxValueForSecretNumber int, done chan bool) {
 	playerLog(playerId, "starting player")
 
 	currentState := awatingRoundStart
@@ -57,6 +57,9 @@ func Player(playerChannel chan string, oracleChannel chan string, playerId int, 
 				case "lower":
 					upperBoundry = currentGuess
 				}
+				
+				currentState = awatingRoundStart
+
 			case "gameover":
 				switch body {
 				case "winner":
@@ -66,6 +69,9 @@ func Player(playerChannel chan string, oracleChannel chan string, playerId int, 
 				playerLog(playerId, "Oh no, I lost")
 
 				}
+
+				done <- true
+
 				return
 			}
 		}
@@ -77,5 +83,6 @@ func sendGuess(oracleChannel chan string, guess int, playerId int) {
 }
 
 func playerLog(playerId int, msg string) {
-	fmt.Sprintln("[player %d] :" + msg, playerId)
+	fmt.Println("[ Player", playerId, "] :", msg)
+	// fmt.Sprintln("[player %d] :" + msg, playerId)
 }

@@ -12,6 +12,8 @@ func Oracle(done chan bool, oracleChannel chan string, playerChannels []chan str
 	// generating secret number
 	secretNumber := generateRandomNumber(maxValueForSecretNumber, 0)
 
+    oracleLog("the secret number for this game is " + strconv.Itoa(secretNumber))
+
 	// setting initial state
 	currentState := roundStart
 
@@ -23,9 +25,7 @@ func Oracle(done chan bool, oracleChannel chan string, playerChannels []chan str
 
 	//initializing game loop
 	for {
-        oracleLog()
 		switch currentState {
-
 		case roundStart:
 			//notifing players that a new round is started
 			notifyPlayers(playerChannels)
@@ -74,6 +74,7 @@ func Oracle(done chan bool, oracleChannel chan string, playerChannels []chan str
 			//if the round is over, starting a new round
 			//otherwise await more player guesses
 			if playersDone == nPlayers {
+                playersDone = 0
 				currentState = roundStart
 			} else {
 				currentState = awaitingPlayerGuess
@@ -106,13 +107,20 @@ func notifyPlayers(playerChannels []chan string) {
 func notifyGameOver(winningPlayerNumber int, playerChannels []chan string) {
 	winningPlayerIndex := winningPlayerNumber - 1
 
+	oracleLog("inside notify game over")
+
 	for i := range playerChannels {
+		oracleLog(fmt.Sprintf("Notifying player %d", i+1))
 		if i == winningPlayerIndex {
 			playerChannels[i] <- "gameOver : winner"
+			oracleLog(fmt.Sprintf("Player %d is the winner", i+1))
 		} else {
 			playerChannels[i] <- "gameOver : loser"
+			oracleLog(fmt.Sprintf("Player %d is a loser", i+1))
 		}
 	}
+
+	oracleLog("finished notify game over")
 }
 
 func giveHint(playerChannel chan string, playerGuess int, secretNumber int) {
@@ -124,5 +132,5 @@ func giveHint(playerChannel chan string, playerGuess int, secretNumber int) {
 }
 
 func oracleLog(message string) {
-	fmt.Println("[Oracle] :", message)
+	fmt.Println("[ Oracle ] :", message)
 }

@@ -121,6 +121,9 @@ This implementation takes into account an edge case where the oracle notifies th
  before acknowledging that the game is over. Although this does not violate the requirements, it should be acknowledged that the player's go routines
  could terminate after the oracle routine and after the actual end of the game.
 
+Given that a message might be sent on a channel when no routine is listening on that channel, to prevent deadlocks and message loss, the channels have
+ been initialized as buffered channels
+
 \section{Communication protocol}
 Given the simple abstraction of channels a communication protocol must by defined. All the channels transport string type messages.
 
