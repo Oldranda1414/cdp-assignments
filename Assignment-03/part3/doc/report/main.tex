@@ -141,6 +141,14 @@ Where \verb|<hint>| is the hint from the oracle and can assume the value of \ver
 
 Given that a message might be sent on a channel when no routine is listening on that channel, to prevent deadlocks and message loss, the channels have
  been initialized as buffered channels.
+The dimension of the buffer for each channel has been inferred from use:
+\begin{itemize}
+    \item the oracle communication channel has a buffer equal to the number of players, as per round every player would only send one message and 
+ until all player messages have been read a new round cannot start
+    \item the players' communication channels have a buffer of 1 //TODO FIND OUT WHY THIS WORKS, MY REASONING SAYS IT SHOULD BE 2 BUT 1 WORKS JUST FINE
+    \item \emph{done channels} have a buffer of 1 as every go routine will only notify it's termination once
+\end{itemize}
+
 
 A previous player finite state machine presented a deadlock opportunity:
 

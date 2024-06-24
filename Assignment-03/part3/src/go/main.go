@@ -42,11 +42,11 @@ func main() {
     fmt.Println("The range of the extracted number is: 0 -", maxValueForSecretNumber)
 
 	//creating a channel to syncronize with oracle routine
-	oracleDone := make(chan bool, 100)
+	oracleDone := make(chan bool, 1)
 
 	//create the channel for the oracle
     //buffered channel initialized with large buffer (100)
-	oracleChannel := make(chan string, 100)
+	oracleChannel := make(chan string, numberOfPlayers)
 
 	// create the list of player channels
     playerChannels := make([]chan string, numberOfPlayers)
@@ -55,8 +55,8 @@ func main() {
     // Initialize each player and player channel
     for i := range numberOfPlayers {
         //buffered channels initialized with large buffers (100)
-        playerChannels[i] = make(chan string, 100)
-        playerDoneChannels[i] = make(chan bool, 100)
+        playerChannels[i] = make(chan string, 1)
+        playerDoneChannels[i] = make(chan bool, 1)
         playerId := i + 1
         go Player(playerChannels[i], oracleChannel, playerId, maxValueForSecretNumber, playerDoneChannels[i])
     }

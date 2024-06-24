@@ -108,7 +108,6 @@ func notifyGameOver(winningPlayerNumber int, playerChannels []chan string) {
 	winningPlayerIndex := winningPlayerNumber - 1
 
 	for i := range playerChannels {
-		oracleLog(fmt.Sprintf("Notifying player %d", i+1))
 		if i == winningPlayerIndex {
 			playerChannels[i] <- "gameover : winner"
 		} else {
