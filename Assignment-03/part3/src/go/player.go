@@ -19,17 +19,15 @@ func Player(playerChannel chan string, oracleChannel chan string, playerId int, 
 	for {
 		switch currentState {
 		case awatingRoundStart:
-			playerLog(playerId, "awaiting round start message")
+			playerLog(playerId, "listening for messages")
 
 			//receiving message
-			header, _ := processMessage(playerChannel)
+			header, body := processMessage(playerChannel)
 
-			playerLog(playerId, "round start message received, sending guess")
-			//the following switch case is useless as it only has one case
-			//it is present to improve code readability
+			playerLog(playerId, "message received")
+
 			switch header {
 			case "roundStart":
-
 				currentGuess = generateRandomNumber(upperBoundry, lowerBoundry)
 
 				playerLog(playerId, fmt.Sprintf("attempting to guess with value %d", currentGuess))
@@ -37,14 +35,21 @@ func Player(playerChannel chan string, oracleChannel chan string, playerId int, 
 				sendGuess(oracleChannel, currentGuess, playerId)
 
 				currentState = awaitingVerdict
+
+			case "gameover":
+				processGameOver(playerId, body)
+
+				done <- true
+
+				return
 			}
 		case awaitingVerdict:
-			playerLog(playerId, "awaiting verdict")
+			playerLog(playerId, "listening for messages")
 
 			//receiving message
 			header, body := processMessage(playerChannel)
 
-			playerLog(playerId, "verdict recieved")
+			playerLog(playerId, "message received")
 
 			//processing response
 			switch header {
@@ -61,14 +66,7 @@ func Player(playerChannel chan string, oracleChannel chan string, playerId int, 
 				currentState = awatingRoundStart
 
 			case "gameover":
-				switch body {
-				case "winner":
-				playerLog(playerId, "hurray, I win!")
-				
-				case "loser":
-				playerLog(playerId, "Oh no, I lost")
-
-				}
+				processGameOver(playerId, body)
 
 				done <- true
 
@@ -80,6 +78,17 @@ func Player(playerChannel chan string, oracleChannel chan string, playerId int, 
 
 func sendGuess(oracleChannel chan string, guess int, playerId int) {
 	oracleChannel <- fmt.Sprintf("%d : %d", playerId, guess)
+}
+
+func processGameOver( playerId int, result string) {
+	switch result {
+	case "winner":
+	playerLog(playerId, "hurray, I win!")
+	
+	case "loser":
+	playerLog(playerId, "Oh no, I lost")
+
+	}
 }
 
 func playerLog(playerId int, msg string) {

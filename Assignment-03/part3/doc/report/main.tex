@@ -51,7 +51,7 @@ Andrea Biagini
 
 \tableofcontents
 \listoffigures
-\listoftables
+% \listoftables
 
 \newpage
 \pagenumbering{arabic} %reset numbering to normal for the main content
@@ -137,10 +137,22 @@ The player channels receive messages in three different forms:
 Where \verb|<hint>| is the hint from the oracle and can assume the value of \verb|higher| or \verb|lower| 
  and \verb|<playerStatus>| communicates to the player if they are the winner or not and can assume the value of \verb|winner| or \verb|loser|.
 
-\section{Deadlock preventions}
+\chapter{Deadlock preventions}
 
 Given that a message might be sent on a channel when no routine is listening on that channel, to prevent deadlocks and message loss, the channels have
  been initialized as buffered channels.
+
+A previous player finite state machine presented a deadlock opportunity:
+
+\begin{figure}
+    \centering
+    \includegraphics{playerwrongSD.png}
+    \caption{previous flawed state diagram of a player}
+    \label{fig:playerwrongSD}
+\end{figure}
+
+With this beheviour once the player had attempted a guess, it no longer listened for the game over message. This made it so that a player could entries
+ deadlock when the game ended. The improved design (\ref{fig:playerSD}) fixed this flaw.
 
 \chapter{Usage}
 The program can be run from the command line using the command:
@@ -157,7 +169,7 @@ Where \verb|<nPlayers>| is the number of players.
 
 Where \verb|<maxValue>| is the max value for the number to be guessed.
 
-The program can also be run using either methods by running the given bash script:
+The program can also be run using either methods by executing the given bash script:
 \begin{lstlisting}
     $ ./runGame
 \end{lstlisting}
@@ -166,8 +178,12 @@ The program can also be run using either methods by running the given bash scrip
 \end{lstlisting}
 
 \chapter{Conclusions}
-The go routine and channel constructs of the go language give supply an easy to use architecture for message oriented concurrency. Aided by the efficent Implementation
- of the go language, these simple yet powerfull abstractions allow to easily define complex beheviours in an intuitive and readable manner.
+The go routine and channel constructs of the go language give supply an easy to use architecture for message oriented concurrency. Aided by the efficent
+ implementation of the go language, these simple yet powerfull abstractions allow to easily define complex beheviours in an intuitive
+ and readable manner. 
+
+A more refined version of this game could take into account deeper syncronization requirements, such as imposing that the players should all
+ be ready to submit their guess at the same time or that the player's go routines should terminate before the oracle go routine.
 
 \bibliographystyle{plain}
 \bibliography{References}

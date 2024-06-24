@@ -107,20 +107,14 @@ func notifyPlayers(playerChannels []chan string) {
 func notifyGameOver(winningPlayerNumber int, playerChannels []chan string) {
 	winningPlayerIndex := winningPlayerNumber - 1
 
-	oracleLog("inside notify game over")
-
 	for i := range playerChannels {
 		oracleLog(fmt.Sprintf("Notifying player %d", i+1))
 		if i == winningPlayerIndex {
-			playerChannels[i] <- "gameOver : winner"
-			oracleLog(fmt.Sprintf("Player %d is the winner", i+1))
+			playerChannels[i] <- "gameover : winner"
 		} else {
-			playerChannels[i] <- "gameOver : loser"
-			oracleLog(fmt.Sprintf("Player %d is a loser", i+1))
+			playerChannels[i] <- "gameover : loser"
 		}
 	}
-
-	oracleLog("finished notify game over")
 }
 
 func giveHint(playerChannel chan string, playerGuess int, secretNumber int) {

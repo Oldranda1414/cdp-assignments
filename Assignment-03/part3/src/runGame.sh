@@ -1,3 +1,3 @@
 #!/bin/bash
 
-go run main.go oracle.go oracleStates.go player.go playerStates.go utils.go $@
+go run go/main.go go/oracle.go go/oracleStates.go go/player.go go/playerStates.go go/utils.go $@
