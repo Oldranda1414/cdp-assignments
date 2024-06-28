@@ -42,6 +42,9 @@ tasks.register<JavaExec>("runClient") {
     group = "application"
     description = "Esegue la classe Client"
     classpath = sourceSets["main"].runtimeClasspath
+    if (project.hasProperty("username")) {
+        args(project.property("username") as String);
+    }
     mainClass.set("it.unibo.rmisudoku.client.Main")
 }
 

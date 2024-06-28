@@ -39,6 +39,7 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
         synchronized (this) {
             this.highlightedCells.put(playerName, cell);
         }
+        this.notifyClients();
     }
 
     @Override
@@ -49,11 +50,14 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     @Override
     public synchronized void registerClient(Client client) throws RemoteException {
         clients.add(client);
+        this.notifyClients();
     }
 
     @Override
     public synchronized void unregisterClient(Client client) throws RemoteException {
         clients.remove(client);
+        this.highlightedCells.remove(client.getUsername());
+        this.notifyClients();
     }
 
     private void notifyClients() throws RemoteException {

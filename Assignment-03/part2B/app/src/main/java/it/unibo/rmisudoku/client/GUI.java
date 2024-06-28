@@ -3,6 +3,7 @@ package it.unibo.rmisudoku.client;
 import javax.swing.*;
 
 import it.unibo.rmisudoku.model.SudokuList;
+import it.unibo.rmisudoku.utils.Colors;
 import it.unibo.rmisudoku.utils.Coords;
 
 import java.awt.Color;
@@ -12,14 +13,14 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GUI extends JFrame {
     private static final int GRID_SIZE = 9;
@@ -36,12 +37,33 @@ public class GUI extends JFrame {
     public GUI(SudokuList sudokuList, Client client) {
         this.sudokuList = sudokuList;
         this.client = client;
+        String username = "";
+        try {
+            username = client.getUsername();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
-        setTitle("Sudoku");
-        setSize(600, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle(username + " - Sudoku");
         setLayout(new FlowLayout());
-        setSize(new Dimension(520, 650));
+        setSize(new Dimension(520, 680));
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    client.stop();
+                } catch (RemoteException e1) {
+                    e1.printStackTrace();
+                }
+                System.exit(0);
+            }
+        });
+
+        JPanel userInfo = new JPanel(new FlowLayout());
+        JLabel usernameLabel = new JLabel(username);
+        userInfo.add(usernameLabel);
+        add(userInfo);
 
         JPanel gridPanel = new JPanel(new GridLayout(GRID_SIZE, GRID_SIZE));
 
@@ -61,6 +83,11 @@ public class GUI extends JFrame {
                     @Override
                     public void focusGained(FocusEvent e) {
                         System.out.println("Changed highlighted cell to (" + xCoord + ", " + yCoord + ")");
+                        try {
+                            client.highlightCell(new Coords(xCoord, yCoord));
+                        } catch (RemoteException e1) {
+                            e1.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -92,30 +119,34 @@ public class GUI extends JFrame {
                     }
                     
                     private void handleTextChange() throws RemoteException {
-                        System.out.println("TEXT: " + textField.getText());
+                        // System.out.println("TEXT: " + textField.getText());
+                        var sudoku = client.getSudoku((String) sudokusComboBox.getSelectedItem());
+                        if (sudoku == null) {
+                            return;
+                        }
+
                         if (textField.getText().equals("")) {
-                            System.out.println("Cell emptied");
-                            client.getSudoku((String) sudokusComboBox.getSelectedItem())
-                                .setNumber(
-                                    new Coords(xCoord, yCoord),
-                                    0
-                                );
+                            // System.out.println("Cell emptied");
+                            sudoku.setNumber(
+                                new Coords(xCoord, yCoord),
+                                0
+                            );
                         } else {
                             try {
                                 int value = Integer.parseInt(textField.getText());
                                 if (value < 1 || value > 9) {
                                     throw new IllegalArgumentException("Number must be between 1 and 9.");
                                 }
-                                System.out.println("Legal content");
-                                client.getSudoku((String) sudokusComboBox.getSelectedItem())
-                                    .setNumber(
-                                        new Coords(xCoord, yCoord),
-                                        Integer.parseInt(textField.getText())
-                                    );
+                                // System.out.println("Legal content");
+                                sudoku
+                                .setNumber(
+                                    new Coords(xCoord, yCoord),
+                                    Integer.parseInt(textField.getText())
+                                );
                             } catch (NumberFormatException e1) {
-                                System.out.println("Invalid text detected.");
+                                // System.out.println("Invalid text detected.");
                             } catch (IllegalArgumentException e2) {
-                                System.out.println(e2.getMessage());
+                                // System.out.println(e2.getMessage());
                             }
                         }
                     }
@@ -173,8 +204,8 @@ public class GUI extends JFrame {
                 if (this.sudokuList.getSudokuIds().contains(newSudokuId.getText())) {
                     System.out.println("This ID has been already taken.");
                 } else {
-                    newSudokuId.setText("");
                     this.client.newSudoku(newSudokuId.getText());
+                    newSudokuId.setText("");
                 }
             } catch (RemoteException e1) {
                 e1.printStackTrace();
@@ -236,11 +267,46 @@ public class GUI extends JFrame {
         }
     }
 
+    private void updateHighlights() {
+        this.cells.forEach(c ->
+            c.forEach(cc ->
+                cc.setBackground(Color.WHITE)
+            )
+        );
+
+        Map<String, Coords> highlightCells;
+        try {
+            highlightCells = this.client.getHighlightedCells();
+            if (highlightCells == null) {
+                return;
+            }
+
+            var usernames = highlightCells
+                .keySet().stream()
+                .sorted((u1, u2) -> 
+                    u1.toLowerCase().compareTo(u2.toLowerCase())
+                ).toList().iterator();
+            var colors = new Colors();
+
+            while (usernames.hasNext() && colors.hasNext()) {
+                var cell = highlightCells.get(usernames.next());
+                var color = colors.next();
+                this.cells
+                    .get(cell.getX())
+                    .get(cell.getY())
+                    .setBackground(color);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void updateState() {
         SwingUtilities.invokeLater(() -> {
             try {
                 this.updateSudokuList();
                 this.updateGrid();
+                this.updateHighlights();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
