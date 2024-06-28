@@ -40,7 +40,6 @@ public class GUI extends JFrame {
         setTitle("Sudoku");
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // setLayout(new BorderLayout());
         setLayout(new FlowLayout());
         setSize(new Dimension(520, 650));
 
@@ -174,6 +173,7 @@ public class GUI extends JFrame {
                 if (this.sudokuList.getSudokuIds().contains(newSudokuId.getText())) {
                     System.out.println("This ID has been already taken.");
                 } else {
+                    newSudokuId.setText("");
                     this.client.newSudoku(newSudokuId.getText());
                 }
             } catch (RemoteException e1) {
@@ -186,16 +186,6 @@ public class GUI extends JFrame {
         setVisible(true);
         this.updateState();
     }
-
-    // public GUI(SudokuList sudokuList, Client client) {
-    //     this.sudokuList = sudokuList;
-    //     this.client = client;
-    //     label = new JLabel("Initial State");
-    //     add(label);
-    //     setSize(300, 100);
-    //     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //     setVisible(true);
-    // }
 
     private boolean isItemInComboBox(final String item) {
         for (int i = 0; i < this.sudokusComboBox.getItemCount(); i++) {
@@ -247,8 +237,6 @@ public class GUI extends JFrame {
     }
 
     public void updateState() {
-        // int newState = sudokuList.getSudokuIds().size();
-        // SwingUtilities.invokeLater(() -> label.setText(String.valueOf(newState)));
         SwingUtilities.invokeLater(() -> {
             try {
                 this.updateSudokuList();

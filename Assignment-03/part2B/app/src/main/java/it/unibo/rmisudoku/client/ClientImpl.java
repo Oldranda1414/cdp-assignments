@@ -26,7 +26,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 
         this.sudokuList = sudokuList;
         this.gui = new GUI(sudokuList, this);
-        this.sudokuList.registerClient(this); // Register with the shared object
+        this.sudokuList.registerClient(this);
         this.currentSudokuId = "";
         this.currentSudoku = null;
     }
