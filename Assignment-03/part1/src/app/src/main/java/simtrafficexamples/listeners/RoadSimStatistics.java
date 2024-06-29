@@ -2,6 +2,7 @@ package simtrafficexamples.listeners;
 
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.ActorContext;
+import akka.actor.typed.javadsl.Behaviors;
 import simengine.SimulationListener;
 
 /**
@@ -17,6 +18,10 @@ public class RoadSimStatistics extends SimulationListener {
 	private double minSpeed;
 	private double maxSpeed;
 	
+	public static Behavior<ViewUpdate> create() {
+		return Behaviors.setup(RoadSimStatistics::new);
+	}
+
 	private RoadSimStatistics(ActorContext<ViewUpdate> context) {
 		super(context);
 		this.stepsDurationsSum = 0;

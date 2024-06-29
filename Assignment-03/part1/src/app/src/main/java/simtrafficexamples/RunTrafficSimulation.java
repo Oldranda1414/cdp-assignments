@@ -1,7 +1,13 @@
 package simtrafficexamples;
 
+import simtrafficexamples.listeners.RoadSimStatistics;
 import simtrafficexamples.simulations.*;
+import simengine.SimulationListener.ViewUpdate;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import akka.actor.typed.ActorRef;
 import akka.actor.typed.ActorSystem;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
@@ -18,6 +24,8 @@ public class RunTrafficSimulation extends AbstractBehavior<RunTrafficSimulation.
 
 	public static record StartSimulation() {}
 
+	private final List<ActorRef<ViewUpdate>> listeners = new ArrayList<>();
+
 	public static void main(String[] args) throws InterruptedException {
 
 		final int nSteps = 100;
@@ -31,7 +39,6 @@ public class RunTrafficSimulation extends AbstractBehavior<RunTrafficSimulation.
 		simulation.run(nSteps);
 
 		final ActorSystem<StartSimulation> system = ActorSystem.create(RunTrafficSimulation.create(), "SimulationSystem");
-		system.tell(new RunTrafficSimulation.StartSimulation());
 		system.tell(new RunTrafficSimulation.StartSimulation());
 	}
 
@@ -49,7 +56,7 @@ public class RunTrafficSimulation extends AbstractBehavior<RunTrafficSimulation.
 	}
 
 	private Behavior<StartSimulation> onStartSimulation(StartSimulation command) {
-		//TODO: istanziare il master, slave e le view
+		listeners.add(getContext().spawn(RoadSimStatistics.create(), "Simulation Statistics"));
 		return this;
 	}
 }

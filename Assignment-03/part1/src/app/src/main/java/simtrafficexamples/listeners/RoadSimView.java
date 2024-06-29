@@ -206,10 +206,6 @@
 // 		}
 // 	}
 
-
-// 	@Override
-// 	public void notifyInit(int t, AbstractEnvironment<? extends AbstractAgent> env) { }
-
 // 	@Override
 // 	public void notifyStepDone(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) {
 // 		RoadsEnv e = ((RoadsEnv) env);

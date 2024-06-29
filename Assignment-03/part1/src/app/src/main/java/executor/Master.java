@@ -114,7 +114,7 @@ public class Master extends Thread {
 
 	private void notifyNewStep(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) {
 		for (SimulationListener l: listeners) {
-			l.notifyStepDone(t, stepNumber, deltaMillis, env);
+			// l.notifyStepDone(t, stepNumber, deltaMillis, env);
 		}
 	}
 
