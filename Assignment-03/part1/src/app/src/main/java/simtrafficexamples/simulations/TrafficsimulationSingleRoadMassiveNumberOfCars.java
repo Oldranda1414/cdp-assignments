@@ -1,21 +1,29 @@
 package simtrafficexamples.simulations;
 
+import akka.actor.typed.ActorRef;
+import akka.actor.typed.javadsl.ActorContext;
+
 import simengine.AbstractStates;
 import simtrafficbase.environment.Road;
 import simtrafficbase.environment.RoadsEnv;
 import simtrafficbase.states.CarStates;
 import utils.P2d;
 import utils.Pair;
+import utils.Command;
+
+import java.util.List;
 
 /**
  * 
  * Traffic Simulation about 30 cars moving on a single road, no traffic lights
  * 
  */
-public class TrafficsimulationSingleRoadMassiveNumberOfCars extends CarSimulation{
+public class TrafficsimulationSingleRoadMassiveNumberOfCars extends CarSimulation<TrafficsimulationSingleRoadMassiveNumberOfCars> {
 
-	public TrafficsimulationSingleRoadMassiveNumberOfCars() {
+	private TrafficsimulationSingleRoadMassiveNumberOfCars(ActorContext<Command> context, int nSteps, List<ActorRef<Command>> listeners) {
+		super(context, nSteps, listeners);
 		this.setDistances(20);
+		this.setup();
 	}
 
 	@Override
@@ -23,8 +31,8 @@ public class TrafficsimulationSingleRoadMassiveNumberOfCars extends CarSimulatio
 		this.brakingDistance = breakingDistance;
 		this.seeingDistance = brakingDistance + 10;
 	}
-	
-	public void setup() {
+
+	private void setup() {
 
 		final double carMaxSpeed = 50;
 		final double carAccelleration = 2;
@@ -35,16 +43,16 @@ public class TrafficsimulationSingleRoadMassiveNumberOfCars extends CarSimulatio
 
 		int t0 = 0;
 		int dt = 1;
-		
+
 		this.setupTimings(t0, dt);
-		
+
 		RoadsEnv env = new RoadsEnv();
 		this.setupEnvironment(env);
-		AbstractStates<RoadsEnv> states = new CarStates();	
+		AbstractStates<RoadsEnv> states = new CarStates();
 		this.setupAgentStates(states);
 		Road road = env.createRoad(roadPoints.getFirst(), roadPoints.getSecond());
-		for(int i = 1; i <= numberOfCars; i++){
-			double position = i * ((road.getLen() - 2)/numberOfCars);
+		for (int i = 1; i <= numberOfCars; i++) {
+			double position = i * ((road.getLen() - 2) / numberOfCars);
 			String id = Integer.toString(i);
 			env.createCar(id, road, position, carAccelleration, carDecelleration, carMaxSpeed);
 			this.addSenseDecide(this.getSenseDecide(id));
@@ -53,6 +61,6 @@ public class TrafficsimulationSingleRoadMassiveNumberOfCars extends CarSimulatio
 
 		/* sync with wall-time: 25 steps per sec */
 		this.syncWithTime(60);
-	}	
+	}
 
 }

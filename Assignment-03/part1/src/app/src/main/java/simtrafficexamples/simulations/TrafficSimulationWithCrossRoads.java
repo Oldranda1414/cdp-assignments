@@ -22,7 +22,7 @@ import java.util.List;
 public class TrafficSimulationWithCrossRoads extends CarSimulation<TrafficSimulationWithCrossRoads> {
 
 	private TrafficSimulationWithCrossRoads(ActorContext<Command> context, int nSteps, List<ActorRef<Command>> listeners) {
-			super(context, nSteps, listeners);
+		super(context, nSteps, listeners);
 		this.setDistances(40);
 		final Pair<P2d, P2d> firstRoadPoints = new Pair<>(new P2d(0, 300), new P2d(1000, 300));
 		final Pair<P2d, P2d> secondRoadPoints = new Pair<>(new P2d(750, 0), new P2d(750, 600));
