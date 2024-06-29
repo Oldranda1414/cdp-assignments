@@ -8,4 +8,5 @@ import it.unibo.rmisudoku.utils.Coords;
 public interface Sudoku extends Remote {
     void setNumber(Coords cell, int number) throws RemoteException;
     int getNumber(Coords cell) throws RemoteException;
+    int getSolutionNumber(Coords cell) throws RemoteException;
 }

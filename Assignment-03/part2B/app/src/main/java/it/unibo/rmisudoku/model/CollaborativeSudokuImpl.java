@@ -13,11 +13,14 @@ import it.unibo.rmisudoku.utils.SudokuGenerator;
 public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     private Map<String, Coords> highlightedCells;
     private List<List<CellState>> sudoku;
+    private List<List<CellState>> solution;
     private List<Client> clients;
 
     public CollaborativeSudokuImpl() {
         this.clients = new LinkedList<>();
-        this.sudoku = SudokuGenerator.generateSudoku();
+        var sudokuGenerator = new SudokuGenerator();
+        this.sudoku = sudokuGenerator.getSudoku();
+        this.solution = sudokuGenerator.getSolution();
         this.highlightedCells = new HashMap<>();
     }
 
@@ -32,6 +35,11 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     @Override
     public synchronized int getNumber(Coords cell) throws RemoteException {
         return this.sudoku.get(cell.getX()).get(cell.getY()).getNumber();
+    }
+
+    @Override
+    public synchronized int getSolutionNumber(Coords cell) throws RemoteException {
+        return this.solution.get(cell.getX()).get(cell.getY()).getNumber();
     }
 
     @Override
@@ -61,7 +69,6 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     private void notifyClients() throws RemoteException {
-        System.out.println(String.valueOf(this.clients.size()) + " CLIENTS TO BE NOTIFIED");
         for (Client client : clients) {
             client.updateClient();
         }
