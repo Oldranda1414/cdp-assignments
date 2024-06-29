@@ -19,15 +19,10 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
     private CollaborativeSudoku currentSudoku;
     private GUI gui;
 
-    public ClientImpl(SudokuList sudokuList, final String username) throws RemoteException {
+    public ClientImpl(SudokuList sudokuList, final String username)
+            throws RemoteException {
         this.registry = LocateRegistry.getRegistry("localhost", 10000);
         this.username = username;
-        // try {
-        //     this.sudokuList = (SudokuList) registry.lookup("sudokuList");
-        // } catch (RemoteException | NotBoundException e) {
-        //     e.printStackTrace();
-        // }
-
         this.sudokuList = sudokuList;
         this.gui = new GUI(sudokuList, this);
         this.sudokuList.registerClient(this);
@@ -41,7 +36,8 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
     }
     
     @Override
-    public CollaborativeSudoku getSudoku(final String sudokuId) throws RemoteException {
+    public CollaborativeSudoku getSudoku(final String sudokuId)
+            throws RemoteException {
         if (sudokuId == null) {
             return null;
         }

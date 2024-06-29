@@ -36,7 +36,10 @@ public class SudokuGenerator {
             con.setRequestMethod("GET");
             int responseCode = con.getResponseCode();
             if (responseCode != 200) {
-                throw new IOException("Sudoku generation API returned error " + String.valueOf(responseCode));
+                throw new IOException(
+                    "Sudoku generation API returned error "
+                    + String.valueOf(responseCode)
+                );
             }
 
             BufferedReader in = new BufferedReader(
@@ -68,14 +71,19 @@ public class SudokuGenerator {
                 List<Object> list = grid.getJSONArray(i).toList();
                 List<CellState> cellStateList = new ArrayList<>();
                 list.forEach(element -> {
-                    cellStateList.add(new CellState((int) element, (int) element == 0));
+                    cellStateList.add(
+                        new CellState((int) element, (int) element == 0)
+                    );
                 });
                 this.sudoku.add(cellStateList);
 
-                List<Object> solutionList = solutionGrid.getJSONArray(i).toList();
+                List<Object> solutionList = solutionGrid.getJSONArray(i)
+                    .toList();
                 List<CellState> cellStateSolutionList = new ArrayList<>();
                 solutionList.forEach(element -> {
-                    cellStateSolutionList.add(new CellState((int) element, false));
+                    cellStateSolutionList.add(
+                        new CellState((int) element, false)
+                    );
                 });
                 this.solution.add(cellStateSolutionList);
             }

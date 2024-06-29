@@ -46,12 +46,14 @@ public class SudokuListImpl implements SudokuList {
     }
 
     @Override
-    public synchronized void registerClient(Client client) throws RemoteException {
+    public synchronized void registerClient(Client client)
+            throws RemoteException {
         clients.add(client);
     }
 
     @Override
-    public synchronized void unregisterClient(Client client) throws RemoteException {
+    public synchronized void unregisterClient(Client client)
+            throws RemoteException {
         clients.remove(client);
     }
 

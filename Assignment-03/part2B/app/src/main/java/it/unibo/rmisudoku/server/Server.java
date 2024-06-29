@@ -21,14 +21,22 @@ public class Server {
 
             SudokuList sudokuList = new SudokuListImpl((sudokuId) -> {
                 try {
-                    System.out.println("Creating sudoku " + String.valueOf(sudokuId));
+                    System.out.println(
+                        "Creating sudoku " + String.valueOf(sudokuId)
+                    );
 
-                    CollaborativeSudoku sudoku = new CollaborativeSudokuImpl();
-                    CollaborativeSudoku sudokuStub = (CollaborativeSudoku) UnicastRemoteObject.exportObject(sudoku, 10000);
+                    var sudoku = new CollaborativeSudokuImpl();
+                    var sudokuStub = (CollaborativeSudoku) UnicastRemoteObject
+                        .exportObject(sudoku, 10000);
                     registry.rebind(String.valueOf(sudokuId), sudokuStub);
                     sudokus.put(sudokuId, sudoku);
                     
-                    System.out.println("Now the server contains " + String.valueOf(sudokus.size()) + " sudokus.");
+                    System.out.println(
+                        "Now the server contains "
+                        + String.valueOf(sudokus.size())
+                        + " sudokus."
+                    );
+
                     return true;
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -38,7 +46,8 @@ public class Server {
                     return false;
                 }
             });
-            SudokuList sudokuListStub = (SudokuList) UnicastRemoteObject.exportObject(sudokuList, 0);
+            var sudokuListStub = (SudokuList) UnicastRemoteObject
+                .exportObject(sudokuList, 0);
             registry.rebind("sudokuList", sudokuListStub);
 
             System.out.println("Server is ready.");

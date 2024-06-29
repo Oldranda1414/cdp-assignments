@@ -23,6 +23,7 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
         try {
             sudokuGenerator = new SudokuGenerator();
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             throw new IllegalStateException("Failed while generating sudoku");
         }
         this.sudoku = sudokuGenerator.getSudoku();
@@ -49,12 +50,14 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     @Override
-    public synchronized int getSolutionNumber(Coords cell) throws RemoteException {
+    public synchronized int getSolutionNumber(Coords cell)
+            throws RemoteException {
         return this.solution.get(cell.getX()).get(cell.getY()).getNumber();
     }
 
     @Override
-    public void highlightCell(Coords cell, String playerName) throws RemoteException {
+    public void highlightCell(Coords cell, String playerName)
+            throws RemoteException {
         synchronized (this) {
             this.highlightedCells.put(playerName, cell);
         }
@@ -62,18 +65,21 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     @Override
-    public synchronized Map<String, Coords> getHighlightedCells() throws RemoteException {
+    public synchronized Map<String, Coords> getHighlightedCells()
+            throws RemoteException {
         return this.highlightedCells;
     }
 
     @Override
-    public synchronized void registerClient(Client client) throws RemoteException {
+    public synchronized void registerClient(Client client)
+            throws RemoteException {
         clients.add(client);
         this.notifyClients();
     }
 
     @Override
-    public synchronized void unregisterClient(Client client) throws RemoteException {
+    public synchronized void unregisterClient(Client client)
+            throws RemoteException {
         clients.remove(client);
         this.highlightedCells.remove(client.getUsername());
         this.notifyClients();
