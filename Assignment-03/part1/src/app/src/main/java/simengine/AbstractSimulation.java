@@ -49,7 +49,8 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		this.t = t0;
 		this.listeners = listeners;
 
-		getContext().getLog().info("Simulation started");
+		//TODO: create actor agents
+		logMessage("Simulation started");
 
 		startWallTime = System.currentTimeMillis();
 
@@ -132,30 +133,25 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	}
 
 	private void executeNextStep() {
-		currentWallTime = System.currentTimeMillis();
+		this.currentWallTime = System.currentTimeMillis();
 		this.env.step(dt);
-		step("sense-decide", senseDecideWorks);
-		step("act", actWorks);
-		t += dt;
-		if (toBeInSyncWithWallTime) {
-			syncWithWallTime();
+		this.step("sense-decide", senseDecideWorks);
+		this.step("act", actWorks);
+		this.t += this.dt;
+		if (this.toBeInSyncWithWallTime) {
+			this.syncWithWallTime();
 		}
 		this.currentStep++;
 	}
 
 	private void step(String taskType, List<Task> tasks) {
+		//TODO: send messages to actor agents to perform tasks of type taskType
 		// List<Future<?>> futures = new ArrayList<>();
 		// fillBag(taskType, tasks, futures);
 		// for (var future : futures) {
 		// 	future.get();
 		// }
 	}
-
-	// private void fillBag(/*String workName, List<Task> works, List<Future<?>> futures*/) {
-		// for (Task work : works) {
-		// 	futures.add(executor.submit(work));
-		// }
-	// }
 
 	private void syncWithWallTime() {
 		try {
