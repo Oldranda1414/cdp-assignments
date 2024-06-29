@@ -2,7 +2,6 @@ package it.unibo.rmisudoku.client;
 
 import javax.swing.*;
 
-import it.unibo.rmisudoku.model.CollaborativeSudoku;
 import it.unibo.rmisudoku.model.SudokuList;
 import it.unibo.rmisudoku.utils.Colors;
 import it.unibo.rmisudoku.utils.Coords;
@@ -258,6 +257,11 @@ public class GUI extends JFrame {
                             );
                         } else {
                             this.cells.get(i).get(j).setText("");
+                        }
+                        if (!sudoku.isCellModifiable(new Coords(i, j))) {
+                            this.cells.get(i).get(j).setEnabled(false);
+                        } else {
+                            this.cells.get(i).get(j).setEnabled(true);
                         }
                     } catch (RemoteException e) {
                         e.printStackTrace();

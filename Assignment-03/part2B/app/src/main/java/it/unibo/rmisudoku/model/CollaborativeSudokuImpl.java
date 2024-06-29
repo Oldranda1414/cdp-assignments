@@ -38,6 +38,11 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     @Override
+    public boolean isCellModifiable(Coords cell) throws RemoteException {
+        return this.sudoku.get(cell.getX()).get(cell.getY()).isModifiable();
+    }
+
+    @Override
     public synchronized int getSolutionNumber(Coords cell) throws RemoteException {
         return this.solution.get(cell.getX()).get(cell.getY()).getNumber();
     }
