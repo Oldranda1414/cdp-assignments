@@ -29,8 +29,13 @@ public class Server {
                     sudokus.put(sudokuId, sudoku);
                     
                     System.out.println("Now the server contains " + String.valueOf(sudokus.size()) + " sudokus.");
+                    return true;
                 } catch (RemoteException e) {
                     e.printStackTrace();
+                    return false;
+                } catch (IllegalStateException e) {
+                    System.out.println(e.getMessage());
+                    return false;
                 }
             });
             SudokuList sudokuListStub = (SudokuList) UnicastRemoteObject.exportObject(sudokuList, 0);

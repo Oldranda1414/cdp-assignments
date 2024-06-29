@@ -27,7 +27,7 @@ public class SudokuGenerator {
         return this.solution;
     }
 
-    public SudokuGenerator() {
+    public SudokuGenerator() throws IOException {
         String url = "https://sudoku-api.vercel.app/api/dosuku";
         URL obj;
         try {
@@ -80,8 +80,6 @@ public class SudokuGenerator {
                 this.solution.add(cellStateSolutionList);
             }
         } catch (MalformedURLException | URISyntaxException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }

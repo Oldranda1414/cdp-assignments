@@ -5,16 +5,16 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import it.unibo.rmisudoku.client.Client;
 
 public class SudokuListImpl implements SudokuList {
     private final Set<String> sudokuIds;
-    private final Consumer<String> callback;
+    private final Function<String, Boolean> callback;
     private List<Client> clients;
 
-    public SudokuListImpl(final Consumer<String> callback) {
+    public SudokuListImpl(final Function<String, Boolean> callback) {
         this.clients = new LinkedList<>();
         this.sudokuIds = new HashSet<>();
         this.callback = callback;
@@ -28,10 +28,17 @@ public class SudokuListImpl implements SudokuList {
     @Override
     public boolean addSudoku(final String sudokuId) throws RemoteException {
         synchronized (this) {
+            // If a sudoku with that ID alreadi exists, returns false
             if (this.sudokuIds.contains(sudokuId)) {
                 return false;
             }
-            this.callback.accept(sudokuId);
+
+            // If there were errors while generating the sudoku, returns false
+            if (!this.callback.apply(sudokuId)) {
+                return false;
+            }
+
+            // If all went well, the new ID is added to the list
             this.sudokuIds.add(sudokuId);
         }
         this.notifyClients();

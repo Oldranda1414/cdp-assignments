@@ -1,5 +1,6 @@
 package it.unibo.rmisudoku.model;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,9 +17,14 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     private List<List<CellState>> solution;
     private List<Client> clients;
 
-    public CollaborativeSudokuImpl() {
+    public CollaborativeSudokuImpl() throws IllegalStateException {
         this.clients = new LinkedList<>();
-        var sudokuGenerator = new SudokuGenerator();
+        SudokuGenerator sudokuGenerator;
+        try {
+            sudokuGenerator = new SudokuGenerator();
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed while generating sudoku");
+        }
         this.sudoku = sudokuGenerator.getSudoku();
         this.solution = sudokuGenerator.getSolution();
         this.highlightedCells = new HashMap<>();
