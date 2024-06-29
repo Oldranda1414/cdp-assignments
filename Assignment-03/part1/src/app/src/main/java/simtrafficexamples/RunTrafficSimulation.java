@@ -3,11 +3,11 @@ package simtrafficexamples;
 import simtrafficexamples.listeners.RoadSimStatistics;
 import simtrafficexamples.simulations.*;
 import simengine.AbstractSimulation;
-import utils.Command;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import actor.Command;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.ActorSystem;
 import akka.actor.typed.Behavior;

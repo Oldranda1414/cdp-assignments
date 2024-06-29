@@ -6,10 +6,10 @@ import simtrafficbase.environment.RoadsEnv;
 import simtrafficbase.states.CarStates;
 import utils.P2d;
 import utils.Pair;
-import utils.Command;
 
 import java.util.List;
 
+import actor.Command;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.javadsl.ActorContext;
 

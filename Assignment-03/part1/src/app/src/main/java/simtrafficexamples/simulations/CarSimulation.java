@@ -3,6 +3,7 @@ package simtrafficexamples.simulations;
 import java.util.List;
 import java.util.Optional;
 
+import actor.Command;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.javadsl.ActorContext;
 
@@ -15,7 +16,6 @@ import simtrafficbase.environment.RoadsEnv;
 import simtrafficbase.states.state.AccelerateState;
 import simtrafficbase.states.state.ConstantSpeedState;
 import simtrafficbase.states.state.DecelerateState;
-import utils.Command;
 
 public abstract class CarSimulation<T extends AbstractSimulation<RoadsEnv, T>> extends AbstractSimulation<RoadsEnv, T> {
 
@@ -29,7 +29,7 @@ public abstract class CarSimulation<T extends AbstractSimulation<RoadsEnv, T>> e
 	protected abstract void setDistances(double brakingDistance);
 
 	protected Task getSenseDecide(String id) {
-		return new Task(() -> {
+		return new Task((command) -> {
 			CarAgent car = ((CarAgent) getEnvironment().get(id));
 			if (isTooCloseToCar(id) || isSeeingAHaltingTrafficLight(id)) {
 				if (car.getCurrentSpeed() < car.getDeceleration()) {
@@ -47,12 +47,14 @@ public abstract class CarSimulation<T extends AbstractSimulation<RoadsEnv, T>> e
 					this.getAgentStates().put(id, new AccelerateState());
 				}
 			}
+			return this;
 		}, id, "sense-decide");
 	}
 
 	protected Task getAct(String id) {
-		return new Task(() -> {
+		return new Task((command) -> {
 			this.getAgentStates().get(id).act(id, (RoadsEnv) this.getEnvironment());
+			return this;
 		}, id, "act");
 	}
 

@@ -3,14 +3,13 @@ package simengine;
 import java.util.ArrayList;
 import java.util.List;
 
+import actor.Command;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-
-import utils.Command;
 import executor.Task;
 import simengine.SimulationListener.ViewUpdate;
 

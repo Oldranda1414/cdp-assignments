@@ -1,11 +1,11 @@
 package simtrafficexamples.listeners;
 
+import actor.Command;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 
 import simengine.SimulationListener;
-import utils.Command;
 
 /**
  * Simple class keeping track of some statistics about a traffic simulation

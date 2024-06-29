@@ -9,9 +9,10 @@ import simtrafficbase.states.CarStates;
 import simtrafficbase.entity.TrafficLight;
 import utils.Pair;
 import utils.P2d;
-import utils.Command;
 
 import java.util.List;
+
+import actor.Command;
 
 /**
  * 

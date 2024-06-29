@@ -14,7 +14,7 @@ import simtrafficexamples.simulations.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import utils.Command;
+import actor.Command;
 
 /**
  * 

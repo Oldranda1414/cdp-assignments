@@ -1,11 +1,10 @@
 package simengine;
 
+import actor.Command;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Receive;
-
-import utils.Command;
 
 public abstract class SimulationListener extends AbstractBehavior<Command> {
 

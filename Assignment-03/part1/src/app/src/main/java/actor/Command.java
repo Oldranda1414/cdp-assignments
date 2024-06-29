@@ -1,2 +1,2 @@
-package utils;
+package actor;
 public interface Command {}
