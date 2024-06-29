@@ -2,134 +2,120 @@ package simengine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
-import executor.Master;
+import akka.actor.typed.ActorRef;
+import akka.actor.typed.Behavior;
+import akka.actor.typed.javadsl.AbstractBehavior;
+import akka.actor.typed.javadsl.ActorContext;
+import akka.actor.typed.javadsl.Behaviors;
+import akka.actor.typed.javadsl.Receive;
+
+import utils.Command;
 import executor.Task;
+import simengine.SimulationListener.ViewUpdate;
 
 /**
  * Base class for defining concrete simulations
- *  
+ * 
  */
-public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends AbstractAgent>> {
+public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends AbstractAgent>, S extends AbstractSimulation<T, S>>
+	extends AbstractBehavior<Command> {
 
+	public static record NextStep() implements Command {}
+
+	private long timePerStep;
+	private int t;
+	private List<ActorRef<Command>> listeners;
+	private long currentWallTime;
+	private int numSteps;
+	private int currentStep;
 	private AbstractEnvironment<? extends AbstractAgent> env;
 	private AbstractStates<T> agentStates;
 	private List<Task> senseDecideWorks;
 	private List<Task> actWorks;
-	private List<SimulationListener> listeners;
 	private int t0;
 	private int dt;
 	private long startWallTime;
 	private long endWallTime;
 	private long averageTimePerStep;
-	private Master master;
 	private boolean toBeInSyncWithWallTime;
 	private int nStepsPerSec;
-	private Semaphore startAndStop;
 
-	protected AbstractSimulation() {
-		listeners = new ArrayList<SimulationListener>();
+	protected AbstractSimulation(ActorContext<Command> context, int numSteps, List<ActorRef<Command>> listeners) {
+		super(context);
 		senseDecideWorks = new ArrayList<Task>();
 		actWorks = new ArrayList<Task>();
-		startAndStop = new Semaphore(0);
-	}
-	
-	/**
-	 * 
-	 * Method used to configure the simulation, specifying env and agents
-	 * 
-	 */
-	protected abstract void setup();
-	
-	/**
-	 * Method running the simulation for a number of steps,
-	 * using a sequential approach
-	 * 
-	 * @param numSteps
-	 */
-	public void run(int numSteps) {
-		try {
-			this.resume();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out.println("Simulation started");
+		this.numSteps = numSteps;
+		this.currentStep = 0;
+		this.t = t0;
+		this.listeners = listeners;
+
+		getContext().getLog().info("Simulation started");
 
 		startWallTime = System.currentTimeMillis();
 
-		long timePerStep = 0;
-		this.master = new Master(
-			ComputeBestNumOfThreads(), 
-			this.senseDecideWorks, 
-			this.actWorks, 
-			this.env, 
-			this.t0, 
-			this.dt, 
-			numSteps, 
-			this.listeners,
-			this.toBeInSyncWithWallTime,
-			this.nStepsPerSec,
-			this.startAndStop
-		);
-		
-		try {
-			master.start();
-			master.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		this.timePerStep = 0;
+	}
+
+	public static <S extends AbstractSimulation<?, S>> Behavior<Command> create(Class<S> concreteClass, int numSteps, List<ActorRef<Command>> listeners) {
+        return Behaviors.setup(context -> concreteClass.getDeclaredConstructor(ActorContext.class).newInstance(context, numSteps, listeners));
+    }
+
+    protected void logMessage(String message) {
+        getContext().getLog().info(message);
+    }
+
+	@Override
+	public Receive<Command> createReceive() {
+		return newReceiveBuilder()
+			.onMessage(NextStep.class, this::onNextStep)
+			.build();
+	}
+
+	private AbstractBehavior<Command> onNextStep(NextStep command) throws InterruptedException {
+		this.executeNextStep();
+		if (this.numSteps == this.currentStep) {
+			endWallTime = System.currentTimeMillis();
+			this.averageTimePerStep = this.timePerStep / numSteps;
+			logMessage("Simulation finished");
+			for (var listener : listeners) {
+				listener.tell(new SimulationListener.SimulationFinished());
+			}
+			getContext().stop(getContext().getSelf());
 		}
-
-		endWallTime = System.currentTimeMillis();
-		this.averageTimePerStep = timePerStep / numSteps;
-
-		System.out.println("Simulation finished");
-	}
-
-	public void stop() throws InterruptedException {
-		startAndStop.acquire();
-	}
-
-	public void resume() throws InterruptedException {
-		startAndStop.release();
+		getContext().getSelf().tell(new NextStep());
+		for (var listener : listeners) {
+			listener.tell(new ViewUpdate(t, currentStep, currentWallTime - startWallTime, env));
+		}
+		return this;
 	}
 
 	public long getSimulationDuration() {
-		if (this.master.isAlive()) {
-			return 0;
-		}
 		return endWallTime - startWallTime;
 	}
-	
-	public long getAverageTimePerCycle() {
-		if (this.master.isAlive()) {
-			return 0;
-		}
-		return averageTimePerStep;
-	}
 
-	public void addSimulationListener(SimulationListener l) {
-		this.listeners.add(l);
+	public long getAverageTimePerCycle() {
+		return averageTimePerStep;
 	}
 
 	protected void setupTimings(int t0, int dt) {
 		this.t0 = t0;
 		this.dt = dt;
 	}
-	
+
 	protected void setupEnvironment(AbstractEnvironment<? extends AbstractAgent> env) {
 		this.env = env;
 	}
 
-	protected AbstractEnvironment<? extends AbstractAgent> getEnvironment(){
+	protected AbstractEnvironment<? extends AbstractAgent> getEnvironment() {
 		return this.env;
 	}
 
-	protected void setupAgentStates(AbstractStates<T> states){
+	protected void setupAgentStates(AbstractStates<T> states) {
 		this.agentStates = states;
 	}
 
-	protected AbstractStates<T> getAgentStates(){
+	protected AbstractStates<T> getAgentStates() {
 		return this.agentStates;
 	}
 
@@ -141,15 +127,46 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		this.senseDecideWorks.add(senseDecide);
 	}
 
-	protected void syncWithTime(int nCyclesPerSec){
+	protected void syncWithTime(int nCyclesPerSec) {
 		this.toBeInSyncWithWallTime = true;
 		this.nStepsPerSec = nCyclesPerSec;
 	}
 
-	private int ComputeBestNumOfThreads() {
-		int cores = Runtime.getRuntime().availableProcessors();
-		int standardThreads = 2; //number of threads to be used for other processes (in this case I calculate 1 thread for Master and 1 for the gui)
-		int availableThreads = cores - standardThreads;
-		return availableThreads;
+	private void executeNextStep() {
+		currentWallTime = System.currentTimeMillis();
+		this.env.step(dt);
+		step("sense-decide", senseDecideWorks);
+		step("act", actWorks);
+		t += dt;
+		if (toBeInSyncWithWallTime) {
+			syncWithWallTime();
+		}
+		this.currentStep++;
+	}
+
+	private void step(String taskType, List<Task> tasks) {
+		// List<Future<?>> futures = new ArrayList<>();
+		// fillBag(taskType, tasks, futures);
+		// for (var future : futures) {
+		// 	future.get();
+		// }
+	}
+
+	// private void fillBag(/*String workName, List<Task> works, List<Future<?>> futures*/) {
+		// for (Task work : works) {
+		// 	futures.add(executor.submit(work));
+		// }
+	// }
+
+	private void syncWithWallTime() {
+		try {
+			long newWallTime = System.currentTimeMillis();
+			long delay = 1000 / this.nStepsPerSec;
+			long wallTimeDT = newWallTime - currentWallTime;
+			if (wallTimeDT < delay) {
+				Thread.sleep(delay - wallTimeDT);
+			}
+		} catch (Exception ex) {
+		}
 	}
 }

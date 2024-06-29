@@ -2,7 +2,8 @@ package simtrafficexamples;
 
 import simtrafficexamples.listeners.RoadSimStatistics;
 import simtrafficexamples.simulations.*;
-import simengine.SimulationListener.ViewUpdate;
+import simengine.AbstractSimulation;
+import utils.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,20 +25,7 @@ public class RunTrafficSimulation extends AbstractBehavior<RunTrafficSimulation.
 
 	public static record StartSimulation() {}
 
-	private final List<ActorRef<ViewUpdate>> listeners = new ArrayList<>();
-
 	public static void main(String[] args) throws InterruptedException {
-
-		final int nSteps = 100;
-		// TrafficSimulationSingleRoadTwoCars simulation = new TrafficSimulationSingleRoadTwoCars();
-		//var simulation = new TrafficSimulationSingleRoadSeveralCars();
-		// TrafficSimulationSingleRoadWithTrafficLightTwoCars simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
-		TrafficSimulationWithCrossRoads simulation = new TrafficSimulationWithCrossRoads();
-		simulation.setup();
-		
-		
-		simulation.run(nSteps);
-
 		final ActorSystem<StartSimulation> system = ActorSystem.create(RunTrafficSimulation.create(), "SimulationSystem");
 		system.tell(new RunTrafficSimulation.StartSimulation());
 	}
@@ -56,7 +44,12 @@ public class RunTrafficSimulation extends AbstractBehavior<RunTrafficSimulation.
 	}
 
 	private Behavior<StartSimulation> onStartSimulation(StartSimulation command) {
+		final int nSteps = 100;
+		final List<ActorRef<Command>> listeners = new ArrayList<>();
 		listeners.add(getContext().spawn(RoadSimStatistics.create(), "Simulation Statistics"));
+		final ActorRef<Command> simulation = getContext()
+			.spawn(AbstractSimulation.create(TrafficSimulationWithCrossRoads.class, nSteps, listeners), "Simulation with cross roads");
+		simulation.tell(new AbstractSimulation.NextStep());
 		return this;
 	}
 }

@@ -1,21 +1,29 @@
 package simtrafficexamples.simulations;
 
+import akka.actor.typed.ActorRef;
+import akka.actor.typed.javadsl.ActorContext;
 import simengine.AbstractStates;
 import simtrafficbase.environment.Road;
 import simtrafficbase.environment.RoadsEnv;
 import simtrafficbase.states.CarStates;
 import utils.Pair;
 import utils.P2d;
+import utils.Command;
+
+import java.util.List;
 
 /**
  * 
  * Traffic Simulation about 2 cars moving on a single road, no traffic lights
  * 
  */
-public class TrafficSimulationSingleRoadTwoCars extends CarSimulation{
+public class TrafficSimulationSingleRoadTwoCars extends CarSimulation<TrafficSimulationSingleRoadTwoCars> {
 
-	public TrafficSimulationSingleRoadTwoCars() {
+	public TrafficSimulationSingleRoadTwoCars(ActorContext<Command> context, int nSteps,
+			List<ActorRef<Command>> listeners) {
+		super(context, nSteps, listeners);
 		this.setDistances(20);
+		this.setup();
 	}
 
 	@Override
@@ -24,7 +32,7 @@ public class TrafficSimulationSingleRoadTwoCars extends CarSimulation{
 		this.seeingDistance = brakingDistance + 10;
 	}
 
-	public void setup() {
+	private void setup() {
 
 		double carMaxSpeed = 5;
 		double carAccelleration = 1;
@@ -35,16 +43,16 @@ public class TrafficSimulationSingleRoadTwoCars extends CarSimulation{
 
 		int t0 = 0;
 		int dt = 1;
-		
+
 		super.setupTimings(t0, dt);
-		
+
 		RoadsEnv env = new RoadsEnv();
 		super.setupEnvironment(env);
-		AbstractStates<RoadsEnv> states = new CarStates();	
+		AbstractStates<RoadsEnv> states = new CarStates();
 		super.setupAgentStates(states);
 		Road road = env.createRoad(roadPoints.getFirst(), roadPoints.getSecond());
-		for(int i = 1; i <= numberOfCars; i++){
-			double position = i * (road.getLen()/numberOfCars);
+		for (int i = 1; i <= numberOfCars; i++) {
+			double position = i * (road.getLen() / numberOfCars);
 			String id = Integer.toString(i);
 			env.createCar(id, road, position, carAccelleration, carDecelleration, carMaxSpeed + i);
 			super.addSenseDecide(super.getSenseDecide(id));
@@ -53,6 +61,6 @@ public class TrafficSimulationSingleRoadTwoCars extends CarSimulation{
 
 		/* sync with wall-time: 25 steps per sec */
 		this.syncWithTime(25);
-	}	
+	}
 
 }

@@ -3,7 +3,9 @@ package simtrafficexamples.listeners;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
+
 import simengine.SimulationListener;
+import utils.Command;
 
 /**
  * Simple class keeping track of some statistics about a traffic simulation
@@ -18,11 +20,11 @@ public class RoadSimStatistics extends SimulationListener {
 	private double minSpeed;
 	private double maxSpeed;
 	
-	public static Behavior<ViewUpdate> create() {
+	public static Behavior<Command> create() {
 		return Behaviors.setup(RoadSimStatistics::new);
 	}
 
-	private RoadSimStatistics(ActorContext<ViewUpdate> context) {
+	private RoadSimStatistics(ActorContext<Command> context) {
 		super(context);
 		this.stepsDurationsSum = 0;
 		this.stepNumber = 0;
@@ -31,7 +33,7 @@ public class RoadSimStatistics extends SimulationListener {
 	}
 
 	@Override
-	protected Behavior<ViewUpdate> onViewUpdate(ViewUpdate command) {
+	protected Behavior<Command> onViewUpdate(ViewUpdate command) {
 		this.stepNumber = command.stepNumber();
 
 		double speed = 1000.0 / (double) command.deltaMillis();	// Number of steps per second
@@ -59,6 +61,13 @@ public class RoadSimStatistics extends SimulationListener {
 		);
 		return this;
 	}
+
+	@Override
+	protected Behavior<Command> onSimulationFinished(SimulationFinished command) {
+		getContext().stop(getContext().getSelf());
+		return this;
+	}
+
 	
 	public double getAverageSpeed() {
 		return (double) this.stepsDurationsSum / (double) this.stepNumber;
