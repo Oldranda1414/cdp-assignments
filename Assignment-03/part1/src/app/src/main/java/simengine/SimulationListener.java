@@ -1,22 +1,30 @@
 package simengine;
 
-// import java.util.List;
+import akka.actor.typed.Behavior;
+import akka.actor.typed.javadsl.AbstractBehavior;
+import akka.actor.typed.javadsl.ActorContext;
+import akka.actor.typed.javadsl.Receive;
 
-public interface SimulationListener {
+public abstract class SimulationListener extends AbstractBehavior<SimulationListener.ViewUpdate> {
+
+    public static record ViewUpdate(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) {}
+
+    protected SimulationListener(ActorContext<ViewUpdate> context) {
+        super(context);
+    }
 
 	/**
-	 * Called at the beginning of the simulation
-	 * 
-	 * @param t
-	 * @param env
-	 */
-	void notifyInit(int t, AbstractEnvironment<? extends AbstractAgent> env);
-	
-	/**
-	 * Called at each step, updater all updates
-	 * @param t
-	 * @param deltaMillis
-	 * @param env
-	 */
-	void notifyStepDone(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env);
+     * Called at each step, updates all updates
+     */
+    @Override
+    public Receive<ViewUpdate> createReceive() {
+        return newReceiveBuilder()
+                .onMessage(ViewUpdate.class, this::onViewUpdate)
+                .build();
+    }
+
+    /**
+     * Called at each step, updates all updates
+     */
+    protected abstract Behavior<ViewUpdate> onViewUpdate(ViewUpdate command);
 }

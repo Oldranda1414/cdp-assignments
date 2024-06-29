@@ -60,9 +60,7 @@ public class Master extends Thread {
     public void run() {
         /* initialize the env and the agents inside */
 		int t = t0;
-        try {
-            this.notifyReset(t, env);
-            
+        try {            
             for(int step = 1; step <= nSteps; step++) {
                 
                 startAndStop.acquire();
@@ -113,12 +111,6 @@ public class Master extends Thread {
             futures.add(executor.submit(work));
         }
     }
-	
-	private void notifyReset(int t0, AbstractEnvironment<? extends AbstractAgent> env) {
-		for (SimulationListener l: listeners) {
-			l.notifyInit(t0, env);
-		}
-	}
 
 	private void notifyNewStep(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) {
 		for (SimulationListener l: listeners) {

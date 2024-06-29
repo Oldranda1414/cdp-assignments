@@ -1,9 +1,7 @@
 package simtrafficexamples.listeners;
 
-// import java.util.List;
-
-import simengine.AbstractAgent;
-import simengine.AbstractEnvironment;
+import akka.actor.typed.Behavior;
+import akka.actor.typed.javadsl.ActorContext;
 import simengine.SimulationListener;
 
 /**
@@ -12,30 +10,26 @@ import simengine.SimulationListener;
  * - min speed
  * - max speed
  */
-public class RoadSimStatistics implements SimulationListener {
+public class RoadSimStatistics extends SimulationListener {
 
 	private double stepsDurationsSum;
 	private int stepNumber;
 	private double minSpeed;
 	private double maxSpeed;
 	
-	public RoadSimStatistics() {
+	private RoadSimStatistics(ActorContext<ViewUpdate> context) {
+		super(context);
 		this.stepsDurationsSum = 0;
 		this.stepNumber = 0;
 		this.minSpeed = 0;
 		this.maxSpeed = 0;
 	}
-	
-	@Override
-	public void notifyInit(int t, AbstractEnvironment<? extends AbstractAgent> env) {
-		//
-	}
 
 	@Override
-	public void notifyStepDone(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) {
-		this.stepNumber = stepNumber;
+	protected Behavior<ViewUpdate> onViewUpdate(ViewUpdate command) {
+		this.stepNumber = command.stepNumber();
 
-		double speed = 1000.0 / (double) deltaMillis;	// Number of steps per second
+		double speed = 1000.0 / (double) command.deltaMillis();	// Number of steps per second
 		if (speed == Double.POSITIVE_INFINITY) {
 			speed = Double.MAX_VALUE;
 		}
@@ -58,6 +52,7 @@ public class RoadSimStatistics implements SimulationListener {
 			+ ", Min step speed: " + this.getMinSpeed()
 			+ ", Max step speed: " + this.getMaxSpeed()
 		);
+		return this;
 	}
 	
 	public double getAverageSpeed() {
