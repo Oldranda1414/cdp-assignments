@@ -12,8 +12,8 @@ import it.unibo.rmisudoku.model.SudokuList;
 import it.unibo.rmisudoku.utils.Coords;
 
 public class ClientImpl extends UnicastRemoteObject implements Client {
-    private Registry registry;
-    private SudokuList sudokuList;
+    private final Registry registry;
+    private final SudokuList sudokuList;
     private String username;
     private String currentSudokuId;
     private CollaborativeSudoku currentSudoku;
@@ -22,11 +22,11 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
     public ClientImpl(SudokuList sudokuList, final String username) throws RemoteException {
         this.registry = LocateRegistry.getRegistry("localhost", 10000);
         this.username = username;
-        try {
-            this.sudokuList = (SudokuList) registry.lookup("sudokuList");
-        } catch (RemoteException | NotBoundException e) {
-            e.printStackTrace();
-        }
+        // try {
+        //     this.sudokuList = (SudokuList) registry.lookup("sudokuList");
+        // } catch (RemoteException | NotBoundException e) {
+        //     e.printStackTrace();
+        // }
 
         this.sudokuList = sudokuList;
         this.gui = new GUI(sudokuList, this);
@@ -46,20 +46,24 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
             return null;
         }
 
-        if (!sudokuId.equals(this.currentSudokuId)) {
-            // Unregistering client from previous sudoku
-            if (this.currentSudoku != null) {
-                this.currentSudoku.unregisterClient(this);
+        try {
+            if (!sudokuId.equals(this.currentSudokuId)) {
+                // Unregistering client from previous sudoku
+                if (this.currentSudoku != null) {
+                    this.currentSudoku.unregisterClient(this);
+                }
+
+                // Changing current sudoku
+                this.currentSudokuId = sudokuId;
+                this.currentSudoku = this.getRemoteSudoku(sudokuId);
+
+                // Registering to current sudoku
+                this.currentSudoku.registerClient(this);
             }
-
-            // Changing current sudoku
-            this.currentSudokuId = sudokuId;
-            this.currentSudoku = this.getRemoteSudoku(sudokuId);
-
-            // Registering to current sudoku
-            this.currentSudoku.registerClient(this);
+            return this.currentSudoku;
+        } catch (NullPointerException e) {
+            return null;
         }
-        return this.currentSudoku;
     }
 
     private CollaborativeSudoku getRemoteSudoku(final String sudokuId) {
@@ -68,7 +72,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
                 return (CollaborativeSudoku) this.registry.lookup(sudokuId);
             }
         } catch (RemoteException | NotBoundException e) {
-            e.printStackTrace();
+            System.out.println("Grid '" + sudokuId + "' not found");
         }
         return null;
     }

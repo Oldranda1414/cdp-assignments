@@ -16,7 +16,18 @@ import org.json.JSONObject;
 import it.unibo.rmisudoku.model.CellState;
 
 public class SudokuGenerator {
-    public static List<List<CellState>> generateSudoku() {
+    private List<List<CellState>> sudoku;
+    private List<List<CellState>> solution;
+    
+    public List<List<CellState>> getSudoku() {
+        return this.sudoku;
+    }
+
+    public List<List<CellState>> getSolution() {
+        return this.solution;
+    }
+
+    public SudokuGenerator() throws IOException {
         String url = "https://sudoku-api.vercel.app/api/dosuku";
         URL obj;
         try {
@@ -24,7 +35,9 @@ public class SudokuGenerator {
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
             int responseCode = con.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
+            if (responseCode != 200) {
+                throw new IOException("Sudoku generation API returned error " + String.valueOf(responseCode));
+            }
 
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream())
@@ -43,22 +56,31 @@ public class SudokuGenerator {
                 .getJSONArray("grids")
                 .getJSONObject(0)
                 .getJSONArray("value");
+            JSONArray solutionGrid = jsonObject
+                .getJSONObject("newboard")
+                .getJSONArray("grids")
+                .getJSONObject(0)
+                .getJSONArray("solution");
 
-            List<List<CellState>> ret = new ArrayList<>();
+            this.sudoku = new ArrayList<>();
+            this.solution = new ArrayList<>();
             for (int i = 0; i < 9; i++) {
                 List<Object> list = grid.getJSONArray(i).toList();
                 List<CellState> cellStateList = new ArrayList<>();
                 list.forEach(element -> {
-                    cellStateList.add(new CellState((int) element));
+                    cellStateList.add(new CellState((int) element, (int) element == 0));
                 });
-                ret.add(cellStateList);
+                this.sudoku.add(cellStateList);
+
+                List<Object> solutionList = solutionGrid.getJSONArray(i).toList();
+                List<CellState> cellStateSolutionList = new ArrayList<>();
+                solutionList.forEach(element -> {
+                    cellStateSolutionList.add(new CellState((int) element, false));
+                });
+                this.solution.add(cellStateSolutionList);
             }
-            return ret;
         } catch (MalformedURLException | URISyntaxException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return null;
     }
 }

@@ -9,10 +9,10 @@ import it.unibo.rmisudoku.utils.Coords;
 
 public interface Client extends Remote {
     void updateClient() throws RemoteException;
-    public CollaborativeSudoku getSudoku(final String sudokuId) throws RemoteException;
-    public boolean newSudoku(final String sudokuId) throws RemoteException;
-    public void highlightCell(final Coords cell) throws RemoteException;
-    public Map<String, Coords> getHighlightedCells() throws RemoteException;
-    public String getUsername() throws RemoteException;
-    public void stop() throws RemoteException;
+    CollaborativeSudoku getSudoku(final String sudokuId) throws RemoteException;
+    boolean newSudoku(final String sudokuId) throws RemoteException;
+    void highlightCell(final Coords cell) throws RemoteException;
+    Map<String, Coords> getHighlightedCells() throws RemoteException;
+    String getUsername() throws RemoteException;
+    void stop() throws RemoteException;
 }

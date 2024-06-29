@@ -1,5 +1,6 @@
 package it.unibo.rmisudoku.model;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,11 +14,19 @@ import it.unibo.rmisudoku.utils.SudokuGenerator;
 public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     private Map<String, Coords> highlightedCells;
     private List<List<CellState>> sudoku;
+    private List<List<CellState>> solution;
     private List<Client> clients;
 
-    public CollaborativeSudokuImpl() {
+    public CollaborativeSudokuImpl() throws IllegalStateException {
         this.clients = new LinkedList<>();
-        this.sudoku = SudokuGenerator.generateSudoku();
+        SudokuGenerator sudokuGenerator;
+        try {
+            sudokuGenerator = new SudokuGenerator();
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed while generating sudoku");
+        }
+        this.sudoku = sudokuGenerator.getSudoku();
+        this.solution = sudokuGenerator.getSolution();
         this.highlightedCells = new HashMap<>();
     }
 
@@ -32,6 +41,16 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     @Override
     public synchronized int getNumber(Coords cell) throws RemoteException {
         return this.sudoku.get(cell.getX()).get(cell.getY()).getNumber();
+    }
+
+    @Override
+    public boolean isCellModifiable(Coords cell) throws RemoteException {
+        return this.sudoku.get(cell.getX()).get(cell.getY()).isModifiable();
+    }
+
+    @Override
+    public synchronized int getSolutionNumber(Coords cell) throws RemoteException {
+        return this.solution.get(cell.getX()).get(cell.getY()).getNumber();
     }
 
     @Override
@@ -61,7 +80,6 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     private void notifyClients() throws RemoteException {
-        System.out.println(String.valueOf(this.clients.size()) + " CLIENTS TO BE NOTIFIED");
         for (Client client : clients) {
             client.updateClient();
         }

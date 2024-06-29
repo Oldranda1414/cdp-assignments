@@ -82,7 +82,6 @@ public class GUI extends JFrame {
 
                     @Override
                     public void focusGained(FocusEvent e) {
-                        System.out.println("Changed highlighted cell to (" + xCoord + ", " + yCoord + ")");
                         try {
                             client.highlightCell(new Coords(xCoord, yCoord));
                         } catch (RemoteException e1) {
@@ -119,14 +118,13 @@ public class GUI extends JFrame {
                     }
                     
                     private void handleTextChange() throws RemoteException {
-                        // System.out.println("TEXT: " + textField.getText());
                         var sudoku = client.getSudoku((String) sudokusComboBox.getSelectedItem());
                         if (sudoku == null) {
                             return;
                         }
 
                         if (textField.getText().equals("")) {
-                            // System.out.println("Cell emptied");
+                            // Cell has been emptied
                             sudoku.setNumber(
                                 new Coords(xCoord, yCoord),
                                 0
@@ -137,16 +135,16 @@ public class GUI extends JFrame {
                                 if (value < 1 || value > 9) {
                                     throw new IllegalArgumentException("Number must be between 1 and 9.");
                                 }
-                                // System.out.println("Legal content");
-                                sudoku
-                                .setNumber(
+
+                                // The content is legal, sending update to remote object
+                                sudoku.setNumber(
                                     new Coords(xCoord, yCoord),
                                     Integer.parseInt(textField.getText())
                                 );
                             } catch (NumberFormatException e1) {
-                                // System.out.println("Invalid text detected.");
+                                // Invalid text detected
                             } catch (IllegalArgumentException e2) {
-                                // System.out.println(e2.getMessage());
+                                // Invalid text detected
                             }
                         }
                     }
@@ -203,6 +201,7 @@ public class GUI extends JFrame {
             try {
                 if (this.sudokuList.getSudokuIds().contains(newSudokuId.getText())) {
                     System.out.println("This ID has been already taken.");
+                    newSudokuId.setText("");
                 } else {
                     this.client.newSudoku(newSudokuId.getText());
                     newSudokuId.setText("");
@@ -259,6 +258,11 @@ public class GUI extends JFrame {
                         } else {
                             this.cells.get(i).get(j).setText("");
                         }
+                        if (!sudoku.isCellModifiable(new Coords(i, j))) {
+                            this.cells.get(i).get(j).setEnabled(false);
+                        } else {
+                            this.cells.get(i).get(j).setEnabled(true);
+                        }
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -267,7 +271,7 @@ public class GUI extends JFrame {
         }
     }
 
-    private void updateHighlights() {
+    private void updateHighlights() throws RemoteException {
         this.cells.forEach(c ->
             c.forEach(cc ->
                 cc.setBackground(Color.WHITE)
@@ -275,29 +279,40 @@ public class GUI extends JFrame {
         );
 
         Map<String, Coords> highlightCells;
-        try {
-            highlightCells = this.client.getHighlightedCells();
-            if (highlightCells == null) {
-                return;
-            }
+        highlightCells = this.client.getHighlightedCells();
+        if (highlightCells == null) {
+            return;
+        }
 
-            var usernames = highlightCells
-                .keySet().stream()
-                .sorted((u1, u2) -> 
-                    u1.toLowerCase().compareTo(u2.toLowerCase())
-                ).toList().iterator();
-            var colors = new Colors();
+        var usernames = highlightCells
+            .keySet().stream()
+            .sorted((u1, u2) -> 
+                u1.toLowerCase().compareTo(u2.toLowerCase())
+            ).toList().iterator();
+        var colors = new Colors();
 
-            while (usernames.hasNext() && colors.hasNext()) {
-                var cell = highlightCells.get(usernames.next());
-                var color = colors.next();
-                this.cells
-                    .get(cell.getX())
-                    .get(cell.getY())
-                    .setBackground(color);
+        while (usernames.hasNext() && colors.hasNext()) {
+            var cell = highlightCells.get(usernames.next());
+            var color = colors.next();
+            this.cells
+                .get(cell.getX())
+                .get(cell.getY())
+                .setBackground(color);
+        }
+    }
+
+    private void checkForErrors() throws RemoteException {
+        var sudoku = this.client.getSudoku((String) this.sudokusComboBox.getSelectedItem());
+        if (sudoku != null) {
+            for (int i = 0; i < GRID_SIZE; i++) {
+                for (int j = 0; j < GRID_SIZE; j++) {
+                    if (sudoku.getNumber(new Coords(i, j)) == sudoku.getSolutionNumber(new Coords(i, j)) || sudoku.getNumber(new Coords(i, j)) == 0) {
+                        this.cells.get(i).get(j).setForeground(Color.BLACK);
+                    } else {
+                        this.cells.get(i).get(j).setForeground(Color.RED);
+                    }
+                }
             }
-        } catch (RemoteException e) {
-            e.printStackTrace();
         }
     }
 
@@ -307,6 +322,7 @@ public class GUI extends JFrame {
                 this.updateSudokuList();
                 this.updateGrid();
                 this.updateHighlights();
+                this.checkForErrors();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
