@@ -92,6 +92,8 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 			this.endWallTime = System.currentTimeMillis();
 			this.averageTimePerStep = this.timePerStep / this.numSteps;
 			logMessage("Simulation finished");
+			logMessage("Total time: " + (this.endWallTime - this.startWallTime) + "ms");
+			logMessage("Average time per step: " + this.averageTimePerStep + "ms");
 			for (var listener : this.listeners) {
 				listener.tell(new SimulationListener.SimulationFinished());
 			}

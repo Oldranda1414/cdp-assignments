@@ -31,8 +31,18 @@ public class ActorAgent extends AbstractBehavior<Command> {
     @Override
     public Receive<Command> createReceive() {
         return newReceiveBuilder()
-                .onMessage(SenseDecide.class, command -> {this.onSenseDecide.apply(command); return this;})
-                .onMessage(Act.class, command -> {this.onAct.apply(command); return this;})
+                .onMessage(SenseDecide.class, this::onSenseDecide)
+                .onMessage(Act.class, this::onAct)
                 .build();
+    }
+
+    private Behavior<Command> onSenseDecide(SenseDecide command) throws Exception {
+        this.onSenseDecide.apply(command);
+        return this;
+    }
+
+    private Behavior<Command> onAct(Act command) throws Exception {
+        this.onAct.apply(command);
+        return this;
     }
 }
