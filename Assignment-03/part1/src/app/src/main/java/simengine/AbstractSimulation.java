@@ -1,5 +1,6 @@
 package simengine;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import actor.ActorAgent.Act;
 import actor.ActorAgent.SenseDecide;
 import actor.Command;
 import executor.Task;
-import simengine.SimulationListener.ViewUpdate;
 
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
@@ -56,8 +56,6 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		this.t = t0;
 		this.listeners = listeners;
 
-		logMessage("Simulation started");
-
 		startWallTime = System.currentTimeMillis();
 
 		this.timePerStep = 0;
@@ -82,25 +80,22 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 
 	private AbstractBehavior<Command> onNextStep(NextStep command) throws InterruptedException {
 		if (this.currentStep == 0) {
+			logMessage("Simulation started");
 			this.numSteps = command.numSteps;
 			for (var sdTask : senseDecideWorks) {
 				final var index = senseDecideWorks.indexOf(sdTask);
-				agents.add(getContext().spawn(ActorAgent.create(sdTask, actWorks.get(index)), "agent-" + index));
+				agents.add(getContext().spawn(ActorAgent.create(sdTask, actWorks.get(index)), "agent-" + (index + 1)));
 			}
 		}
 		this.executeNextStep();
 		if (this.numSteps == this.currentStep) {
-			this.endWallTime = System.currentTimeMillis();
-			this.averageTimePerStep = this.timePerStep / this.numSteps;
-			logMessage("Simulation finished");
+		// 	this.endWallTime = System.currentTimeMillis();
+		// 	this.averageTimePerStep = this.timePerStep / this.numSteps;
+		// 	logMessage("Simulation finished");
 			for (var listener : this.listeners) {
 				listener.tell(new SimulationListener.SimulationFinished());
 			}
-			getContext().stop(getContext().getSelf());
-		}
-		getContext().getSelf().tell(new NextStep(command.numSteps));
-		for (var listener : this.listeners) {
-			listener.tell(new ViewUpdate(this.t, this.currentStep, this.currentWallTime - this.startWallTime, this.env));
+			// return Behaviors.stopped();
 		}
 		return this;
 	}
@@ -152,11 +147,17 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	private void executeNextStep() {
 		this.currentWallTime = System.currentTimeMillis();
 		this.env.step(dt);
-		this.step("sense-decide");
-		this.step("act");
-		this.t += this.dt;
+		// this.step("sense-decide");
+		// this.step("act");
+		// this.t += this.dt;
 		if (this.toBeInSyncWithWallTime) {
 			this.syncWithWallTime();
+		} else 
+		{
+			getContext().getSelf().tell(new NextStep(this.numSteps));
+		}
+		for (var listener : this.listeners) {
+			listener.tell(new SimulationListener.ViewUpdate(this.t, this.currentStep, this.currentWallTime - this.startWallTime, this.env));
 		}
 		this.currentStep++;
 	}
@@ -170,14 +171,11 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	}
 
 	private void syncWithWallTime() {
-		try {
-			long newWallTime = System.currentTimeMillis();
-			long delay = 1000 / this.nStepsPerSec;
-			long wallTimeDT = newWallTime - currentWallTime;
-			if (wallTimeDT < delay) {
-				Thread.sleep(delay - wallTimeDT);
-			}
-		} catch (Exception ex) {
+		long newWallTime = System.currentTimeMillis();
+		long delay = 1000 / this.nStepsPerSec;
+		long wallTimeDT = newWallTime - currentWallTime;
+		if (wallTimeDT < delay) {
+			getContext().scheduleOnce(Duration.ofMillis(delay - wallTimeDT), getContext().getSelf(), new NextStep(this.numSteps));
 		}
 	}
 }

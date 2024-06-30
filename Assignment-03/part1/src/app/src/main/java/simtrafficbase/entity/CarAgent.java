@@ -5,11 +5,12 @@ import simtrafficbase.environment.Road;
 
 /**
  * 
- * Base class modeling the skeleton of an agent modeling a car in the traffic environment
+ * Base class modeling the skeleton of an agent modeling a car in the traffic
+ * environment
  * 
  */
-public class CarAgent extends AbstractAgent implements RoadEntity{
-	
+public class CarAgent extends AbstractAgent implements RoadEntity {
+
 	/* car model */
 	protected double maxSpeed;
 	protected double currentSpeed;
@@ -18,10 +19,9 @@ public class CarAgent extends AbstractAgent implements RoadEntity{
 	protected double currentPosition;
 	protected Road road;
 
-	
-	public CarAgent(String id, Road road, 
-			double initialPos, 
-			double acc, 
+	public CarAgent(String id, Road road,
+			double initialPos,
+			double acc,
 			double dec,
 			double vmax) {
 		super(id);
@@ -36,27 +36,27 @@ public class CarAgent extends AbstractAgent implements RoadEntity{
 	public double getCurrentSpeed() {
 		return currentSpeed;
 	}
-	
+
 	public void setCurrentSpeed(double currentSpeed) {
 		this.currentSpeed = currentSpeed;
 	}
-	
+
 	public double getAcceleration() {
 		return acceleration;
 	}
-	
+
 	public void setAcceleration(double acceleration) {
 		this.acceleration = acceleration;
 	}
-	
+
 	public double getDeceleration() {
 		return deceleration;
 	}
-	
+
 	public void setDeceleration(double deceleration) {
 		this.deceleration = deceleration;
 	}
-	
+
 	public double getCurrentPosition() {
 		return currentPosition;
 	}
@@ -64,12 +64,12 @@ public class CarAgent extends AbstractAgent implements RoadEntity{
 	public void setCurrentPosition(double currentPosition) {
 		this.currentPosition = currentPosition;
 	}
-	
+
 	public Road getRoad() {
 		return this.road;
 	}
 
-	public double getMaxSpeed(){
+	public double getMaxSpeed() {
 		return this.maxSpeed;
 	}
 }
