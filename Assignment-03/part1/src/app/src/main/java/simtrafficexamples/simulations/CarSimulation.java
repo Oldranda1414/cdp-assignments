@@ -47,14 +47,14 @@ public abstract class CarSimulation<T extends AbstractSimulation<RoadsEnv, T>> e
 					this.getAgentStates().put(id, new AccelerateState());
 				}
 			}
-			return this;
+			return null;
 		}, id, "sense-decide");
 	}
 
 	protected Task getAct(String id) {
 		return new Task((command) -> {
 			this.getAgentStates().get(id).act(id, (RoadsEnv) this.getEnvironment());
-			return this;
+			return null;
 		}, id, "act");
 	}
 

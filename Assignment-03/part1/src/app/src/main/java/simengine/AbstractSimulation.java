@@ -78,7 +78,7 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 			.build();
 	}
 
-	private AbstractBehavior<Command> onNextStep(NextStep command) throws InterruptedException {
+	private Behavior<Command> onNextStep(NextStep command) {
 		if (this.currentStep == 0) {
 			logMessage("Simulation started");
 			this.numSteps = command.numSteps;
@@ -89,23 +89,23 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		}
 		this.executeNextStep();
 		if (this.numSteps == this.currentStep) {
-		// 	this.endWallTime = System.currentTimeMillis();
-		// 	this.averageTimePerStep = this.timePerStep / this.numSteps;
-		// 	logMessage("Simulation finished");
+			this.endWallTime = System.currentTimeMillis();
+			this.averageTimePerStep = this.timePerStep / this.numSteps;
+			logMessage("Simulation finished");
 			for (var listener : this.listeners) {
 				listener.tell(new SimulationListener.SimulationFinished());
 			}
-			// return Behaviors.stopped();
+			return Behaviors.stopped();
 		}
 		return this;
 	}
 
-	private AbstractBehavior<Command> onStop(Stop command) {
+	private Behavior<Command> onStop(Stop command) {
 		//TODO: implement
 		return this;
 	}
 
-	private AbstractBehavior<Command> onResume(Resume command) {
+	private Behavior<Command> onResume(Resume command) {
 		//TODO: implement
 		return this;
 	}
@@ -147,9 +147,9 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	private void executeNextStep() {
 		this.currentWallTime = System.currentTimeMillis();
 		this.env.step(dt);
-		// this.step("sense-decide");
-		// this.step("act");
-		// this.t += this.dt;
+		this.step("sense-decide");
+		this.step("act");
+		this.t += this.dt;
 		if (this.toBeInSyncWithWallTime) {
 			this.syncWithWallTime();
 		} else 
