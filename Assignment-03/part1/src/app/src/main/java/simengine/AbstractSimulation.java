@@ -28,6 +28,7 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	public static record Stop() implements Command {}
 	public static record Resume() implements Command {}
 
+	private boolean isStopped = false;
 	private List<ActorRef<Command>> agents;
 	private long timePerStep;
 	private int t;
@@ -87,7 +88,7 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 				agents.add(getContext().spawn(ActorAgent.create(sdTask, actWorks.get(index)), "agent-" + (index + 1)));
 			}
 		}
-		this.executeNextStep();
+		if (!isStopped) this.executeNextStep();
 		if (this.numSteps == this.currentStep) {
 			this.endWallTime = System.currentTimeMillis();
 			this.averageTimePerStep = this.timePerStep / this.numSteps;
@@ -103,12 +104,13 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 	}
 
 	private Behavior<Command> onStop(Stop command) {
-		//TODO: implement
+		this.isStopped = true;
 		return this;
 	}
 
 	private Behavior<Command> onResume(Resume command) {
-		//TODO: implement
+		this.isStopped = false;
+		this.executeNextStep();
 		return this;
 	}
 

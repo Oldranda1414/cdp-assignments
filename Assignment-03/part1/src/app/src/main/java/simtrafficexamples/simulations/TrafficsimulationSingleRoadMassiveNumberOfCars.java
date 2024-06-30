@@ -59,9 +59,6 @@ public class TrafficsimulationSingleRoadMassiveNumberOfCars extends CarSimulatio
 			this.addSenseDecide(this.getSenseDecide(id));
 			this.addAct(this.getAct(id));
 		}
-
-		/* sync with wall-time: 25 steps per sec */
-		this.syncWithTime(60);
 	}
 
 }

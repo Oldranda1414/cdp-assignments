@@ -15,6 +15,7 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import simengine.AbstractSimulation.NextStep;
+import simengine.AbstractSimulation.Resume;
 import simengine.AbstractSimulation.Stop;
 import simengine.SimulationListener;
 import utils.P2d;
@@ -93,14 +94,14 @@ public class RoadSimView extends SimulationListener {
 			startButton.addActionListener((click) -> {
 				if (startButton.getText().equals("Stop")) {
 					startButton.setText("Resume");				
-                    simulation.tell(new Stop()); //TODO: this.simulation.stop();
+                    simulation.tell(new Stop());
 				} else if (startButton.getText().equals("Start")) {
 					this.remove(label);
 					this.remove(textField);
-                    simulation.tell(new NextStep(Integer.parseInt(textField.getText()))); //TODO: this.simulation.run(Integer.parseInt(textField.getText()));
+                    simulation.tell(new NextStep(Integer.parseInt(textField.getText())));
 					startButton.setText("Stop");
 				} else {
-                    //TODO: sim.resume();
+                    simulation.tell(new Resume());
                     startButton.setText("Stop");				
 				}
 			});
