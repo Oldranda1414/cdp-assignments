@@ -85,7 +85,7 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
         this.notifyClients();
     }
 
-    private void notifyClients() throws RemoteException {
+    private synchronized void notifyClients() throws RemoteException {
         for (Client client : clients) {
             client.updateClient();
         }
