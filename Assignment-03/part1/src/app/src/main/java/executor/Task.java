@@ -1,12 +1,16 @@
 package executor;
 
-public class Task implements Runnable{
-    private Runnable runnable;
+import actor.Command;
+import akka.actor.typed.Behavior;
+import akka.japi.function.Function;
+
+public class Task implements Function<Command, Behavior<Command>> {
+    private Function<Command, Behavior<Command>> function;
     private String agentId;
     private String typeOfTask;
 
-    public Task(Runnable runnable, String agentId, String type){
-        this.runnable = runnable;
+    public Task(Function<Command, Behavior<Command>> function, String agentId, String type){
+        this.function = function;
         this.agentId = agentId;
         this.typeOfTask = type;
     }
@@ -20,7 +24,7 @@ public class Task implements Runnable{
     }
 
     @Override
-    public void run() {
-        this.runnable.run();
+    public Behavior<Command> apply(Command command) throws Exception {
+        return this.function.apply(command);
     }
 }
