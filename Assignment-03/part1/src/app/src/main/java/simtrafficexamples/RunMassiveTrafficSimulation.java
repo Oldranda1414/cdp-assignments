@@ -50,10 +50,12 @@ public class RunMassiveTrafficSimulation extends AbstractBehavior<RunMassiveTraf
 	private Behavior<StartSimulation> onStartSimulation(StartSimulation command) {
 		final int nSteps = 100;
 		final List<ActorRef<Command>> listeners = new ArrayList<>();
-		listeners.add(getContext().spawn(RoadSimStatistics.create(), "Simulation Statistics"));
+		listeners.add(getContext().spawn(RoadSimStatistics.create(), "Simulation-Statistics"));
 		final ActorRef<Command> simulation = getContext()
-			.spawn(AbstractSimulation.create(TrafficsimulationSingleRoadMassiveNumberOfCars.class, nSteps, listeners), "Simulation with cross roads");
-		simulation.tell(new AbstractSimulation.NextStep());
+			.spawn(
+				AbstractSimulation
+					.create(TrafficsimulationSingleRoadMassiveNumberOfCars.class, listeners), "Single-road-massive-number-of-cars");
+		simulation.tell(new AbstractSimulation.NextStep(nSteps));
 		return this;
 	}
 }

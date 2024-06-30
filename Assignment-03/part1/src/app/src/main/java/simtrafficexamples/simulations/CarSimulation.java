@@ -3,10 +3,10 @@ package simtrafficexamples.simulations;
 import java.util.List;
 import java.util.Optional;
 
-import actor.Command;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.javadsl.ActorContext;
 
+import actor.Command;
 import executor.Task;
 import simengine.AbstractSimulation;
 import simtrafficbase.entity.CarAgent;
@@ -22,8 +22,8 @@ public abstract class CarSimulation<T extends AbstractSimulation<RoadsEnv, T>> e
 	protected double brakingDistance;
 	protected double seeingDistance;
 
-	protected CarSimulation(ActorContext<Command> context, int numSteps, List<ActorRef<Command>> listeners) {
-		super(context, numSteps, listeners);
+	protected CarSimulation(ActorContext<Command> context, List<ActorRef<Command>> listeners) {
+		super(context, listeners);
 	}
 
 	protected abstract void setDistances(double brakingDistance);

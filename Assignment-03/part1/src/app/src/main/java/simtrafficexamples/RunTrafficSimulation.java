@@ -1,13 +1,14 @@
 package simtrafficexamples;
 
 import simtrafficexamples.listeners.RoadSimStatistics;
+import simtrafficexamples.listeners.RoadSimView;
 import simtrafficexamples.simulations.*;
 import simengine.AbstractSimulation;
+import actor.Command;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import actor.Command;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.ActorSystem;
 import akka.actor.typed.Behavior;
@@ -44,12 +45,15 @@ public class RunTrafficSimulation extends AbstractBehavior<RunTrafficSimulation.
 	}
 
 	private Behavior<StartSimulation> onStartSimulation(StartSimulation command) {
-		final int nSteps = 100;
+		// final int nSteps = 100;
 		final List<ActorRef<Command>> listeners = new ArrayList<>();
-		listeners.add(getContext().spawn(RoadSimStatistics.create(), "Simulation Statistics"));
 		final ActorRef<Command> simulation = getContext()
-			.spawn(AbstractSimulation.create(TrafficSimulationWithCrossRoads.class, nSteps, listeners), "Simulation with cross roads");
-		simulation.tell(new AbstractSimulation.NextStep());
+			.spawn(AbstractSimulation.create(TrafficSimulationWithCrossRoads.class, listeners), "Simulation");
+		listeners.add(getContext().spawn(RoadSimStatistics.create(), "Simulation-Statistics"));
+		final var view = getContext().spawn(RoadSimView.create(simulation), "Simulation-View");
+		listeners.add(view);
+		// simulation.tell(new AbstractSimulation.NextStep(nSteps));
+		view.tell(new RoadSimView.Show());
 		return this;
 	}
 }

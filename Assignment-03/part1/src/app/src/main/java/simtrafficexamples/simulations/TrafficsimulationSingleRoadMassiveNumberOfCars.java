@@ -21,8 +21,8 @@ import actor.Command;
  */
 public class TrafficsimulationSingleRoadMassiveNumberOfCars extends CarSimulation<TrafficsimulationSingleRoadMassiveNumberOfCars> {
 
-	private TrafficsimulationSingleRoadMassiveNumberOfCars(ActorContext<Command> context, int nSteps, List<ActorRef<Command>> listeners) {
-		super(context, nSteps, listeners);
+	public TrafficsimulationSingleRoadMassiveNumberOfCars(ActorContext<Command> context, List<ActorRef<Command>> listeners) {
+		super(context, listeners);
 		this.setDistances(20);
 		this.setup();
 	}
