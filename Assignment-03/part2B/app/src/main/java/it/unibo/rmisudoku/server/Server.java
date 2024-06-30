@@ -45,6 +45,22 @@ public class Server {
                     System.out.println(e.getMessage());
                     return false;
                 }
+            }, (sudokuId) -> {
+                System.out.println(
+                    "Removing sudoku " + String.valueOf(sudokuId)
+                );
+
+                if (sudokus.remove(sudokuId) != null) {
+                    System.out.println(
+                        "Now the server contains "
+                        + String.valueOf(sudokus.size())
+                        + " sudokus."
+                    );
+    
+                    return true;
+                }
+                return false;
+
             });
             var sudokuListStub = (SudokuList) UnicastRemoteObject
                 .exportObject(sudokuList, 0);

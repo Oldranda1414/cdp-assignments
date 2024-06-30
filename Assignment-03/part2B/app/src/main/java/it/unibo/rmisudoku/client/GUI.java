@@ -260,6 +260,12 @@ public class GUI extends JFrame {
 
     private void updateGrid(final CollaborativeSudoku sudoku)
             throws RemoteException {
+        this.cells.forEach(c ->
+            c.forEach(cc ->
+                cc.setBackground(Color.WHITE)
+            )
+        );
+
         if (sudoku != null) {
             for (int i = 0; i < GRID_SIZE; i++) {
                 for (int j = 0; j < GRID_SIZE; j++) {
@@ -281,12 +287,6 @@ public class GUI extends JFrame {
     }
 
     private void updateHighlights() throws RemoteException {
-        this.cells.forEach(c ->
-            c.forEach(cc ->
-                cc.setBackground(Color.WHITE)
-            )
-        );
-
         Map<String, Coords> highlightCells;
         highlightCells = this.client.getHighlightedCells();
         if (highlightCells == null) {
@@ -312,6 +312,7 @@ public class GUI extends JFrame {
 
     private void checkForErrors(final CollaborativeSudoku sudoku)
             throws RemoteException {
+        boolean completed = true;
         if (sudoku != null) {
             for (int i = 0; i < GRID_SIZE; i++) {
                 for (int j = 0; j < GRID_SIZE; j++) {
@@ -319,12 +320,26 @@ public class GUI extends JFrame {
                     var solutionNumber = sudoku
                         .getSolutionNumber(new Coords(i, j));
 
+                    try {
+                        if (Integer.parseInt(this.cells.get(i).get(j).getText()) == 0) {
+                            completed = false;
+                        }
+                    } catch (NumberFormatException e) {
+                        completed = false;
+                    }
+
                     if (number == solutionNumber || number == 0) {
                         this.cells.get(i).get(j).setForeground(Color.BLACK);
                     } else {
                         this.cells.get(i).get(j).setForeground(Color.RED);
+                        completed = false;
                     }
                 }
+            }
+            if (completed) {
+                System.out.println("GRID COMPLETED");
+                this.sudokuList.removeSudoku((String) this.sudokusComboBox.getSelectedItem());
+                this.updateState();
             }
         }
     }
