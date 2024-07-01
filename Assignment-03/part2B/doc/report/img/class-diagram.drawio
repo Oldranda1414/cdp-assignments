@@ -1,0 +1,123 @@
+<mxfile host="app.diagrams.net" modified="2024-07-01T10:36:59.943Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:127.0) Gecko/20100101 Firefox/127.0" etag="87jeYIsitdJ04yy8z3g9" version="24.6.4" type="device">
+  <diagram name="Page-1" id="-8XBlb3y9mv9zHXPmZL5">
+    <mxGraphModel dx="1366" dy="783" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="mmZiRYrhdWTjbMTQrBqa-2" value="Client" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="150" width="300" height="154" as="geometry" />
+        </mxCell>
+        <mxCell id="mmZiRYrhdWTjbMTQrBqa-3" value="&lt;div&gt;+ updateClient(): void&lt;/div&gt;&lt;div&gt;+ getSudoku(sudokuId: String): CollaborativeSudoku&lt;/div&gt;&lt;div&gt;+ newSudoku(sudokuId: String): boolean&lt;/div&gt;&lt;div&gt;+ highlightCell(cell: Coords): void&lt;/div&gt;&lt;div&gt;+ getHighlightedCells(): Map&amp;lt;String, Coords&amp;gt;&lt;/div&gt;&lt;div&gt;+ getUsername(): String&lt;/div&gt;&lt;div&gt;+ stop(): void&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="mmZiRYrhdWTjbMTQrBqa-2" vertex="1">
+          <mxGeometry y="40" width="300" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="mmZiRYrhdWTjbMTQrBqa-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeWidth=1;endSize=15;" parent="1" source="_O7M8t2Ni5YaAzuRW11B-5" target="_O7M8t2Ni5YaAzuRW11B-7" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="12.5" y="615" as="sourcePoint" />
+            <mxPoint x="-25" y="500" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="480" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mmZiRYrhdWTjbMTQrBqa-29" value="Remote" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="625" y="250" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="mmZiRYrhdWTjbMTQrBqa-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;strokeWidth=1;endSize=15;" parent="1" source="mmZiRYrhdWTjbMTQrBqa-2" target="_O7M8t2Ni5YaAzuRW11B-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="55" y="625" as="sourcePoint" />
+            <mxPoint x="175" y="520" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="500" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeWidth=1;endSize=15;" edge="1" parent="1" source="mmZiRYrhdWTjbMTQrBqa-2" target="mmZiRYrhdWTjbMTQrBqa-29">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="322.5" y="25" as="sourcePoint" />
+            <mxPoint x="285" y="-90" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="380" y="270" />
+              <mxPoint x="380" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-2" value="SudokuList" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="72" width="250" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-3" value="&lt;div&gt;+ getSudokuIds(): Set&amp;lt;String&amp;gt;&lt;/div&gt;&lt;div&gt;+ addSudoku(sudokuId: String): boolean&lt;/div&gt;&lt;div&gt;+ removeSudoku(sudokuId: String): boolean&lt;/div&gt;&lt;div&gt;+ registerClient(client: Client): void&lt;/div&gt;&lt;div&gt;+ unregisterClient(client: Client): void&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="_O7M8t2Ni5YaAzuRW11B-2">
+          <mxGeometry y="40" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeWidth=1;endSize=15;" edge="1" parent="1" source="_O7M8t2Ni5YaAzuRW11B-2" target="mmZiRYrhdWTjbMTQrBqa-29">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="80" as="sourcePoint" />
+            <mxPoint x="335" y="-60" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="685" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-5" value="Sudoku" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="460" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-6" value="&lt;div&gt;+ setNumber(cell: Coords): void&lt;/div&gt;&lt;div&gt;+ getNumber(cell: Coords): int&lt;/div&gt;&lt;div&gt;+ getSolutionNumber(cell: Coords): int&lt;/div&gt;&lt;div&gt;+ isCellModifiable(cell: Coords): boolean&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="_O7M8t2Ni5YaAzuRW11B-5">
+          <mxGeometry y="40" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-7" value="CollaborativeSudoku" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="315" y="320" width="330" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-8" value="&lt;div&gt;+ highlightCell(cell: Coords, playerUsername: String): void&lt;/div&gt;&lt;div&gt;&lt;div&gt;+ registerClient(client: Client): void&lt;/div&gt;&lt;div&gt;+ unregisterClient(client: Client): void&lt;/div&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="_O7M8t2Ni5YaAzuRW11B-7">
+          <mxGeometry y="40" width="330" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeWidth=1;endSize=15;" edge="1" parent="1" source="_O7M8t2Ni5YaAzuRW11B-7" target="mmZiRYrhdWTjbMTQrBqa-29">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="80" as="sourcePoint" />
+            <mxPoint x="285" y="-60" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="685" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;strokeWidth=1;endSize=15;" edge="1" parent="1" source="mmZiRYrhdWTjbMTQrBqa-2" target="_O7M8t2Ni5YaAzuRW11B-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="235" y="250" as="sourcePoint" />
+            <mxPoint x="510" y="212" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="180" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-18" value="Map&amp;lt;String, CollaborativeSudoku&amp;gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="667.5" y="470" width="230" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;strokeWidth=1;endSize=15;" edge="1" parent="1" source="_O7M8t2Ni5YaAzuRW11B-18" target="_O7M8t2Ni5YaAzuRW11B-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="85" y="314" as="sourcePoint" />
+            <mxPoint x="385" y="350" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="620" y="490" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;strokeWidth=1;endSize=15;" edge="1" parent="1" source="_O7M8t2Ni5YaAzuRW11B-22" target="_O7M8t2Ni5YaAzuRW11B-18">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="202" as="sourcePoint" />
+            <mxPoint x="785" y="195" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;strokeWidth=1;endSize=15;" edge="1" parent="1" source="_O7M8t2Ni5YaAzuRW11B-22" target="_O7M8t2Ni5YaAzuRW11B-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="125" as="sourcePoint" />
+            <mxPoint x="950" y="320" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="780" y="137" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_O7M8t2Ni5YaAzuRW11B-22" value="Server" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="110" width="125" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

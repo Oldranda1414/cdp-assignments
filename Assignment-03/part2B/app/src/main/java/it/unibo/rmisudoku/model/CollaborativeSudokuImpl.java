@@ -56,10 +56,10 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     @Override
-    public void highlightCell(Coords cell, String playerName)
+    public void highlightCell(Coords cell, String playerUsername)
             throws RemoteException {
         synchronized (this) {
-            this.highlightedCells.put(playerName, cell);
+            this.highlightedCells.put(playerUsername, cell);
         }
         this.notifyClients();
     }
