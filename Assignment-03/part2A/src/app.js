@@ -41,7 +41,8 @@ https.createServer(
 	, app)
 	.listen(port, host, () => {
 		console.log('Server started at https://' + host + ':' + port);
-	});
+	}
+);
 
 
 

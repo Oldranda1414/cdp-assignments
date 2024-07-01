@@ -98,6 +98,9 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 			for (var listener : this.listeners) {
 				listener.tell(new SimulationListener.SimulationFinished());
 			}
+			// for (var agent: this.agents) {
+			// 	agent.tell(new Stop());
+			// }
 			return Behaviors.stopped();
 		}
 		return this;
@@ -152,7 +155,9 @@ public abstract class AbstractSimulation<T extends AbstractEnvironment<? extends
 		this.currentWallTime = System.currentTimeMillis();
 		this.env.step(dt);
 		this.step("sense-decide");
+		//TODO: await all sense-decide tasks to be done
 		this.step("act");
+		//TODO: await all act tasks to be done
 		this.t += this.dt;
 		if (this.toBeInSyncWithWallTime) {
 			this.syncWithWallTime();
