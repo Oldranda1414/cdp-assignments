@@ -8,10 +8,8 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import simengine.AbstractSimulation;
-import simtrafficexamples.listeners.RoadSimStatistics;
 import simtrafficexamples.simulations.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import actor.Command;
@@ -21,39 +19,39 @@ import actor.Command;
  * Main class to create and run a simulation with a massive number of cars
  * 
  */
-public class RunMassiveTrafficSimulation extends AbstractBehavior<RunMassiveTrafficSimulation.StartSimulation> {
+public class RunMassiveTrafficSimulation extends AbstractBehavior<Command> {
 
-	public static record StartSimulation() {}
+	public static record StartSimulation() implements Command {}
 
 	public static void main(String[] args) {
 		
-		final ActorSystem<StartSimulation> system = ActorSystem.create(RunMassiveTrafficSimulation.create(), "SimulationSystem");
-		system.tell(new RunMassiveTrafficSimulation.StartSimulation());
+		final ActorSystem<Command> system = ActorSystem.create(RunMassiveTrafficSimulation.create(), "SimulationSystem");
+		system.tell(new StartSimulation());
 
 		// long d = simulation.getSimulationDuration();
 		// log("Completed in " + d + " ms - average time per step: " + simulation.getAverageTimePerCycle() + " ms");
 	}
 
-	public static Behavior<StartSimulation> create() {
+	public static Behavior<Command> create() {
 		return Behaviors.setup(RunMassiveTrafficSimulation::new);
 	}
 
-	private RunMassiveTrafficSimulation(ActorContext<StartSimulation> context) {
+	private RunMassiveTrafficSimulation(ActorContext<Command> context) {
 		super(context);
 	}
 
 	@Override
-	public Receive<StartSimulation> createReceive() {
+	public Receive<Command> createReceive() {
 		return newReceiveBuilder().onMessage(StartSimulation.class, this::onStartSimulation).build();
 	}
 
-	private Behavior<StartSimulation> onStartSimulation(StartSimulation command) {
+	private Behavior<Command> onStartSimulation(StartSimulation command) {
 		final int nSteps = 100;
-		final List<ActorRef<Command>> listeners = new ArrayList<>();
-		listeners.add(getContext().spawn(RoadSimStatistics.create(), "Simulation Statistics"));
 		final ActorRef<Command> simulation = getContext()
-			.spawn(AbstractSimulation.create(TrafficsimulationSingleRoadMassiveNumberOfCars.class, nSteps, listeners), "Simulation with cross roads");
-		simulation.tell(new AbstractSimulation.NextStep());
+			.spawn(
+				AbstractSimulation
+					.create(TrafficsimulationSingleRoadMassiveNumberOfCars.class, List.of()), "Single-road-massive-number-of-cars");
+		simulation.tell(new AbstractSimulation.NextStep(nSteps));
 		return this;
 	}
 }

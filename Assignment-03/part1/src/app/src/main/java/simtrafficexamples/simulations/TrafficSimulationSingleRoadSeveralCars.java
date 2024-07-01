@@ -20,8 +20,8 @@ import akka.actor.typed.javadsl.ActorContext;
  */
 public class TrafficSimulationSingleRoadSeveralCars extends CarSimulation<TrafficSimulationSingleRoadSeveralCars> {
 
-	private TrafficSimulationSingleRoadSeveralCars(ActorContext<Command> context, int nSteps, List<ActorRef<Command>> listeners) {
-		super(context, nSteps, listeners);
+	public TrafficSimulationSingleRoadSeveralCars(ActorContext<Command> context, List<ActorRef<Command>> listeners) {
+		super(context, listeners);
 		this.setDistances(20);
 		this.setup();
 	}

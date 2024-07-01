@@ -21,8 +21,8 @@ import actor.Command;
  */
 public class TrafficsimulationSingleRoadMassiveNumberOfCars extends CarSimulation<TrafficsimulationSingleRoadMassiveNumberOfCars> {
 
-	private TrafficsimulationSingleRoadMassiveNumberOfCars(ActorContext<Command> context, int nSteps, List<ActorRef<Command>> listeners) {
-		super(context, nSteps, listeners);
+	public TrafficsimulationSingleRoadMassiveNumberOfCars(ActorContext<Command> context, List<ActorRef<Command>> listeners) {
+		super(context, listeners);
 		this.setDistances(20);
 		this.setup();
 	}
@@ -59,9 +59,6 @@ public class TrafficsimulationSingleRoadMassiveNumberOfCars extends CarSimulatio
 			this.addSenseDecide(this.getSenseDecide(id));
 			this.addAct(this.getAct(id));
 		}
-
-		/* sync with wall-time: 25 steps per sec */
-		this.syncWithTime(60);
 	}
 
 }

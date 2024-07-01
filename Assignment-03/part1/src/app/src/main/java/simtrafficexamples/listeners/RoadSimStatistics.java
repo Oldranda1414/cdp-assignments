@@ -64,8 +64,7 @@ public class RoadSimStatistics extends SimulationListener {
 
 	@Override
 	protected Behavior<Command> onSimulationFinished(SimulationFinished command) {
-		getContext().stop(getContext().getSelf());
-		return this;
+		return Behaviors.stopped();
 	}
 
 	
