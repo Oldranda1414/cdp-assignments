@@ -6,6 +6,11 @@ import java.util.Set;
 
 import it.unibo.rmisudoku.client.Client;
 
+/**
+ * The SudokuList is responsible of maintaining the sudokuIDs of the currently
+ * existing sudokus. The sudoku list can be observed by clients, so it has
+ * {@code registerClient()} and {@code unregisterClient()} methods.
+ */
 public interface SudokuList extends Remote {
     Set<String> getSudokuIds() throws RemoteException;
     boolean addSudoku(final String sudokuId) throws RemoteException;

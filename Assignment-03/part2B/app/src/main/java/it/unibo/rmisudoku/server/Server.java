@@ -12,6 +12,10 @@ import it.unibo.rmisudoku.model.SudokuListImpl;
 import it.unibo.rmisudoku.model.CollaborativeSudoku;
 import it.unibo.rmisudoku.model.CollaborativeSudokuImpl;
 
+/**
+ * The server part is composed by the static main function, that instances the
+ * shared registry and exports the sudoku list.
+ */
 public class Server {
     public static void main(String[] args) {
         Map<String, CollaborativeSudoku> sudokus = new HashMap<>();

@@ -11,6 +11,22 @@ import it.unibo.rmisudoku.model.CollaborativeSudoku;
 import it.unibo.rmisudoku.model.SudokuList;
 import it.unibo.rmisudoku.utils.Coords;
 
+/**
+ * ClientImpl implements the Client interface keeping as fields:
+ * <ul>
+ *   <li>The registry, to reach for remote sudokus</li>
+ *   <li>A remote reference to the sudokus list</li>
+ *   <li>The username of the client</li>
+ *   <li>The currently selected sudoku ID and a remote reference to it</li>
+ *   <li>A reference to the GUI, to update it when the {@code updateClient()} is
+ *       called</li>
+ * </ul>
+ * 
+ * ClientImpl extends UnicastRemoteObject because clients have to be exported
+ * to be exposed to the server (to make the {@code updateClient()} call
+ * reachable).
+ * 
+ */
 public class ClientImpl extends UnicastRemoteObject implements Client {
     private final Registry registry;
     private final SudokuList sudokuList;

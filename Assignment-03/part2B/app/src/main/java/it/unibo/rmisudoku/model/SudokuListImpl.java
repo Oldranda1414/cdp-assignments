@@ -9,6 +9,11 @@ import java.util.function.Function;
 
 import it.unibo.rmisudoku.client.Client;
 
+/**
+ * To handle new sudokus creation and sudoku removal, {@code SudokuListImpl}
+ * takes as constructior arguments an {@code onCreate} and an {@code onRemove}
+ * function, that interact with the registry to create or remove shared objects.
+ */
 public class SudokuListImpl implements SudokuList {
     private final Set<String> sudokuIds;
     private final Function<String, Boolean> onCreate;
