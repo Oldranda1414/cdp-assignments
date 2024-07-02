@@ -33,11 +33,10 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     @Override
-    public void setNumber(Coords cell, int number) throws RemoteException {
-        synchronized (this) {
-            this.sudoku.getElement(new Coords(cell.getX(), cell.getY()))
-                .setNumber(number);
-        }
+    public synchronized void setNumber(Coords cell, int number)
+            throws RemoteException {
+        this.sudoku.getElement(new Coords(cell.getX(), cell.getY()))
+            .setNumber(number);
         this.notifyClients();
     }
 
@@ -48,7 +47,8 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     @Override
-    public boolean isCellModifiable(Coords cell) throws RemoteException {
+    public synchronized boolean isCellModifiable(Coords cell)
+            throws RemoteException {
         return this.sudoku.getElement(new Coords(cell.getX(), cell.getY()))
             .isModifiable();
     }
@@ -61,11 +61,9 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     @Override
-    public void highlightCell(Coords cell, String playerUsername)
+    public synchronized void highlightCell(Coords cell, String playerUsername)
             throws RemoteException {
-        synchronized (this) {
-            this.highlightedCells.put(playerUsername, cell);
-        }
+        this.highlightedCells.put(playerUsername, cell);
         this.notifyClients();
     }
 
@@ -90,7 +88,7 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
         this.notifyClients();
     }
 
-    private synchronized void notifyClients() throws RemoteException {
+    private void notifyClients() throws RemoteException {
         for (Client client : clients) {
             client.updateClient();
         }

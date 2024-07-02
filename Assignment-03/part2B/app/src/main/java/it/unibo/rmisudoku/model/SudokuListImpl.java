@@ -36,36 +36,36 @@ public class SudokuListImpl implements SudokuList {
     }
 
     @Override
-    public boolean addSudoku(final String sudokuId) throws RemoteException {
-        synchronized (this) {
-            // If a sudoku with that ID alreadi exists, returns false
-            if (this.sudokuIds.contains(sudokuId)) {
-                return false;
-            }
-
-            // If there were errors while generating the sudoku, returns false
-            if (!this.onCreate.apply(sudokuId)) {
-                return false;
-            }
-
-            // If all went well, the new ID is added to the list
-            this.sudokuIds.add(sudokuId);
+    public synchronized boolean addSudoku(final String sudokuId)
+            throws RemoteException {
+        // If a sudoku with that ID alreadi exists, returns false
+        if (this.sudokuIds.contains(sudokuId)) {
+            return false;
         }
+
+        // If there were errors while generating the sudoku, returns false
+        if (!this.onCreate.apply(sudokuId)) {
+            return false;
+        }
+
+        // If all went well, the new ID is added to the list
+        this.sudokuIds.add(sudokuId);
+
         this.notifyClients();
         return true;
     }
 
     @Override
-    public boolean removeSudoku(final String sudokuId) throws RemoteException {
-        synchronized (this) {
-            if (this.sudokuIds.contains(sudokuId)) {
-                this.sudokuIds.remove(sudokuId);
-            }
-
-            if (!this.onRemove.apply(sudokuId)) {
-                return false;
-            }
+    public synchronized boolean removeSudoku(final String sudokuId)
+            throws RemoteException {
+        if (this.sudokuIds.contains(sudokuId)) {
+            this.sudokuIds.remove(sudokuId);
         }
+
+        if (!this.onRemove.apply(sudokuId)) {
+            return false;
+        }
+
         this.notifyClients();
         return true;
     }
