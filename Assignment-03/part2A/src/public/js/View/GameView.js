@@ -1,5 +1,5 @@
 import { BaseView } from "../BaseView.js";
-import { PreLobbyView } from "./view.js";
+import { PreLobbyView } from "./PreLobbyView.js";
 
 /**
  * View class for the sudoku game.

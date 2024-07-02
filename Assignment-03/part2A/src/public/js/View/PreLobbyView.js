@@ -32,8 +32,13 @@ class PreLobbyView extends BaseView {
      */
     addListItem(gameId) {
         const item = this._addObjectToHTML('li', "", this.list);
-        item.textContent = gameId;
+        item.textContent = this.parseNameId(gameId);
         item.addEventListener('click', async () => await this.#handleJoinCreateGame(gameId));
+    }
+
+    parseNameId(gameId) {
+        if (gameId === CREATE_NEW_GAME_STR) return CREATE_NEW_GAME_STR;
+        return "Game " + (gameId.slice(1) - 1);
     }
 
     async #handleJoinCreateGame(gameId) {
