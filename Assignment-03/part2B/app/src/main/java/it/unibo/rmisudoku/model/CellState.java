@@ -21,7 +21,9 @@ public class CellState implements Serializable {
             
     private void checkNumber(final int number) {
         if (number < 1 || number > 9) {
-            throw new IllegalArgumentException("Number must be between 1 and 9.");
+            throw new IllegalArgumentException(
+                "Number must be between 1 and 9."
+            );
         }
     }
 

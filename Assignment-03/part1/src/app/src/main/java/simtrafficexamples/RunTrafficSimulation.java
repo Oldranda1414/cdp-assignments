@@ -1,8 +1,10 @@
 package simtrafficexamples;
 
 import simtrafficexamples.listeners.RoadSimStatistics;
+import simtrafficexamples.listeners.RoadSimView;
 import simtrafficexamples.simulations.*;
-import simengine.SimulationListener.ViewUpdate;
+import simengine.AbstractSimulation;
+import actor.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,43 +22,38 @@ import akka.actor.typed.javadsl.Receive;
  * Main class to create and run a simulation
  * 
  */
-public class RunTrafficSimulation extends AbstractBehavior<RunTrafficSimulation.StartSimulation> {
+public class RunTrafficSimulation extends AbstractBehavior<Command> {
 
-	public static record StartSimulation() {}
-
-	private final List<ActorRef<ViewUpdate>> listeners = new ArrayList<>();
+	public static record StartSimulation() implements Command {}
 
 	public static void main(String[] args) throws InterruptedException {
-
-		final int nSteps = 100;
-		// TrafficSimulationSingleRoadTwoCars simulation = new TrafficSimulationSingleRoadTwoCars();
-		//var simulation = new TrafficSimulationSingleRoadSeveralCars();
-		// TrafficSimulationSingleRoadWithTrafficLightTwoCars simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
-		TrafficSimulationWithCrossRoads simulation = new TrafficSimulationWithCrossRoads();
-		simulation.setup();
-		
-		
-		simulation.run(nSteps);
-
-		final ActorSystem<StartSimulation> system = ActorSystem.create(RunTrafficSimulation.create(), "SimulationSystem");
+		final ActorSystem<Command> system = ActorSystem.create(RunTrafficSimulation.create(), "SimulationSystem");
 		system.tell(new RunTrafficSimulation.StartSimulation());
 	}
 
-	public static Behavior<StartSimulation> create() {
+	public static Behavior<Command> create() {
 		return Behaviors.setup(RunTrafficSimulation::new);
 	}
 
-	private RunTrafficSimulation(ActorContext<StartSimulation> context) {
+	private RunTrafficSimulation(ActorContext<Command> context) {
 		super(context);
 	}
 
 	@Override
-	public Receive<StartSimulation> createReceive() {
+	public Receive<Command> createReceive() {
 		return newReceiveBuilder().onMessage(StartSimulation.class, this::onStartSimulation).build();
 	}
 
-	private Behavior<StartSimulation> onStartSimulation(StartSimulation command) {
-		listeners.add(getContext().spawn(RoadSimStatistics.create(), "Simulation Statistics"));
+	private Behavior<Command> onStartSimulation(StartSimulation command) {
+		// final int nSteps = 100;
+		final List<ActorRef<Command>> listeners = new ArrayList<>();
+		final ActorRef<Command> simulation = getContext()
+				.spawn(AbstractSimulation.create(TrafficSimulationWithCrossRoads.class, listeners), "Simulation");
+		listeners.add(getContext().spawn(RoadSimStatistics.create(), "Simulation-Statistics"));
+		final var view = getContext().spawn(RoadSimView.create(simulation), "Simulation-View");
+		listeners.add(view);
+		// simulation.tell(new AbstractSimulation.NextStep(nSteps));
+		view.tell(new RoadSimView.Show());
 		return this;
 	}
 }

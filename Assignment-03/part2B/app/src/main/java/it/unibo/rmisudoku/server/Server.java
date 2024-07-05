@@ -12,6 +12,10 @@ import it.unibo.rmisudoku.model.SudokuListImpl;
 import it.unibo.rmisudoku.model.CollaborativeSudoku;
 import it.unibo.rmisudoku.model.CollaborativeSudokuImpl;
 
+/**
+ * The server part is composed by the static main function, that instances the
+ * shared registry and exports the sudoku list.
+ */
 public class Server {
     public static void main(String[] args) {
         Map<String, CollaborativeSudoku> sudokus = new HashMap<>();
@@ -21,14 +25,22 @@ public class Server {
 
             SudokuList sudokuList = new SudokuListImpl((sudokuId) -> {
                 try {
-                    System.out.println("Creating sudoku " + String.valueOf(sudokuId));
+                    System.out.println(
+                        "Creating sudoku " + String.valueOf(sudokuId)
+                    );
 
-                    CollaborativeSudoku sudoku = new CollaborativeSudokuImpl();
-                    CollaborativeSudoku sudokuStub = (CollaborativeSudoku) UnicastRemoteObject.exportObject(sudoku, 10000);
+                    var sudoku = new CollaborativeSudokuImpl();
+                    var sudokuStub = (CollaborativeSudoku) UnicastRemoteObject
+                        .exportObject(sudoku, 10000);
                     registry.rebind(String.valueOf(sudokuId), sudokuStub);
                     sudokus.put(sudokuId, sudoku);
                     
-                    System.out.println("Now the server contains " + String.valueOf(sudokus.size()) + " sudokus.");
+                    System.out.println(
+                        "Now the server contains "
+                        + String.valueOf(sudokus.size())
+                        + " sudokus."
+                    );
+
                     return true;
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -37,8 +49,25 @@ public class Server {
                     System.out.println(e.getMessage());
                     return false;
                 }
+            }, (sudokuId) -> {
+                System.out.println(
+                    "Removing sudoku " + String.valueOf(sudokuId)
+                );
+
+                if (sudokus.remove(sudokuId) != null) {
+                    System.out.println(
+                        "Now the server contains "
+                        + String.valueOf(sudokus.size())
+                        + " sudokus."
+                    );
+    
+                    return true;
+                }
+                return false;
+
             });
-            SudokuList sudokuListStub = (SudokuList) UnicastRemoteObject.exportObject(sudokuList, 0);
+            var sudokuListStub = (SudokuList) UnicastRemoteObject
+                .exportObject(sudokuList, 0);
             registry.rebind("sudokuList", sudokuListStub);
 
             System.out.println("Server is ready.");

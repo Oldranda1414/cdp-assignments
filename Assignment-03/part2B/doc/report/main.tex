@@ -47,7 +47,7 @@ Andrea Biagini
 \chapter{Analysis}
 The goal is to create a collaborative version of the Sudoku game using the 
  built-in Java library "Java RMI". This library offers the possibility to
- make two separate JVWs commuincate, sharing some objects and using them as
+ make two separate JVMs commuincate, sharing some objects and using them as
  they were local.
 
 A player can create a sudoku grid (a "grid"), view a list of all the
@@ -65,17 +65,10 @@ The system has a client-server architecture, where the server has all the
  interested in by asking the server.
 
 \section{Visual Formalisms}
-%%% TODO: Complete here!!
 \begin{figure}
     \centering
-    \includegraphics{UML1.png}
-    \caption{UML diagram showing relationships between monitors, active components and syncronization components}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics{PetriNetColored.png}
-    \caption{Petri net diagram showing the beheviour of the master and workers threads. N is the number of agents in the simulation. The master beheviour is rappresented by 4 places and 4 transitions. The worker is rappresented by one place and one transition. A place containing a token for every step of the simulation regulates the number of steps. Two places rappresent the number of tasks in the bag and the number of tasks finished, regulate the syncronization between master and workers}
+    \includegraphics{class-diagram.png}
+    \caption{UML diagram showing relationships between system components}
 \end{figure}
 
 \chapter{Implementation}
@@ -119,16 +112,21 @@ Two solutions have been found and tested. The first one consisted in a separate
  in (only the IDs list and the grid they are subscribed to).
 
 \section{Source code organization and execution}
-The project is phisically divided in a server package and a client package, but the
- model package is shared between both components.
+The project is phisically divided in a server package and a client package, but
+ the model package is shared between both components.
 
 The project is managed by Gradle, to offer a simple way to execute every
  component: use the task "runServer" to run the server component and the task
- "runClient" to run a client.
+ "runClient" to run a client. The runClient task takes as arguments the
+ username of the player.
 
-%%% TODO: Write conclusions
 \chapter{Conclusions}
-As stated previously, execution time improvements where mesured. The concurrent version is consequently more scalable, as the number of workers is computer based on the number fo cores available. The difference in the execution times detected between the two kind of \texttt{RunMassiveTrafficSimulation} seems too little. We came up with the idea that the bottleneck on our application is the large use of data structures. All workers do not have any state inside, leading to the necessity to store the state of every agent on a seperate data structure (AgentWills) to be retrieved at a further time.
+In this state, the system is at a good level of development: some improvements
+ can be done in the GUI, especially in the graphical part, and in the
+ username choice in the client: in the current version of the system it has
+ been supposed for simplicity that usernames are unique. This last feature can
+ be implemented using a shared object containing all usernames of the clients
+ that are currently conneceted.
 
 \bibliographystyle{plain}
 \bibliography{References}

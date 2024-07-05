@@ -2,9 +2,11 @@ package it.unibo.rmisudoku.client;
 
 import javax.swing.*;
 
+import it.unibo.rmisudoku.model.CollaborativeSudoku;
 import it.unibo.rmisudoku.model.SudokuList;
 import it.unibo.rmisudoku.utils.Colors;
 import it.unibo.rmisudoku.utils.Coords;
+import it.unibo.rmisudoku.utils.Grid;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,8 +20,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class GUI extends JFrame {
@@ -31,7 +31,7 @@ public class GUI extends JFrame {
     private SudokuList sudokuList;
     private Client client;
 
-    private List<List<JTextField>> cells = new ArrayList<>();
+    private Grid<JTextField> cells = new Grid<>(GRID_SIZE, GRID_SIZE);
     private JComboBox<String> sudokusComboBox;
 
     public GUI(SudokuList sudokuList, Client client) {
@@ -68,7 +68,6 @@ public class GUI extends JFrame {
         JPanel gridPanel = new JPanel(new GridLayout(GRID_SIZE, GRID_SIZE));
 
         for (int row = 0; row < GRID_SIZE; row++) {
-            cells.add(new ArrayList<>());
             for (int col = 0; col < GRID_SIZE; col++) {
                 var textField = new JTextField();
                 textField.setPreferredSize(new Dimension(55, 55));
@@ -118,7 +117,9 @@ public class GUI extends JFrame {
                     }
                     
                     private void handleTextChange() throws RemoteException {
-                        var sudoku = client.getSudoku((String) sudokusComboBox.getSelectedItem());
+                        var sudoku = client.getSudoku(
+                            (String) sudokusComboBox.getSelectedItem()
+                        );
                         if (sudoku == null) {
                             return;
                         }
@@ -131,12 +132,16 @@ public class GUI extends JFrame {
                             );
                         } else {
                             try {
-                                int value = Integer.parseInt(textField.getText());
+                                int value = Integer.parseInt(
+                                    textField.getText()
+                                );
                                 if (value < 1 || value > 9) {
-                                    throw new IllegalArgumentException("Number must be between 1 and 9.");
+                                    throw new IllegalArgumentException(
+                                        "Number must be between 1 and 9."
+                                    );
                                 }
 
-                                // The content is legal, sending update to remote object
+                                // Legal content, updating remote object
                                 sudoku.setNumber(
                                     new Coords(xCoord, yCoord),
                                     Integer.parseInt(textField.getText())
@@ -168,9 +173,13 @@ public class GUI extends JFrame {
                 if ((col + 1) % SUBGRID_SIZE == 0) {
                     right = THICK_BORDER;
                 }
-                textField.setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, Color.BLACK));
+                textField.setBorder(
+                    BorderFactory.createMatteBorder(
+                        top, left, bottom, right, Color.BLACK
+                    )
+                );
 
-                cells.get(row).add(textField);
+                cells.setElement(new Coords(xCoord, yCoord), textField);
                 gridPanel.add(textField);
             }
         }
@@ -199,7 +208,9 @@ public class GUI extends JFrame {
         newSudokuButton.setPreferredSize(new Dimension(100, 30));
         newSudokuButton.addActionListener(e -> {
             try {
-                if (this.sudokuList.getSudokuIds().contains(newSudokuId.getText())) {
+                if (this.sudokuList.getSudokuIds().contains(
+                    newSudokuId.getText()
+                )) {
                     System.out.println("This ID has been already taken.");
                     newSudokuId.setText("");
                 } else {
@@ -245,26 +256,25 @@ public class GUI extends JFrame {
         }
     }
 
-    private void updateGrid() throws RemoteException {
-        var sudoku = this.client.getSudoku((String) this.sudokusComboBox.getSelectedItem());
+    private void updateGrid(final CollaborativeSudoku sudoku)
+            throws RemoteException {
+        this.cells.applyToAll(c -> c.setBackground(Color.WHITE));
         if (sudoku != null) {
             for (int i = 0; i < GRID_SIZE; i++) {
                 for (int j = 0; j < GRID_SIZE; j++) {
-                    try {
-                        if (sudoku.getNumber(new Coords(i, j)) != 0) {
-                            this.cells.get(i).get(j).setText(
-                                String.valueOf(sudoku.getNumber(new Coords(i, j)))
-                            );
-                        } else {
-                            this.cells.get(i).get(j).setText("");
-                        }
-                        if (!sudoku.isCellModifiable(new Coords(i, j))) {
-                            this.cells.get(i).get(j).setEnabled(false);
-                        } else {
-                            this.cells.get(i).get(j).setEnabled(true);
-                        }
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+                    if (sudoku.getNumber(new Coords(i, j)) != 0) {
+                        this.cells.getElement(new Coords(i, j)).setText(
+                            String.valueOf(sudoku.getNumber(new Coords(i, j)))
+                        );
+                    } else {
+                        this.cells.getElement(new Coords(i, j)).setText("");
+                    }
+                    if (!sudoku.isCellModifiable(new Coords(i, j))) {
+                        this.cells.getElement(new Coords(i, j))
+                            .setEnabled(false);
+                    } else {
+                        this.cells.getElement(new Coords(i, j))
+                            .setEnabled(true);
                     }
                 }
             }
@@ -272,12 +282,6 @@ public class GUI extends JFrame {
     }
 
     private void updateHighlights() throws RemoteException {
-        this.cells.forEach(c ->
-            c.forEach(cc ->
-                cc.setBackground(Color.WHITE)
-            )
-        );
-
         Map<String, Coords> highlightCells;
         highlightCells = this.client.getHighlightedCells();
         if (highlightCells == null) {
@@ -294,24 +298,41 @@ public class GUI extends JFrame {
         while (usernames.hasNext() && colors.hasNext()) {
             var cell = highlightCells.get(usernames.next());
             var color = colors.next();
-            this.cells
-                .get(cell.getX())
-                .get(cell.getY())
+            this.cells.getElement(new Coords(cell.getX(), cell.getY()))
                 .setBackground(color);
         }
     }
 
-    private void checkForErrors() throws RemoteException {
-        var sudoku = this.client.getSudoku((String) this.sudokusComboBox.getSelectedItem());
+    private void checkForErrors(final CollaborativeSudoku sudoku)
+            throws RemoteException {
+        boolean completed = true;
         if (sudoku != null) {
             for (int i = 0; i < GRID_SIZE; i++) {
                 for (int j = 0; j < GRID_SIZE; j++) {
-                    if (sudoku.getNumber(new Coords(i, j)) == sudoku.getSolutionNumber(new Coords(i, j)) || sudoku.getNumber(new Coords(i, j)) == 0) {
-                        this.cells.get(i).get(j).setForeground(Color.BLACK);
+                    var number = sudoku.getNumber(new Coords(i, j));
+                    var solutionNumber = sudoku
+                        .getSolutionNumber(new Coords(i, j));
+
+                    try {
+                        if (Integer.parseInt(this.cells.getElement(new Coords(i, j)).getText()) == 0) {
+                            completed = false;
+                        }
+                    } catch (NumberFormatException e) {
+                        completed = false;
+                    }
+
+                    if (number == solutionNumber || number == 0) {
+                        this.cells.getElement(new Coords(i, j)).setForeground(Color.BLACK);
                     } else {
-                        this.cells.get(i).get(j).setForeground(Color.RED);
+                        this.cells.getElement(new Coords(i, j)).setForeground(Color.RED);
+                        completed = false;
                     }
                 }
+            }
+            if (completed) {
+                System.out.println("GRID COMPLETED");
+                this.sudokuList.removeSudoku((String) this.sudokusComboBox.getSelectedItem());
+                this.updateState();
             }
         }
     }
@@ -319,10 +340,12 @@ public class GUI extends JFrame {
     public void updateState() {
         SwingUtilities.invokeLater(() -> {
             try {
+                var sudoku = this.client
+                    .getSudoku((String) this.sudokusComboBox.getSelectedItem());
                 this.updateSudokuList();
-                this.updateGrid();
+                this.updateGrid(sudoku);
                 this.updateHighlights();
-                this.checkForErrors();
+                this.checkForErrors(sudoku);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

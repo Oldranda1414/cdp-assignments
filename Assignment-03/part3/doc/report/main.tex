@@ -60,7 +60,7 @@ Andrea Biagini
 The oracle and the players should be rappresented by separate threads (goroutines). The oracle and the players do not share memory, as for go philosophy,
  and they share information through syncronous messages. The oracle sends a message to all the players when it is possible to submit a guess, starting the
  new round. The players indipendently send a guess to the oracle. The oracle processes the player guesses in order of arrival. If a player does not guess
- the number correctly, the oracle sends a hint ("higher" or "lower"). If a player guesses the number correctly the oracle ends the game by sending a victory
+ the number correctly, the oracle sends a hint (`higher' or `lower'). If a player guesses the number correctly the oracle ends the game by sending a victory
  message to the winner and a notification to the other players.
 
 The program must take two inputs:
@@ -76,15 +76,13 @@ The oracle and the players will communicate by sending messages. The beheviour o
 \begin{figure}
     \centering
     \includegraphics{oracleSD.png}
-    \caption{state diagram of the oracle}
-    \label{fig:oracleSD}
+    \caption{state diagram of the oracle}\label{fig:oracleSD}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics{playerSD.png}
-    \caption{state diagram of a player}
-    \label{fig:playerSD}
+    \caption{state diagram of a player}\label{fig:playerSD}
 \end{figure}
 
 \section{Communication organization}

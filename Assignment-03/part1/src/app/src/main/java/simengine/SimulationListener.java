@@ -1,15 +1,18 @@
 package simengine;
 
+import actor.Command;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Receive;
 
-public abstract class SimulationListener extends AbstractBehavior<SimulationListener.ViewUpdate> {
+public abstract class SimulationListener extends AbstractBehavior<Command> {
 
-    public static record ViewUpdate(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) {}
+    public static record ViewUpdate(int t, int stepNumber, long deltaMillis, AbstractEnvironment<? extends AbstractAgent> env) implements Command {}
 
-    protected SimulationListener(ActorContext<ViewUpdate> context) {
+    public static record SimulationFinished() implements Command {}
+
+    protected SimulationListener(ActorContext<Command> context) {
         super(context);
     }
 
@@ -17,14 +20,20 @@ public abstract class SimulationListener extends AbstractBehavior<SimulationList
      * Called at each step, updates all updates
      */
     @Override
-    public Receive<ViewUpdate> createReceive() {
+    public Receive<Command> createReceive() {
         return newReceiveBuilder()
                 .onMessage(ViewUpdate.class, this::onViewUpdate)
+                .onMessage(SimulationFinished.class, this::onSimulationFinished)
                 .build();
     }
 
     /**
      * Called at each step, updates all updates
      */
-    protected abstract Behavior<ViewUpdate> onViewUpdate(ViewUpdate command);
+    protected abstract Behavior<Command> onViewUpdate(ViewUpdate command);
+
+    /**
+     * Called at the end of the simulation
+     */
+    protected abstract Behavior<Command> onSimulationFinished(SimulationFinished command);
 }

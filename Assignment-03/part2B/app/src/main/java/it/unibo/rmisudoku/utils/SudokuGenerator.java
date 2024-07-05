@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,14 +15,15 @@ import org.json.JSONObject;
 import it.unibo.rmisudoku.model.CellState;
 
 public class SudokuGenerator {
-    private List<List<CellState>> sudoku;
-    private List<List<CellState>> solution;
+    private static final int GRID_SIZE = 9;
+    private Grid<CellState> sudoku;
+    private Grid<CellState> solution;
     
-    public List<List<CellState>> getSudoku() {
+    public Grid<CellState> getSudoku() {
         return this.sudoku;
     }
 
-    public List<List<CellState>> getSolution() {
+    public Grid<CellState> getSolution() {
         return this.solution;
     }
 
@@ -36,7 +36,10 @@ public class SudokuGenerator {
             con.setRequestMethod("GET");
             int responseCode = con.getResponseCode();
             if (responseCode != 200) {
-                throw new IOException("Sudoku generation API returned error " + String.valueOf(responseCode));
+                throw new IOException(
+                    "Sudoku generation API returned error "
+                    + String.valueOf(responseCode)
+                );
             }
 
             BufferedReader in = new BufferedReader(
@@ -62,22 +65,31 @@ public class SudokuGenerator {
                 .getJSONObject(0)
                 .getJSONArray("solution");
 
-            this.sudoku = new ArrayList<>();
-            this.solution = new ArrayList<>();
-            for (int i = 0; i < 9; i++) {
+            this.sudoku = new Grid<>(GRID_SIZE, GRID_SIZE);
+            this.solution = new Grid<>(GRID_SIZE, GRID_SIZE);
+            for (int i = 0; i < GRID_SIZE; i++) {
                 List<Object> list = grid.getJSONArray(i).toList();
-                List<CellState> cellStateList = new ArrayList<>();
-                list.forEach(element -> {
-                    cellStateList.add(new CellState((int) element, (int) element == 0));
-                });
-                this.sudoku.add(cellStateList);
+                for (int j = 0; j < GRID_SIZE; j++) {
+                    this.sudoku.setElement(
+                        new Coords(i, j),
+                        new CellState(
+                            (int) list.get(j),
+                            ((int) list.get(j) == 0)
+                        )
+                    );
+                }
 
-                List<Object> solutionList = solutionGrid.getJSONArray(i).toList();
-                List<CellState> cellStateSolutionList = new ArrayList<>();
-                solutionList.forEach(element -> {
-                    cellStateSolutionList.add(new CellState((int) element, false));
-                });
-                this.solution.add(cellStateSolutionList);
+                List<Object> solutionList = solutionGrid.getJSONArray(i)
+                    .toList();
+                for (int j = 0; j < GRID_SIZE; j++) {
+                    this.solution.setElement(
+                        new Coords(i, j),
+                        new CellState(
+                            (int) solutionList.get(j),
+                            ((int) solutionList.get(j) == 0)
+                        )
+                    );
+                }
             }
         } catch (MalformedURLException | URISyntaxException e) {
             e.printStackTrace();

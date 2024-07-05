@@ -7,6 +7,11 @@ import java.util.Map;
 import it.unibo.rmisudoku.model.CollaborativeSudoku;
 import it.unibo.rmisudoku.utils.Coords;
 
+/**
+ * This interface models the actions the client can perform while playing. The
+ * method updateClient() is called by remote objects when an internal update
+ * occurs in them.
+ */
 public interface Client extends Remote {
     void updateClient() throws RemoteException;
     CollaborativeSudoku getSudoku(final String sudokuId) throws RemoteException;

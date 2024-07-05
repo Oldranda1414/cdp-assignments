@@ -9,15 +9,25 @@ import java.util.function.Function;
 
 import it.unibo.rmisudoku.client.Client;
 
+/**
+ * To handle new sudokus creation and sudoku removal, {@code SudokuListImpl}
+ * takes as constructior arguments an {@code onCreate} and an {@code onRemove}
+ * function, that interact with the registry to create or remove shared objects.
+ */
 public class SudokuListImpl implements SudokuList {
     private final Set<String> sudokuIds;
-    private final Function<String, Boolean> callback;
+    private final Function<String, Boolean> onCreate;
+    private final Function<String, Boolean> onRemove;
     private List<Client> clients;
 
-    public SudokuListImpl(final Function<String, Boolean> callback) {
+    public SudokuListImpl(
+            final Function<String, Boolean> onCreate,
+            final Function<String, Boolean> onRemove
+    ) {
         this.clients = new LinkedList<>();
         this.sudokuIds = new HashSet<>();
-        this.callback = callback;
+        this.onCreate = onCreate;
+        this.onRemove = onRemove;
     }
 
     @Override
@@ -26,32 +36,49 @@ public class SudokuListImpl implements SudokuList {
     }
 
     @Override
-    public boolean addSudoku(final String sudokuId) throws RemoteException {
-        synchronized (this) {
-            // If a sudoku with that ID alreadi exists, returns false
-            if (this.sudokuIds.contains(sudokuId)) {
-                return false;
-            }
-
-            // If there were errors while generating the sudoku, returns false
-            if (!this.callback.apply(sudokuId)) {
-                return false;
-            }
-
-            // If all went well, the new ID is added to the list
-            this.sudokuIds.add(sudokuId);
+    public synchronized boolean addSudoku(final String sudokuId)
+            throws RemoteException {
+        // If a sudoku with that ID alreadi exists, returns false
+        if (this.sudokuIds.contains(sudokuId)) {
+            return false;
         }
+
+        // If there were errors while generating the sudoku, returns false
+        if (!this.onCreate.apply(sudokuId)) {
+            return false;
+        }
+
+        // If all went well, the new ID is added to the list
+        this.sudokuIds.add(sudokuId);
+
         this.notifyClients();
         return true;
     }
 
     @Override
-    public synchronized void registerClient(Client client) throws RemoteException {
+    public synchronized boolean removeSudoku(final String sudokuId)
+            throws RemoteException {
+        if (this.sudokuIds.contains(sudokuId)) {
+            this.sudokuIds.remove(sudokuId);
+        }
+
+        if (!this.onRemove.apply(sudokuId)) {
+            return false;
+        }
+
+        this.notifyClients();
+        return true;
+    }
+
+    @Override
+    public synchronized void registerClient(Client client)
+            throws RemoteException {
         clients.add(client);
     }
 
     @Override
-    public synchronized void unregisterClient(Client client) throws RemoteException {
+    public synchronized void unregisterClient(Client client)
+            throws RemoteException {
         clients.remove(client);
     }
 

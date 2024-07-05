@@ -9,12 +9,13 @@ import java.util.Map;
 
 import it.unibo.rmisudoku.client.Client;
 import it.unibo.rmisudoku.utils.Coords;
+import it.unibo.rmisudoku.utils.Grid;
 import it.unibo.rmisudoku.utils.SudokuGenerator;
 
 public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     private Map<String, Coords> highlightedCells;
-    private List<List<CellState>> sudoku;
-    private List<List<CellState>> solution;
+    private Grid<CellState> sudoku;
+    private Grid<CellState> solution;
     private List<Client> clients;
 
     public CollaborativeSudokuImpl() throws IllegalStateException {
@@ -23,6 +24,7 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
         try {
             sudokuGenerator = new SudokuGenerator();
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             throw new IllegalStateException("Failed while generating sudoku");
         }
         this.sudoku = sudokuGenerator.getSudoku();
@@ -31,49 +33,56 @@ public class CollaborativeSudokuImpl implements CollaborativeSudoku {
     }
 
     @Override
-    public void setNumber(Coords cell, int number) throws RemoteException {
-        synchronized (this) {
-            this.sudoku.get(cell.getX()).get(cell.getY()).setNumber(number);
-        }
+    public synchronized void setNumber(Coords cell, int number)
+            throws RemoteException {
+        this.sudoku.getElement(new Coords(cell.getX(), cell.getY()))
+            .setNumber(number);
         this.notifyClients();
     }
 
     @Override
     public synchronized int getNumber(Coords cell) throws RemoteException {
-        return this.sudoku.get(cell.getX()).get(cell.getY()).getNumber();
+        return this.sudoku.getElement(new Coords(cell.getX(), cell.getY()))
+            .getNumber();
     }
 
     @Override
-    public boolean isCellModifiable(Coords cell) throws RemoteException {
-        return this.sudoku.get(cell.getX()).get(cell.getY()).isModifiable();
+    public synchronized boolean isCellModifiable(Coords cell)
+            throws RemoteException {
+        return this.sudoku.getElement(new Coords(cell.getX(), cell.getY()))
+            .isModifiable();
     }
 
     @Override
-    public synchronized int getSolutionNumber(Coords cell) throws RemoteException {
-        return this.solution.get(cell.getX()).get(cell.getY()).getNumber();
+    public synchronized int getSolutionNumber(Coords cell)
+            throws RemoteException {
+        return this.solution.getElement(new Coords(cell.getX(), cell.getY()))
+            .getNumber();
     }
 
     @Override
-    public void highlightCell(Coords cell, String playerName) throws RemoteException {
-        synchronized (this) {
-            this.highlightedCells.put(playerName, cell);
-        }
+    public synchronized void highlightCell(Coords cell, String playerUsername)
+            throws RemoteException {
+        this.highlightedCells.put(playerUsername, cell);
         this.notifyClients();
     }
 
     @Override
-    public synchronized Map<String, Coords> getHighlightedCells() throws RemoteException {
+    public synchronized Map<String, Coords> getHighlightedCells()
+            throws RemoteException {
         return this.highlightedCells;
     }
 
     @Override
-    public synchronized void registerClient(Client client) throws RemoteException {
+    public synchronized void registerClient(Client client)
+            throws RemoteException {
         clients.add(client);
         this.notifyClients();
     }
 
     @Override
-    public synchronized void unregisterClient(Client client) throws RemoteException {
+    public synchronized void unregisterClient(Client client)
+            throws RemoteException {
         clients.remove(client);
         this.highlightedCells.remove(client.getUsername());
         this.notifyClients();
