@@ -11,6 +11,7 @@ func Player(playerChannel chan string, oracleChannel chan string, playerId int, 
 
 	//initializing guess boundries
 	lowerBoundry := 0
+
 	upperBoundry := maxValueForSecretNumber
 
 	//variable to keep track of current guess

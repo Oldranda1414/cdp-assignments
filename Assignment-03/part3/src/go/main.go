@@ -45,7 +45,6 @@ func main() {
 	oracleDone := make(chan bool, 1)
 
 	//create the channel for the oracle
-    //buffered channel initialized with large buffer (100)
 	oracleChannel := make(chan string, numberOfPlayers)
 
 	// create the list of player channels
@@ -55,7 +54,7 @@ func main() {
     // Initialize each player and player channel
     for i := range numberOfPlayers {
         //buffered channels initialized with large buffers (100)
-        playerChannels[i] = make(chan string, 1)
+        playerChannels[i] = make(chan string, 2)
         playerDoneChannels[i] = make(chan bool, 1)
         playerId := i + 1
         go Player(playerChannels[i], oracleChannel, playerId, maxValueForSecretNumber, playerDoneChannels[i])

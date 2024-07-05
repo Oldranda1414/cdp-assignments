@@ -102,7 +102,7 @@ Although using multiple channels involves a bigger overhead and reasource consum
 The channels are treated as one way communication channels, where the entity the channel is associated to (oracle or player) is listening on the channel for messages.
  This means that if an entity wishes to communicate to a given other entity it can send messages on that entity's associated channel.
 
-Since the players do not need to communicate with each other they have no need to have access to other player's channels, improving incapsulation //TODO CONTROLLARE COSA DIRE PER BENE QUI
+Since the players do not need to communicate with each other they have no need to have access to other player's channels, improving encapsulation.
 \chapter{Implementation}
 The oracle and players threads are implemented as goroutines. The goroutines communicate via channels.
 
@@ -145,7 +145,8 @@ The dimension of the buffer for each channel has been inferred from use:
 \begin{itemize}
     \item the oracle communication channel has a buffer equal to the number of players, as per round every player would only send one message and 
  until all player messages have been read a new round cannot start
-    \item the players' communication channels have a buffer of 1 //TODO FIND OUT WHY THIS WORKS, MY REASONING SAYS IT SHOULD BE 2 BUT 1 WORKS JUST FINE
+    \item the players' communication channels have a buffer of 2 as no more than 2 messages can be received by a player before a response is sent to the oracle
+ (empirically a buffer of 1 has proven to be enough but it might not be true for larger player numbers)
     \item \emph{done channels} have a buffer of 1 as every go routine will only notify it's termination once
 \end{itemize}
 
