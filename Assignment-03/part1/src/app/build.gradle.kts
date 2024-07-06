@@ -45,7 +45,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "simtrafficexamples.RunMassiveTrafficSimulation"
+    mainClass = "simtrafficexamples.RunTrafficSimulation"
 }
 
 tasks.named<Test>("test") {

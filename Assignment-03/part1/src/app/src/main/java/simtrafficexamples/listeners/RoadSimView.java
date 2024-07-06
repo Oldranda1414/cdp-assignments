@@ -279,10 +279,7 @@ public class RoadSimView extends SimulationListener {
 
     @Override
     protected Behavior<Command> onSimulationFinished(SimulationFinished command) {
-		//TODO DISPLAY THAT THE SIMULATION IS FINISHED
+		this.panel.startButton.setEnabled(false);
         return this;
     }
-
-	//TODO HAVE THE ACTOR DIE WHEN THE WINDOW IS CLOSED
-	// return Behaviors.stopped();
 }
