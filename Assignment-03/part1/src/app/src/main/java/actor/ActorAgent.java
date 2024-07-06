@@ -1,48 +1,57 @@
 package actor;
 
+import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import executor.Task;
+import simengine.AbstractSimulation.ActDone;
+import simengine.AbstractSimulation.SenseDecideDone;
 
 public class ActorAgent extends AbstractBehavior<Command> {
 
     public static record SenseDecide() implements Command {}
     public static record Act() implements Command {}
+    public static record SimulationFinished() implements Command {}
 
-    private Task onSenseDecide;
-    private Task onAct;
+    private Task senseDecide;
+    private Task act;
+    private ActorRef<Command> master;
 
-    public static Behavior<Command> create(Task onSenseDecide, Task onAct) {
-        return Behaviors.setup(context -> new ActorAgent(context, onSenseDecide, onAct));
+    public static Behavior<Command> create(Task senseDecide, Task act, ActorRef<Command> master) {
+        return Behaviors.setup(context -> new ActorAgent(context, senseDecide, act, master));
     }
 
-    private ActorAgent(ActorContext<Command> context, Task onSenseDecide, Task onAct) {
+    private ActorAgent(ActorContext<Command> context, Task senseDecide, Task act, ActorRef<Command> master) {
         super(context);
-        this.onSenseDecide = onSenseDecide;
-        this.onAct = onAct;
+        this.senseDecide = senseDecide;
+        this.act = act;
+        this.master = master;
     }
 
-	/**
-     * Called at each step, updates all updates
-     */
     @Override
     public Receive<Command> createReceive() {
         return newReceiveBuilder()
                 .onMessage(SenseDecide.class, this::onSenseDecide)
                 .onMessage(Act.class, this::onAct)
+                .onMessage(SimulationFinished.class, this::onSimulationFinished)
                 .build();
     }
 
     private Behavior<Command> onSenseDecide(SenseDecide command) throws Exception {
-        this.onSenseDecide.apply(command);
+        this.senseDecide.apply(command);
+        this.master.tell(new SenseDecideDone());
         return this;
     }
 
     private Behavior<Command> onAct(Act command) throws Exception {
-        this.onAct.apply(command);
+        this.act.apply(command);
+        this.master.tell(new ActDone());
         return this;
+    }
+
+    private Behavior<Command> onSimulationFinished(SimulationFinished command) throws Exception {
+		return Behaviors.stopped();
     }
 }

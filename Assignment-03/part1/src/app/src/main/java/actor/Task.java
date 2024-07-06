@@ -1,6 +1,5 @@
-package executor;
+package actor;
 
-import actor.Command;
 import akka.japi.function.Function;
 
 public class Task implements Function<Command, Void> {

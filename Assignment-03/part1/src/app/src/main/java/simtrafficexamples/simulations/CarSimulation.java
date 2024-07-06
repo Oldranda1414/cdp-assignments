@@ -7,7 +7,7 @@ import akka.actor.typed.ActorRef;
 import akka.actor.typed.javadsl.ActorContext;
 
 import actor.Command;
-import executor.Task;
+import actor.Task;
 import simengine.AbstractSimulation;
 import simtrafficbase.entity.CarAgent;
 import simtrafficbase.entity.TrafficLight;

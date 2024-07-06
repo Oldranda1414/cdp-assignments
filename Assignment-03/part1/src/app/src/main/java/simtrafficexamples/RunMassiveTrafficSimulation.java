@@ -51,7 +51,7 @@ public class RunMassiveTrafficSimulation extends AbstractBehavior<Command> {
 			.spawn(
 				AbstractSimulation
 					.create(TrafficsimulationSingleRoadMassiveNumberOfCars.class, List.of()), "Single-road-massive-number-of-cars");
-		simulation.tell(new AbstractSimulation.NextStep(nSteps));
+		simulation.tell(new AbstractSimulation.StartSimulation(nSteps));
 		return this;
 	}
 }

@@ -14,8 +14,8 @@ import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import simengine.AbstractSimulation.NextStep;
 import simengine.AbstractSimulation.Resume;
+import simengine.AbstractSimulation.StartSimulation;
 import simengine.AbstractSimulation.Stop;
 import simengine.SimulationListener;
 import utils.P2d;
@@ -98,7 +98,7 @@ public class RoadSimView extends SimulationListener {
 				} else if (startButton.getText().equals("Start")) {
 					this.remove(label);
 					this.remove(textField);
-                    simulation.tell(new NextStep(Integer.parseInt(textField.getText())));
+                    simulation.tell(new StartSimulation(Integer.parseInt(textField.getText())));
 					startButton.setText("Stop");
 				} else {
                     simulation.tell(new Resume());
@@ -279,6 +279,10 @@ public class RoadSimView extends SimulationListener {
 
     @Override
     protected Behavior<Command> onSimulationFinished(SimulationFinished command) {
-        return Behaviors.stopped();
+		//TODO DISPLAY THAT THE SIMULATION IS FINISHED
+        return this;
     }
+
+	//TODO HAVE THE ACTOR DIE WHEN THE WINDOW IS CLOSED
+	// return Behaviors.stopped();
 }
