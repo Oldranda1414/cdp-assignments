@@ -1,13 +1,13 @@
 package simengine;
 
-import utils.RWTreeMonitor;
+import utils.SafeTreeMap;
 
 /**
 *   
 * Base class to define the environment of the simulation
 *   
 */
-public abstract class AbstractEnvironment<I extends AbstractAgent> extends RWTreeMonitor<I> {
+public abstract class AbstractEnvironment<I extends AbstractAgent> extends SafeTreeMap<String, I> {
 
 	protected AbstractEnvironment() {
 		

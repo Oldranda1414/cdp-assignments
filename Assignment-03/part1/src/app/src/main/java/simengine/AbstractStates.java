@@ -1,6 +1,6 @@
 package simengine;
 
-import utils.RWTreeMonitor;
+import utils.SafeTreeMap;
 
-public class AbstractStates<T extends AbstractEnvironment<? extends AbstractAgent>> extends RWTreeMonitor<AgentState<T>> {
+public class AbstractStates<T extends AbstractEnvironment<? extends AbstractAgent>> extends SafeTreeMap<String, AgentState<T>> {
 }
