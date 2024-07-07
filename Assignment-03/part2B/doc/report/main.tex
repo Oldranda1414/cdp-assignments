@@ -72,12 +72,12 @@ The system has a client-server architecture, where the server has all the
 
 \chapter{Implementation}
 Both server and client are implemented in Java, to be able to use the Java RMI
- library. The server part has a model and a tiny controller to have it started;
- every interaction with the user is from the server to the user, so it has been
- chosen to use command line prints. %TODO EXPLAIN THIS AND WE WRITE IT BETTER
+ library. The server part has a model and a tiny controller.
+
+During it's functioning the server prints info messages to the terminal.
  
-The client is also composed by a model component (that is remote),
- handled by a controller, and a Java Swing GUI to interact with grids.
+The client is also composed by a model component (that is remote)
+ handled by a controller and a Java Swing GUI to interact with grids.
 
 \section{Problems Encountered}
 Relevant implementation details emerge from the problems encountered during the
