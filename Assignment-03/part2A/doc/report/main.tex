@@ -2,7 +2,8 @@
 \usepackage[pdftex]{graphicx} %for embedding images
 \graphicspath{ {./img/} } %the path to the images
 \usepackage[,italian, english]{babel}
-\usepackage{url} %for proper url entries
+\usepackage{url} %for proper url entries,
+\usepackage{hyperref}
 % \usepackage[bookmarks, colorlinks=false, pdfborder={0 0 0}, pdftitle={<pdf title here>}, pdfauthor={<author's name here>}, pdfsubject={<subject here>}, pdfkeywords={<keywords here>}]{hyperref} %for creating links in the pdf version and other additional pdf attributes, no effect on the printed document
 %\usepackage[final]{pdfpages} %for embedding another pdf, remove if not required
 
@@ -39,15 +40,16 @@ Andrea Biagini
 
 \tableofcontents
 \listoffigures
-\listoftables
 
 \newpage
 \pagenumbering{arabic} %reset numbering to normal for the main content
 
 \chapter{Analysis}
-The goal is to create a Cooperative Sudoku exploiting the Croquet.io Framework.
-%
-The game is a cooperative version of the classic Sudoku game. The game can be played by any number of players, each player can see the board and the numbers placed by the other players. The game is won when the board is completed.
+The goal is to create a Cooperative Sudoku exploiting the \href{https://croquet.io/}{Croquet.io Framework}.
+
+The game is a cooperative version of the classic Sudoku game. The game can be played by any number of players, each player can see the
+ board and the numbers placed by the other players. The game is won when the board is completed.
+
 Each player can also be able to see the other players' cursors, and have the capability to exit and join different games at any time.
 
 \section{Task Decomposition}
@@ -65,27 +67,57 @@ Each task can be executed by any player at any time.
 The game is composed by a board, a set of players, a set of cursors and a set of numbers placed in the board.
 
 \section{Dependency Analysis}
-There is different dependency level. The first and most visible one is between tasks that belong to different parts of the game. That is the dependency between the place number and move tasks and the create/join/exit task. The second level of dependency is between all tasks that belong to the same part of the game. For example, the place number task is dependent on the move cursor task; the join and task is dependent on the create task.\\
+There are two dependency levels.
+
+The first and most visible one is between tasks 
+ that belong to different parts of the game. That is the dependency between the place 
+ number and move tasks and the create/join/exit task.
+ 
+The second level of dependency is between all tasks that belong to the same part of the game. For example, the place 
+ number task is dependent on the move cursor task; the join and task is dependent on the create task.
 
 \chapter{Design}
-Exploiting Croquet.io Framework, the game is designed as a set of objects that communicate with each other via messages. Each object can perform every task of the game and the execution of a task is fired by a message sent to the object. In order to let all be in synch with the game state, Croquet.io provides a shared state that is updated by the objects. The shared state is a javascript class that is ensured to be the same on all objects. That is, when an object updates the shared state, the change is propagated to all the other objects.
+Exploiting \href{https://croquet.io/}{Croquet.io Framework}, the game is designed as a set of objects that communicate with each other via messages.
 
-TODO: potrei andare avanti ad oltranza, capire quale è il livello giusto di astrazione di cui parlare qui
+\section{Croquet.io Framework}
+Each object can perform every task of the game and the execution of a task is fired by a message sent to the object.
+
+In order to have all the object be in synch with a coherent game state, Croquet.io provides a shared state that is updated by the objects.
+ The shared state is a javascript class that is ensured to be the same on all objects. That is, when an object updates the shared state,
+ the change is propagated to all the other objects.
 
 \section{Architecture}
-Since the game should provide both the capabilities to create and join games and to play the game, the architecture is divided in two macroparts: the lobby and the game. The lobby is the part of the game where the player can create or join a game. The game is the part of the game where the player can play the game (and exit). Each user is represented by an object as defined earlier.
+Since the game should provide both the capabilities to create and join games and to play the game,
+ the architecture is divided in two macroparts: the lobby and the game. 
+ 
+The lobby is the part of the game where the player can create or join a game.
+
+The game is the part of the game where the player can play the game (and exit). Each user is represented by an object as defined earlier.
 
 \begin{figure}
     \centering
     \includegraphics[scale=0.5]{part2a-states.png}
-    \caption{UML diagram exposing all possible states of the game and how they are related.}
+    \caption{UML diagram listing all possible states of the game and how they are related.}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[scale=0.5]{croquet_overview.png}
-    \caption{Croquet.io overview on how the system is structured.}
+    \caption{Overview of the croquet.io framework}
 \end{figure}
+
+\chapter{Implementation}
+%TODO
+\chapter{Usage}
+A bash script \emph{boot.sh} is provided to run the application.
+
+The script uses openssl, so the user should ensure it is installed on the system.
+
+The script generates artifacts for the correct functioning of the program and installs node dependencies.
+
+After running the script once, subsequent runs can be performed by simply executing the \emph{node app} command from cli.
+
+\chapter{Conclusion}
 
 \bibliographystyle{plain}
 \bibliography{References}
