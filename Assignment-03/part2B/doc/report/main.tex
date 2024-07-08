@@ -47,7 +47,7 @@ Andrea Biagini
 The goal is to create a collaborative version of the Sudoku game using the 
  built-in Java library "Java RMI". This library provides the functionality 
  of creating two separate JVMs that commuincate, sharing objects and using them as
- if they were localy stored.
+ if they were locally stored.
 
 A player can create a sudoku grid (a "grid"), view a list of all the
  available grids, join an available grid and collaborate to its completion
@@ -93,41 +93,49 @@ One of the first problems was detected upon deciding how to structure the model
 The solution was to identify every grid with a unique ID (a String has been
  used) and have an object shared by default to every client, containing a set
  of every available grids; in this way, the clients obtain every available ID. The
- action of subscribing to a certain grid corresponds to the client quearying a
+ action of subscribing to a certain grid corresponds to the client querying a
  remote object referencing the desired grid, and deleting the reference of the
  previously subscribed grid.
 
 \subsection{Remote updates}
-In previous implementation of the system remote updates where manually requested by the
- users. This did not satisfy the requirement of a coherently updated GUI.
+In the first implementation of the system remote updates where manually
+ requested by the users. This did not satisfy the requirement of a coherently
+ updated GUI.
 
 Two solutions have been considered:
 The first approach consisted in a separate thread polling the server to obtain 
- updated information. This approach was not efficient and resulted in synchronization
- issues and missed inputs, so it was abandoned. The second approach was to use the observer pattern to
- notify interested clients that an update had been made on the server. This
- approach slightly brakes the RMI pattern (in fact, it has been not trivial to
- implement) but it is a far more elegant way to sadisfy the requirements as inputs
- can't be missed and clients receive only updates in what they are interested
- in, as in only the IDs list and the grid they are subscribed to.
+ updated information. This approach was not efficient and resulted in
+ synchronization issues and missed inputs, so it was abandoned. The second
+ approach was to use the observer pattern to notify interested clients that an
+ update had been made on the server. This approach slightly brakes the RMI
+ pattern (in fact, it has been not trivial to implement) but it is a far more
+ elegant way to satisfy the requirements as inputs can't be missed and clients
+ receive temporarily ordered updates only in what they are interested in, as in
+ only the IDs list and the grid they are subscribed to.
 
 \section{Source code organization and execution}
-The project is phisically divided in a server package and a client package, but
+The project is physically divided in a server package and a client package, but
  the model package is shared between both components.
 
-The project is managed by Gradle: use the task "runServer" to run the server component and the task
- "runClient" to run a client. The runClient task takes as arguments the
- username of the player.
+The project is managed by Gradle: use the task "runServer" to run the server
+ component and the task "runClient" to run a client. The runClient task takes
+ as arguments the username of the player.
 
 \chapter{Conclusions}
 In this state, the system is at a good level of development: some improvements
- can be implemented in the GUI, especially from the graphical point of view and in the
- username choice in the client: in the current version of the system it has
- been supposed for simplicity that usernames are unique. This last feature can
- be implemented using a shared object containing all usernames of the clients
- that are currently conneceted.
+ can be implemented in the GUI, especially from the graphical point of view and
+ in the username choice in the client: in the current version of the system it
+ has been supposed for simplicity that usernames are unique. This last feature
+ can be implemented using a shared object containing all usernames of the
+ clients that are currently conneceted.
 
-\bibliographystyle{plain}
-\bibliography{References}
+The Java RMI library is well structured and easy to use once understood its
+ basic objects. The downside of this approach, considering this particular
+ project, is that Java RMI forces the system to be client-server, where all the
+ information and data are stored in the server, making it critical to be kept
+ alive. In a peer-to-peer system this disadvantage does not exist.
+
+% \bibliographystyle{plain}
+% \bibliography{References}
 
 \end{document}
