@@ -74,7 +74,7 @@ The first and most visible one is between tasks
  number and move tasks and the create/join/exit task.
  
 The second level of dependency is between all tasks that belong to the same part of the game. For example, the place 
- number task is dependent on the move cursor task; the join and task is dependent on the create task.
+ number task is dependent on the move cursor task; the join exit and task is dependent on the create task.
 
 \chapter{Design}
 Exploiting \href{https://croquet.io/}{Croquet.io Framework}, the game is designed as a set of objects that communicate with each other via messages.
@@ -106,8 +106,16 @@ The game is the part of the game where the player can play the game (and exit). 
     \caption{Overview of the croquet.io framework}
 \end{figure}
 
+\section{Sudoku Board Generation Inconsistencies}
+During the development of the game, we encountered an issue with the generation of the Sudoku board. Initially, we used an online API to generate a Sudoku board each time it was queried. Since this operation involves data handling rather than user interface interactions, we intuitively placed it in the shared state, known as the `Model'. The `Model' is replicated across all clients, and executing the board generation operation on all clients led to each client generating a different Sudoku board. This inconsistency occurred because the API call was being made independently on each client's Model, resulting in different boards being generated simultaneously.\\
+\\
+To resolve this problem, we moved the API call to the View of the client that is currently creating the new game. This way, only one client makes the API call to generate the Sudoku board. Once the board is generated, this client updates the shared state with the generated board, ensuring that all clients receive the same board. By centralizing the API call to a single client and then propagating the result through the shared state, we ensured consistency across all clients.
+
 \chapter{Implementation}
-%TODO
+The project can be divided in two different ways: the first that separates the lobby and the game (as described previously), and the second that separates the model from the view. The model and view are basic Croquet classes used to store data and render the data, respectively. The model is shared among all the clients, while the view is particular to each client. These classes provide basic functionalities but have been extended to ease development further. The extended classes are \texttt{BaseModel} and \texttt{BaseView}. Additionally, we created the \texttt{FirstView} class to fill a gap left by the framework. Croquet.io exposes an update method that is called every frame, but it's guaranteed to be called only for the first view created. The \texttt{FirstView} class is a workaround to ensure the method is fired for every view.\\
+\\
+The classes that implement the game are \texttt{LobbyModel}, \texttt{LobbyView}, \texttt{GameModel}, and \texttt{GameView}. The model classes are responsible for storing data, while the view classes are responsible for rendering them. Throughout the project, we adhered to a consistent pattern: after a user interaction, a message is sent to the model, which updates the shared state and responds to the view with another message. The view then updates the UI. This pattern is considerably similar to the Remote Procedure Call (RPC) model.
+
 \chapter{Usage}
 A bash script \emph{boot.sh} is provided to run the application.
 
@@ -118,6 +126,8 @@ The script generates artifacts for the correct functioning of the program and in
 After running the script once, subsequent runs can be performed by simply executing the \emph{node app} command from cli.
 
 \chapter{Conclusion}
+In the end, the game was successfully implemented and tested. The game is fully functional and can be played by any number of players, also providing fault tollerance. The cooperative Sudoku project demonstrates the potential and flexibility of the Croquet.io framework in developing interactive and collaborative applications. The simple and intuitive API allows for the rapid development and easy testing of applications. It's quite easy to take a wrong direction but since the code is tested frequently, it's easy to correct the mistakes.\\
+It is important to note that a good knowledge of the framework and how its API exploits the underlying architecture is required to unuderstand how to develop applications with it.
 
 \bibliographystyle{plain}
 \bibliography{References}
