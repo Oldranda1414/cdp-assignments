@@ -130,10 +130,12 @@ In this state, the system is at a good level of development: some improvements
  clients that are currently conneceted.
 
 The Java RMI library is well structured and easy to use once understood its
- basic objects. The downside of this approach, considering this particular
- project, is that Java RMI forces the system to be client-server, where all the
- information and data are stored in the server, making it critical to be kept
- alive. In a peer-to-peer system this disadvantage does not exist.
+ basic objects. The downside of the approach, considering this particular
+ project, is that Java RMI forces the system to be use the a client-server pattern, where all the
+ information and data are stored in a common server, providing common problems in centrilized systems, 
+ such as them being dependend on the well being of the server.
+ In a peer-to-peer system these disadvantage would not be present, but the use of java RMI would prove
+ challenging.
 
 % \bibliographystyle{plain}
 % \bibliography{References}
