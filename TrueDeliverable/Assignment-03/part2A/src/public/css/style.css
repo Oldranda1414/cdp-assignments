@@ -1,0 +1,175 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+#userID {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#gameID {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#gameDifficulty {
+    position: absolute;
+    top: 90px;
+    left: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#backButton {
+    position: absolute;
+    top: 10px;
+    left: 1850px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#victoryLabel {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 365px;
+    text-align: center;
+}
+
+#sudokuContainer {
+    display: grid;
+    grid-template-columns: repeat(9, 40px);
+    grid-template-rows: repeat(9, 40px);
+    gap: 2px;
+}
+
+.sudokuCell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #fff;
+    cursor: pointer;
+    user-select: none;
+}
+
+.sudokuCell:nth-child(3n) {
+    border-right: 2px solid #000;
+}
+
+.sudokuCell:nth-child(3n + 1) {
+    border-left: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 8) {
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 7) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 6) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 5) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 4) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 3) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 2) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n - 1) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n) { 
+    border-bottom: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 1) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 2) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 3) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 4) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 5) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 6) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 7) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 8) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:nth-child(27n + 9) { 
+    border-top: 2px solid #000;
+}
+
+.sudokuCell:hover {
+    background-color: #f4f4f4;
+}
